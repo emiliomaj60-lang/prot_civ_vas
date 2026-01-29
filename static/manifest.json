@@ -1,1 +1,20 @@
-
+{
+  "name": "Protezione Civile VAS",
+  "short_name": "PC VAS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#002b5c",
+  "icons": [
+    {
+      "src": "/static/img/logo.ico",
+      "sizes": "256x256",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/static/img/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
