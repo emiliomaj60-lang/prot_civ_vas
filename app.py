@@ -1,6 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
+
+# DATABASE SEMPLICE (poi lo sposteremo in SQLite)
+iscritti_db = {
+    "mario_rossi": {
+        "password": "abc123",
+        "nome": "Mario",
+        "cognome": "Rossi",
+        "indirizzo": "Via Roma 10",
+        "telefono": "3331234567",
+        "motosega": True,
+        "corso_base": False,
+        "altro": "Nessuno"
+    }
+}
 
 @app.route("/")
 def home():
@@ -14,8 +28,22 @@ def attivita():
 def verbali():
     return render_template("verbali.html")
 
-@app.route("/iscritti")
+# 🔵 AREA ISCRITTI (LOGIN)
+@app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
+    if request.method == "POST":
+        nome = request.form["nome"].strip().lower()
+        cognome = request.form["cognome"].strip().lower()
+        password = request.form["password"].strip()
+
+        key = f"{nome}_{cognome}"
+
+        # Controllo credenziali
+        if key in iscritti_db and iscritti_db[key]["password"] == password:
+            return render_template("scheda_iscritto.html", dati=iscritti_db[key])
+        else:
+            return render_template("iscritti.html", errore="Credenziali errate")
+
     return render_template("iscritti.html")
 
 @app.route("/emergenze")
