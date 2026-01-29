@@ -3,23 +3,87 @@
 
 {% block content %}
 
-<h2 class="text-center mb-4">Scheda Personale</h2>
+<style>
+    .profile-container {
+        max-width: 900px;
+        margin: auto;
+        margin-top: 40px;
+        padding: 40px;
+        background: #ffffffdd;
+        border-radius: 18px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
 
-<div class="card p-4 shadow" style="max-width: 600px; margin: auto;">
+    .profile-title {
+        font-size: 2.4rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #002b5c;
+    }
 
-    <p><strong>Nome:</strong> {{ dati.nome }}</p>
-    <p><strong>Cognome:</strong> {{ dati.cognome }}</p>
-    <p><strong>Indirizzo:</strong> {{ dati.indirizzo }}</p>
-    <p><strong>Telefono:</strong> {{ dati.telefono }}</p>
+    .data-label {
+        font-weight: 700;
+        color: #002b5c;
+    }
+
+    .table-corsi {
+        margin-top: 25px;
+    }
+
+    .table-corsi th {
+        background: #002b5c;
+        color: white;
+        font-size: 1.1rem;
+    }
+
+    .table-corsi td {
+        font-size: 1.1rem;
+        vertical-align: middle;
+    }
+</style>
+
+<div class="profile-container">
+
+    <div class="profile-title">Scheda Personale</div>
+
+    <p><span class="data-label">Nome:</span> {{ dati.nome }}</p>
+    <p><span class="data-label">Cognome:</span> {{ dati.cognome }}</p>
+    <p><span class="data-label">Indirizzo:</span> {{ dati.indirizzo }}</p>
+    <p><span class="data-label">Telefono:</span> {{ dati.telefono }}</p>
 
     <hr>
 
-    <h4>Corsi svolti</h4>
-    <ul>
-        <li>Motosega: <strong>{{ "Sì" if dati.motosega else "No" }}</strong></li>
-        <li>Corso Base PC: <strong>{{ "Sì" if dati.corso_base else "No" }}</strong></li>
-        <li>Altro: <strong>{{ dati.altro }}</strong></li>
-    </ul>
+    <h4 class="mt-4">Corsi svolti</h4>
+
+    <table class="table table-bordered table-corsi">
+        <thead>
+            <tr>
+                <th>Corso</th>
+                <th>Completato</th>
+                <th>Scadenza</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Motosega</td>
+                <td><strong>{{ "Sì" if dati.motosega else "No" }}</strong></td>
+                <td>{{ dati.scadenza_motosega }}</td>
+            </tr>
+
+            <tr>
+                <td>Corso Base PC</td>
+                <td><strong>{{ "Sì" if dati.corso_base else "No" }}</strong></td>
+                <td>{{ dati.scadenza_base }}</td>
+            </tr>
+
+            <tr>
+                <td>Altro</td>
+                <td><strong>{{ "Sì" if dati.altro_fatto else "No" }}</strong></td>
+                <td>{{ dati.scadenza_altro }}</td>
+            </tr>
+        </tbody>
+    </table>
 
 </div>
 
