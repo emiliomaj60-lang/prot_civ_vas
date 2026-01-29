@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-# DATABASE SEMPLICE (poi lo sposteremo in SQLite)
 iscritti_db = {
     "mario_rossi": {
         "password": "abc123",
@@ -10,11 +9,19 @@ iscritti_db = {
         "cognome": "Rossi",
         "indirizzo": "Via Roma 10",
         "telefono": "3331234567",
+
+        # CORSI
         "motosega": True,
+        "scadenza_motosega": "2027-05-12",
+
         "corso_base": False,
-        "altro": "Nessuno"
+        "scadenza_base": "-",
+
+        "altro_fatto": True,
+        "scadenza_altro": "2026-11-01"
     }
 }
+
 
 @app.route("/")
 def home():
