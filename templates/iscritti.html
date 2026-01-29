@@ -1,2 +1,29 @@
-<h1>Programma attività</h1>
-<p>Qui inseriremo le attività programmate.</p>
+{% extends "base.html" %}
+{% block title %}Area Iscritti{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">Area Iscritti</h2>
+
+<div class="card p-4 shadow" style="max-width: 450px; margin: auto;">
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Nome</label>
+            <input type="text" name="nome" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Cognome</label>
+            <input type="text" name="cognome" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <button class="btn btn-primary w-100">Accedi</button>
+    </form>
+</div>
+
+{% endblock %}
