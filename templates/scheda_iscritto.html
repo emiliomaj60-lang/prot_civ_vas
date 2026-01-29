@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Scheda Personale{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">Scheda Personale</h2>
+
+<div class="card p-4 shadow" style="max-width: 600px; margin: auto;">
+
+    <p><strong>Nome:</strong> {{ dati.nome }}</p>
+    <p><strong>Cognome:</strong> {{ dati.cognome }}</p>
+    <p><strong>Indirizzo:</strong> {{ dati.indirizzo }}</p>
+    <p><strong>Telefono:</strong> {{ dati.telefono }}</p>
+
+    <hr>
+
+    <h4>Corsi svolti</h4>
+    <ul>
+        <li>Motosega: <strong>{{ "Sì" if dati.motosega else "No" }}</strong></li>
+        <li>Corso Base PC: <strong>{{ "Sì" if dati.corso_base else "No" }}</strong></li>
+        <li>Altro: <strong>{{ dati.altro }}</strong></li>
+    </ul>
+
+</div>
+
+{% endblock %}
