@@ -1,2 +1,51 @@
-<h1>Programma attività</h1>
-<p>Qui inseriremo le attività programmate.</p>
+{% extends "base.html" %}
+{% block title %}Emergenze{% endblock %}
+
+{% block content %}
+
+<style>
+    .alert-container {
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .alert-btn {
+        width: 350px;
+        padding: 30px;
+        font-size: 2rem;
+        font-weight: 800;
+        border-radius: 20px;
+        background: #d40000;
+        color: white;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        transition: transform 0.15s ease;
+    }
+
+    .alert-btn:hover {
+        transform: scale(1.05);
+    }
+
+    .info-box {
+        margin-top: 40px;
+        padding: 20px;
+        background: #fff3cd;
+        border-left: 6px solid #ffcc00;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="alert-container">
+    <h1 class="text-danger fw-bold">Gestione Emergenze</h1>
+
+    <a href="#" class="alert-btn">🚨 INVIA ALLERTA</a>
+
+    <div class="info-box mt-4">
+        <h4>Come funziona</h4>
+        <p>
+            Questo pulsante invierà un avviso immediato agli iscritti tramite:
+            <br><strong>Telegram, SMS o Notifica Web</strong>.
+        </p>
+    </div>
+</div>
+
+{% endblock %}

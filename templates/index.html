@@ -4,14 +4,8 @@
 {% block content %}
 
 <style>
-    body {
-        background: linear-gradient(135deg, #e8f0ff, #ffffff);
-        margin: 0;
-        padding: 0;
-    }
-
     .fullscreen {
-        min-height: 100vh;
+        min-height: calc(100vh - 160px);
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -34,6 +28,17 @@
         text-transform: uppercase;
         letter-spacing: 2px;
         text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+    }
+
+    /* ANIMAZIONE */
+    .fade-in {
+        opacity: 0;
+        animation: fadeIn 1.4s forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .menu-container {
@@ -61,7 +66,7 @@
     }
 </style>
 
-<div class="fullscreen">
+<div class="fullscreen fade-in">
 
     <!-- LOGO -->
     <div class="logo">
