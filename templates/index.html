@@ -1,9 +1,93 @@
-<h1>Protezione Civile VAS</h1>
+{% extends "base.html" %}
+{% block title %}Protezione Civile VAS{% endblock %}
 
-<ul>
-  <li><a href="/attivita">Programma attività</a></li>
-  <li><a href="/verbali">Verbali riunioni</a></li>
-  <li><a href="/iscritti">Dati iscritti</a></li>
-  <li><a href="/pagina4">Pagina 4</a></li>
-  <li><a href="/emergenze">Emergenze</a></li>
-</ul>
+{% block content %}
+
+<!-- HERO -->
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold text-primary">Protezione Civile VAS</h1>
+        <p class="col-md-8 fs-4">
+            Coordinamento, sicurezza e supporto alla comunità.  
+            Questa piattaforma raccoglie attività, verbali, dati degli iscritti e strumenti di emergenza.
+        </p>
+    </div>
+</div>
+
+<!-- MENU CARDS -->
+<div class="row g-4">
+
+    <!-- EMERGENZE -->
+    <div class="col-md-4">
+        <a href="/emergenze" class="text-decoration-none">
+            <div class="card border-danger shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-danger">🚨 Emergenze</h3>
+                    <p class="card-text">
+                        Sistema di allerta immediato per gli iscritti.  
+                        Notifiche, SMS o Telegram in caso di necessità.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- ATTIVITÀ -->
+    <div class="col-md-4">
+        <a href="/attivita" class="text-decoration-none">
+            <div class="card border-primary shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-primary">📅 Attività Programmate</h3>
+                    <p class="card-text">
+                        Calendario delle attività operative e formative della Protezione Civile.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- VERBALI -->
+    <div class="col-md-4">
+        <a href="/verbali" class="text-decoration-none">
+            <div class="card border-secondary shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-secondary">📄 Verbali Riunioni</h3>
+                    <p class="card-text">
+                        Archivio dei verbali delle riunioni, consultabili e scaricabili.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- ISCRITTI -->
+    <div class="col-md-4">
+        <a href="/iscritti" class="text-decoration-none">
+            <div class="card border-success shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-success">👥 Area Iscritti</h3>
+                    <p class="card-text">
+                        Accesso ai dati personali tramite credenziali individuali.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- PAGINA 4 -->
+    <div class="col-md-4">
+        <a href="/pagina4" class="text-decoration-none">
+            <div class="card border-dark shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">🔧 Pagina 4</h3>
+                    <p class="card-text">
+                        Sezione in sviluppo. Potrà contenere strumenti, documenti o funzioni aggiuntive.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}
