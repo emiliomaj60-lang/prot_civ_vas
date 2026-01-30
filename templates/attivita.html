@@ -40,9 +40,16 @@
         padding: 10px 14px;
     }
 
-    /* Effetto hover sulle righe */
     tbody tr:hover {
         background-color: #f0f6ff;
+    }
+
+    .info-footer {
+        margin-top: 25px;
+        font-size: 1.3rem;
+        text-align: center;
+        font-weight: 700;
+        color: #002b5c;
     }
 </style>
 
@@ -66,7 +73,13 @@
                 style="cursor:pointer;"
             >
                 <td>{{ a.attivita }}</td>
-                <td>{{ a.data }}</td>
+
+                <!-- Conversione data da AAAA-MM-GG a GG/MM/AAAA -->
+                <td>
+                    {% set parts = a.data.split('-') %}
+                    {{ parts[2] }}/{{ parts[1] }}/{{ parts[0] }}
+                </td>
+
                 <td>
                     <span class="badge bg-{{ a.colore }}">
                         {% if a.colore == "success" %}Lontana
@@ -80,6 +93,10 @@
         </tbody>
 
     </table>
+
+    <div class="info-footer">
+        👉 Clicca su una attività per visualizzarla nei dettagli
+    </div>
 
 </div>
 
