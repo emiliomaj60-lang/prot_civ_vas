@@ -190,11 +190,28 @@ def attivita_dettaglio(nome):
 # VERBALI
 # ============================
 
+import os
+
 @app.route("/verbali")
 def verbali():
-    return render_template("verbali.html")
+    path = "templates/verbali"
+    files = []
+
+    for f in os.listdir(path):
+        if f.endswith(".html"):
+            files.append(f.replace(".html", ""))
+
+    files.sort()
+
+    return render_template("verbali.html", verbali=files)
 
 
+@app.route("/verbali/<nome>")
+def verbale_dettaglio(nome):
+    try:
+        return render_template(f"verbali/{nome}.html")
+    except:
+        return "Verbale non trovato", 404
 # ============================
 # AVVIO SERVER
 # ============================
