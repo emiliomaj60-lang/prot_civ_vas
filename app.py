@@ -110,17 +110,53 @@ def iscritti():
         cognome = request.form["cognome"].strip().lower()
         password = request.form["password"].strip()
 
-        username = f"{nome}_{cognome}"
+        # Username digitato dall’utente
+        username_input = f"{nome}_{cognome}"
 
-        dati = carica_iscritto(username)
+        # Normalizzazioni accettate
+        possibili_username = {
+            username_input,
+            username_input.replace("_", "."),
+            username_input.replace("_", " "),
+            username_input.replace("_", "-"),
+            username_input.replace("_", ""),
+        }
 
-        if dati and dati["password"] == password:
-            return render_template("scheda_iscritto.html", dati=dati)
-        else:
-            return render_template("iscritti.html", errore="Credenziali errate")
+        # Carica TUTTI gli iscritti dal CSV
+        try:
+            with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for r in reader:
+
+                    username_csv = r["username"].strip().lower()
+
+                    # Se il CSV contiene una variante accettata → match
+                    if username_csv in possibili_username:
+
+                        # Password corretta?
+                        if r["password"] == password:
+
+                            # Conversione campi booleani
+                            r["motosega"] = r["motosega"] == "1"
+                            r["corso_base"] = r["corso_base"] == "1"
+                            r["altro_fatto"] = r["altro_fatto"] == "1"
+
+                            # Colori badge
+                            r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
+                            r["col_base"] = colore_scadenza(r["scadenza_base"])
+                            r["col_altro"] = colore_scadenza(r["scadenza_altro"])
+
+                            return render_template("scheda_iscritto.html", dati=r)
+
+                        else:
+                            return render_template("iscritti.html", errore="Password errata")
+
+        except Exception as e:
+            print("Errore lettura CSV:", e)
+
+        return render_template("iscritti.html", errore="Credenziali errate")
 
     return render_template("iscritti.html")
-
 
 # ============================
 # ATTIVITÀ PROGRAMMATE (CSV)
