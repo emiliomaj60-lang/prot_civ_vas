@@ -5,29 +5,35 @@
 
 <style>
     .profile-container {
-        max-width: 1100px;
+        max-width: 1300px;
         margin: auto;
-        margin-top: 60px;
-        padding: 50px;
+        margin-top: 70px;
+        padding: 60px;
         background: #ffffffee;
-        border-radius: 22px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        border-radius: 28px;
+        box-shadow: 0 10px 36px rgba(0,0,0,0.28);
     }
 
     .profile-title {
-        font-size: 2.8rem;
+        font-size: 3.4rem;
         font-weight: 900;
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 50px;
         color: #002b5c;
     }
 
     .data-label {
         font-weight: 800;
         color: #002b5c;
-        font-size: 1.3rem;
+        font-size: 2.2rem;
     }
 
+    .data-value {
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+    }
+
+    /* Sezione corsi NON ingrandita */
     .table-corsi th {
         background: #002b5c;
         color: white;
@@ -51,10 +57,23 @@
 
     <div class="profile-title">Scheda Personale</div>
 
-    <p><span class="data-label">Nome:</span> {{ dati.nome }}</p>
-    <p><span class="data-label">Cognome:</span> {{ dati.cognome }}</p>
-    <p><span class="data-label">Indirizzo:</span> {{ dati.indirizzo }}</p>
-    <p><span class="data-label">Telefono:</span> {{ dati.telefono }}</p>
+    <p><span class="data-label">Nome:</span> 
+       <span class="data-value">{{ dati.nome }}</span></p>
+
+    <p><span class="data-label">Cognome:</span> 
+       <span class="data-value">{{ dati.cognome }}</span></p>
+
+    <p><span class="data-label">Data di nascita:</span> 
+       <span class="data-value">{{ dati.data_nascita }}</span></p>
+
+    <p><span class="data-label">Indirizzo:</span> 
+       <span class="data-value">{{ dati.indirizzo }}</span></p>
+
+    <p><span class="data-label">Telefono:</span> 
+       <span class="data-value">{{ dati.telefono }}</span></p>
+
+    <p><span class="data-label">Email:</span> 
+       <span class="data-value">{{ dati.email }}</span></p>
 
     <hr>
 
