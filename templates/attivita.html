@@ -39,6 +39,11 @@
         font-size: 1.1rem;
         padding: 10px 14px;
     }
+
+    /* Effetto hover sulle righe */
+    tbody tr:hover {
+        background-color: #f0f6ff;
+    }
 </style>
 
 <div class="attivita-container">
@@ -53,9 +58,13 @@
                 <th>Stato</th>
             </tr>
         </thead>
+
         <tbody>
             {% for a in attivita %}
-            <tr onclick="window.location='/attivita/{{ a.attivita.replace(' ', '_') }}'" style="cursor:pointer;">
+            <tr 
+                onclick="window.location='/attivita/{{ a.attivita.replace(' ', '_').replace('/', '_').lower() }}'" 
+                style="cursor:pointer;"
+            >
                 <td>{{ a.attivita }}</td>
                 <td>{{ a.data }}</td>
                 <td>
@@ -69,6 +78,7 @@
             </tr>
             {% endfor %}
         </tbody>
+
     </table>
 
 </div>
