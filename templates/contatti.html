@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Contatti{% endblock %}
+
+{% block content %}
+
+<style>
+    .contatti-container {
+        max-width: 600px;
+        margin: auto;
+        margin-top: 60px;
+        padding: 40px;
+        background: #ffffffee;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        border: 2px solid #d0d8e0;
+    }
+
+    .contatti-title {
+        font-size: 2.4rem;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 25px;
+        color: #002b5c;
+    }
+
+    .contatti-text {
+        font-size: 1.4rem;
+        line-height: 1.7;
+        white-space: pre-line; /* mantiene gli a capo del TXT */
+        color: #002b5c;
+    }
+</style>
+
+<div class="contatti-container">
+    <div class="contatti-title">Contatti</div>
+
+    <div class="contatti-text">
+        {{ testo }}
+    </div>
+</div>
+
+{% endblock %}
