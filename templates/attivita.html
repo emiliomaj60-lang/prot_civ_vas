@@ -5,41 +5,37 @@
 
 <style>
     .attivita-container {
-        max-width: 1300px; /* +20% */
+        max-width: 1400px;
         margin: auto;
-        margin-top: 70px; /* +20% */
-        padding: 60px; /* +20% */
+        margin-top: 80px;
+        padding: 70px;
         background: #ffffffee;
-        border-radius: 26px; /* +20% */
-        box-shadow: 0 10px 36px rgba(0,0,0,0.28);
+        border-radius: 28px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.28);
     }
 
     .attivita-title {
-        font-size: 3.3rem; /* +20% */
+        font-size: 3.8rem;
         font-weight: 900;
         text-align: center;
-        margin-bottom: 50px; /* +20% */
+        margin-bottom: 60px;
         color: #002b5c;
     }
 
     .table-attivita th {
         background: #002b5c;
         color: white;
-        font-size: 1.55rem; /* +20% */
+        font-size: 2rem;
         text-align: center;
-        padding: 18px; /* +20% */
+        padding: 22px;
     }
 
     .table-attivita td {
-        font-size: 1.55rem; /* +20% */
+        font-size: 1.9rem;
         vertical-align: middle;
         text-align: center;
-        padding: 18px; /* +20% */
-    }
-
-    .badge {
-        font-size: 1.32rem; /* +20% */
-        padding: 12px 18px; /* +20% */
+        padding: 22px;
+        font-weight: 600;
     }
 
     tbody tr:hover {
@@ -47,8 +43,8 @@
     }
 
     .info-footer {
-        margin-top: 35px; /* +20% */
-        font-size: 1.55rem; /* +20% */
+        margin-top: 45px;
+        font-size: 1.9rem;
         text-align: center;
         font-weight: 700;
         color: #002b5c;
@@ -64,7 +60,6 @@
             <tr>
                 <th>Attività</th>
                 <th>Data</th>
-                <th>Stato</th>
             </tr>
         </thead>
 
@@ -76,20 +71,8 @@
             >
                 <td>{{ a.attivita }}</td>
 
-                <!-- Conversione data da AAAA-MM-GG a GG/MM/AAAA -->
-                <td>
-                    {% set parts = a.data.split('-') %}
-                    {{ parts[2] }}/{{ parts[1] }}/{{ parts[0] }}
-                </td>
-
-                <td>
-                    <span class="badge bg-{{ a.colore }}">
-                        {% if a.colore == "success" %}Lontana
-                        {% elif a.colore == "warning" %}Prossima
-                        {% elif a.colore == "danger" %}Urgente
-                        {% else %}N/D{% endif %}
-                    </span>
-                </td>
+                <!-- Mostra la data nel formato GG-MM-AAAA -->
+                <td>{{ a.data }}</td>
             </tr>
             {% endfor %}
         </tbody>
