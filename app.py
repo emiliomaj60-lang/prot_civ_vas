@@ -162,6 +162,10 @@ def iscritti():
 # ATTIVITÀ PROGRAMMATE (CSV)
 # ============================
 
+# ============================
+# ATTIVITÀ PROGRAMMATE (CSV)
+# ============================
+
 @app.route("/attivita")
 def attivita():
     lista = []
@@ -170,20 +174,53 @@ def attivita():
         with open("static/attivita.csv", newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for r in reader:
-                r["colore"] = colore_data(r["data"])
+
+                # --- Converti data da GG-MM-AAAA a AAAA-MM-GG ---
+                giorno, mese, anno = r["data"].split("-")
+                r["data_iso"] = f"{anno}-{mese}-{giorno}"   # per calcoli
+                r["data"] = f"{giorno}-{mese}-{anno}"       # per visualizzazione
+
+                # --- Calcolo colore usando la data ISO ---
+                r["colore"] = colore_data(r["data_iso"])
+
                 lista.append(r)
+
     except FileNotFoundError:
         lista = []
 
     return render_template("attivita.html", attivita=lista)
 
 
+
+# ============================
+# DETTAGLIO ATTIVITÀ (FILE TXT)
+# ============================
+
 @app.route("/attivita/<nome>")
 def attivita_dettaglio(nome):
-    try:
-        return render_template(f"attivita/{nome}.html")
-    except:
+    path = f"templates/attivita/{nome}.txt"
+
+    if not os.path.exists(path):
         return "Attività non trovata", 404
+
+    dati = {}
+
+    # --- Lettura file TXT ---
+    with open(path, "r", encoding="utf-8") as f:
+        for riga in f:
+            if ":" in riga:
+                chiave, valore = riga.split(":", 1)
+                dati[chiave.strip()] = valore.strip()
+
+    # --- Conversione data se presente (GG/MM/AAAA → AAAA-MM-GG) ---
+    if "data" in dati:
+        try:
+            giorno, mese, anno = dati["data"].replace("-", "/").split("/")
+            dati["data_iso"] = f"{anno}-{mese}-{giorno}"
+        except:
+            dati["data_iso"] = ""
+
+    return render_template("attivita_dettaglio.html", dati=dati)
 
 
 # ============================
