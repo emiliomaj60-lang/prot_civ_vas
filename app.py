@@ -5,28 +5,33 @@ import csv
 app = Flask(__name__)
 
 # ============================
-# DATABASE SEMPLICE ISCRITTI
+# LETTURA ISCRITTI DA CSV
 # ============================
 
-iscritti_db = {
-    "mario_rossi": {
-        "password": "abc123",
-        "nome": "Mario",
-        "cognome": "Rossi",
-        "indirizzo": "Via Roma 10",
-        "telefono": "3331234567",
+def carica_iscritto(username):
+    """Carica un iscritto dal file CSV in base allo username."""
+    try:
+        with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for r in reader:
+                if r["username"].strip().lower() == username.strip().lower():
 
-        # CORSI
-        "motosega": True,
-        "scadenza_motosega": "2027-05-12",
+                    # Conversione campi booleani
+                    r["motosega"] = r["motosega"] == "1"
+                    r["corso_base"] = r["corso_base"] == "1"
+                    r["altro_fatto"] = r["altro_fatto"] == "1"
 
-        "corso_base": False,
-        "scadenza_base": "-",
+                    # Colori badge
+                    r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
+                    r["col_base"] = colore_scadenza(r["scadenza_base"])
+                    r["col_altro"] = colore_scadenza(r["scadenza_altro"])
 
-        "altro_fatto": True,
-        "scadenza_altro": "2026-11-01"
-    }
-}
+                    return r
+    except Exception as e:
+        print("Errore lettura CSV iscritti:", e)
+
+    return None
+
 
 # ============================
 # FUNZIONI DI UTILITÀ
@@ -105,18 +110,12 @@ def iscritti():
         cognome = request.form["cognome"].strip().lower()
         password = request.form["password"].strip()
 
-        key = f"{nome}_{cognome}"
+        username = f"{nome}_{cognome}"
 
-        if key in iscritti_db and iscritti_db[key]["password"] == password:
-            dati = iscritti_db[key]
+        dati = carica_iscritto(username)
 
-            # Calcolo colori scadenze
-            dati["col_motosega"] = colore_scadenza(dati["scadenza_motosega"])
-            dati["col_base"] = colore_scadenza(dati["scadenza_base"])
-            dati["col_altro"] = colore_scadenza(dati["scadenza_altro"])
-
+        if dati and dati["password"] == password:
             return render_template("scheda_iscritto.html", dati=dati)
-
         else:
             return render_template("iscritti.html", errore="Credenziali errate")
 
@@ -141,6 +140,7 @@ def attivita():
         lista = []
 
     return render_template("attivita.html", attivita=lista)
+
 
 @app.route("/attivita/<nome>")
 def attivita_dettaglio(nome):
