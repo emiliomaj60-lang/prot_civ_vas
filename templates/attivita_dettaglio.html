@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}{{ dati.attivita }}{% endblock %}
+
+{% block content %}
+
+<style>
+    .attivita-box {
+        max-width: 1100px;
+        margin: auto;
+        margin-top: 60px;
+        padding: 50px;
+        background: #ffffffee;
+        border-radius: 22px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+
+    .attivita-title {
+        font-size: 2.8rem;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #002b5c;
+    }
+
+    .attivita-label {
+        font-weight: 800;
+        color: #002b5c;
+        font-size: 1.3rem;
+    }
+
+    .attivita-value {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+    }
+
+    .gps-link {
+        font-size: 1.3rem;
+        color: #0066cc;
+        text-decoration: underline;
+        font-weight: 700;
+    }
+
+    .gps-note {
+        font-size: 1.1rem;
+        color: #444;
+        margin-left: 6px;
+    }
+
+    .btn-maps {
+        display: inline-block;
+        background: #0f2f0f;
+        color: white;
+        padding: 16px 30px;
+        font-size: 1.4rem;
+        font-weight: 800;
+        border-radius: 14px;
+        border: 3px solid #2e6b2f;
+        text-decoration: none;
+        transition: 0.2s;
+        margin-top: 10px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+
+    .btn-maps:hover {
+        background: #1f4d1f;
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="attivita-box">
+
+    <div class="attivita-title">{{ dati.attivita }}</div>
+
+    <p><span class="attivita-label">Data:</span>
+       <span class="attivita-value">{{ dati.data }}</span></p>
+
+    <p><span class="attivita-label">Luogo:</span>
+       <span class="attivita-value">{{ dati.luogo }}</span></p>
+
+    <p>
+        <span class="attivita-label">Punto GPS:</span>
+        <a class="gps-link" href="{{ dati.gps }}" target="_blank">
+            {{ dati.gps }}
+        </a>
+        <span class="gps-note">(clicca per vedere la mappa)</span>
+    </p>
+
+    <a href="{{ dati.gps }}" target="_blank" class="btn-maps">
+        🌍 Apri in Google Maps
+    </a>
+
+    <p><span class="attivita-label">Ora del ritrovo:</span>
+       <span class="attivita-value">{{ dati.ora }}</span></p>
+
+    <p><span class="attivita-label">Responsabile operazione:</span>
+       <span class="attivita-value">{{ dati.responsabile }}</span></p>
+
+    <p><span class="attivita-label">Attrezzi da portare:</span>
+       <span class="attivita-value">{{ dati.attrezzi }}</span></p>
+
+    <p><span class="attivita-label">DPI necessari:</span>
+       <span class="attivita-value">{{ dati.dpi }}</span></p>
+
+    <p><span class="attivita-label">Pranzo compreso:</span>
+       <span class="attivita-value">{{ dati.pranzo }}</span></p>
+
+    <hr>
+
+    <p class="attivita-label">Descrizione attività:</p>
+    <p class="attivita-value" style="line-height:1.7;">
+        {{ dati.descrizione }}
+    </p>
+
+</div>
+
+{% endblock %}
