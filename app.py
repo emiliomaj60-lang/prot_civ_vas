@@ -186,6 +186,17 @@ def attivita_dettaglio(nome):
         return "Attività non trovata", 404
 
 
+@app.route("/contatti")
+def contatti():
+    try:
+        with open("static/contatti.txt", "r", encoding="utf-8") as f:
+            testo = f.read()
+    except:
+        testo = "Nessun contatto disponibile."
+
+    return render_template("contatti.html", testo=testo)
+
+
 # ============================
 # VERBALI
 # ============================
