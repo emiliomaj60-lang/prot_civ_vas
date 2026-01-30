@@ -142,6 +142,13 @@ def attivita():
 
     return render_template("attivita.html", attivita=lista)
 
+@app.route("/attivita/<nome>")
+def attivita_dettaglio(nome):
+    try:
+        return render_template(f"attivita/{nome}.html")
+    except:
+        return "Attività non trovata", 404
+
 
 # ============================
 # VERBALI
