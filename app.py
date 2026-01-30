@@ -186,6 +186,10 @@ def attivita_dettaglio(nome):
         return "Attività non trovata", 404
 
 
+# ============================
+# CONTATTI
+# ============================
+
 @app.route("/contatti")
 def contatti():
     try:
@@ -223,6 +227,8 @@ def verbale_dettaglio(nome):
         return render_template(f"verbali/{nome}.html")
     except:
         return "Verbale non trovato", 404
+
+
 # ============================
 # AVVIO SERVER
 # ============================
