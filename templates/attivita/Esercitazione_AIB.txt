@@ -1,0 +1,12 @@
+attivita: Esercitazione AIB
+data: 02/04/2026
+luogo: Area boschiva – Novate Milanese
+gps: https://maps.google.com/?q=45.5500,9.1500
+ora: 09:00
+responsabile: Morandi Pier
+attrezzi: Guanti da lavoro, casco, radio, motosega, soffiatori
+dpi: Guanti, scarponi antiscivolo, casco forestale, giacca alta visibilità
+pranzo: No
+descrizione: Esercitazione annuale AIB (Antincendio Boschivo) con simulazione di incendio controllato.
+I volontari saranno impegnati in attività di taglio, creazione linee tagliafuoco e comunicazioni radio.
+È obbligatorio indossare tutti i DPI previsti e seguire le indicazioni del responsabile.
