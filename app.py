@@ -162,10 +162,6 @@ def iscritti():
 # ATTIVITÀ PROGRAMMATE (CSV)
 # ============================
 
-# ============================
-# ATTIVITÀ PROGRAMMATE (CSV)
-# ============================
-
 @app.route("/attivita")
 def attivita():
     lista = []
@@ -177,13 +173,16 @@ def attivita():
 
                 # --- Converti data da GG-MM-AAAA a AAAA-MM-GG ---
                 giorno, mese, anno = r["data"].split("-")
-                r["data_iso"] = f"{anno}-{mese}-{giorno}"   # per calcoli
+                r["data_iso"] = f"{anno}-{mese}-{giorno}"   # per ordinamento e calcoli
                 r["data"] = f"{giorno}-{mese}-{anno}"       # per visualizzazione
 
                 # --- Calcolo colore usando la data ISO ---
                 r["colore"] = colore_data(r["data_iso"])
 
                 lista.append(r)
+
+        # --- ORDINAMENTO AUTOMATICO PER DATA ---
+        lista.sort(key=lambda x: x["data_iso"])
 
     except FileNotFoundError:
         lista = []
