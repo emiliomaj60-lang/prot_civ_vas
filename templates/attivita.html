@@ -55,7 +55,7 @@
         </thead>
         <tbody>
             {% for a in attivita %}
-            <tr>
+            <tr onclick="window.location='/attivita/{{ a.attivita.replace(' ', '_') }}'" style="cursor:pointer;">
                 <td>{{ a.attivita }}</td>
                 <td>{{ a.data }}</td>
                 <td>
