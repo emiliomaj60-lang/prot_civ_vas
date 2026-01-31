@@ -307,6 +307,64 @@ def verbale_dettaglio(nome):
         return "Verbale non trovato", 404
 
 
+from pywebpush import webpush, WebPushException
+import json
+
+@app.route("/api/send_alert_group", methods=["POST"])
+def send_alert_group():
+    try:
+        gruppo = request.form.get("gruppo")
+        titolo = request.form.get("titolo")
+        messaggio = request.form.get("messaggio")
+        livello = request.form.get("livello")
+
+        # --- Carica le subscription del gruppo ---
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("""
+            SELECT endpoint, p256dh, auth 
+            FROM subscriptions 
+            WHERE gruppo = ?
+        """, (gruppo,))
+        subs = c.fetchall()
+        conn.close()
+
+        print(f"Trovate {len(subs)} subscription per il gruppo {gruppo}")
+
+        payload = {
+            "title": titolo,
+            "body": messaggio,
+            "level": livello
+        }
+
+        # --- Invia la notifica a ogni subscription ---
+        for endpoint, p256dh, auth in subs:
+            subscription_info = {
+                "endpoint": endpoint,
+                "keys": {
+                    "p256dh": p256dh,
+                    "auth": auth
+                }
+            }
+
+            try:
+                webpush(
+                    subscription_info,
+                    data=json.dumps(payload),
+                    vapid_private_key=VAPID_PRIVATE_KEY,
+                    vapid_claims={"sub": "mailto:admin@example.com"}
+                )
+                print("Notifica inviata a:", endpoint)
+
+            except WebPushException as e:
+                print("Errore invio notifica:", e)
+
+        return "OK"
+
+    except Exception as e:
+        print("Errore generale:", e)
+        return "ERRORE", 500
+
 # ============================
 # AVVIO SERVER
 # ============================
