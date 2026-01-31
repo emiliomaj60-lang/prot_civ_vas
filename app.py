@@ -109,6 +109,7 @@ def leggi_allerta():
 @app.route("/")
 def home():
     allerta = leggi_allerta()
+    print("ALLERTA LETTA ORA:", allerta)  # 👈 vedi in console cosa legge
     return render_template("index.html", allerta=allerta)
 
 
