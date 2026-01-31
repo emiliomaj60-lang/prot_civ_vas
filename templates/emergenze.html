@@ -4,50 +4,111 @@
 {% block content %}
 
 <style>
-    .alert-container {
+    .emergenza-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+        margin-top: 40px;
         text-align: center;
-        margin-top: 60px;
+        animation: fadeIn 0.6s ease;
     }
 
-    .alert-btn {
-        width: 350px;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .emergenza-card {
+        background: white;
         padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        margin-bottom: 30px;
+    }
+
+    .emergenza-title {
         font-size: 2rem;
         font-weight: 800;
-        border-radius: 20px;
-        background: #d40000;
-        color: white;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        transition: transform 0.15s ease;
-        display: inline-block;
-        text-decoration: none;
+        color: #b30000;
+        margin-bottom: 20px;
     }
 
-    .alert-btn:hover {
-        transform: scale(1.05);
+    .emergenza-btn {
+        width: 100%;
+        padding: 20px;
+        font-size: 1.6rem;
+        font-weight: 700;
+        border-radius: 16px;
+        margin-bottom: 15px;
+        display: block;
+        text-decoration: none;
+        color: white;
+        transition: transform 0.15s ease;
+    }
+
+    .emergenza-btn:hover {
+        transform: scale(1.03);
+    }
+
+    .btn-allerta {
+        background: #d40000;
+        box-shadow: 0 4px 12px rgba(212,0,0,0.4);
+    }
+
+    .btn-stato {
+        background: #ff8c00;
+        box-shadow: 0 4px 12px rgba(255,140,0,0.4);
+    }
+
+    .btn-procedure {
+        background: #005bbb;
+        box-shadow: 0 4px 12px rgba(0,91,187,0.4);
     }
 
     .info-box {
-        margin-top: 40px;
-        padding: 20px;
-        background: #fff3cd;
+        background: #fff8d9;
         border-left: 6px solid #ffcc00;
-        border-radius: 10px;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: left;
+    }
+
+    .info-box h4 {
+        font-weight: 700;
+        margin-bottom: 10px;
     }
 </style>
 
-<div class="alert-container fade-in">
-    <h1 class="text-danger fw-bold">Gestione Emergenze</h1>
+<div class="emergenza-wrapper">
 
-    <a href="#" class="alert-btn">🚨 INVIA ALLERTA</a>
+    <div class="emergenza-card">
+        <div class="emergenza-title">Gestione Emergenze</div>
 
-    <div class="info-box mt-4">
-        <h4>Come funziona</h4>
-        <p>
-            Questo pulsante invierà un avviso immediato agli iscritti tramite:
-            <br><strong>Telegram, SMS o Notifica Web</strong>.
-        </p>
+        <a href="#" class="emergenza-btn btn-allerta">
+            🚨 INVIA ALLERTA
+        </a>
+
+        <a href="#" class="emergenza-btn btn-stato">
+            📊 AGGIORNA STATO ALLERTA
+        </a>
+
+        <a href="#" class="emergenza-btn btn-procedure">
+            📘 PROCEDURE OPERATIVE
+        </a>
     </div>
+
+    <div class="info-box">
+        <h4>Informazioni</h4>
+        <p>
+            Da questa pagina puoi gestire le comunicazioni di emergenza verso i volontari.
+            Le funzioni includono:
+        </p>
+        <ul>
+            <li><strong>Invio allerta immediata</strong> tramite Telegram, SMS o Notifica Web</li>
+            <li><strong>Aggiornamento del livello di allerta</strong> (verde, gialla, arancione, rossa)</li>
+            <li><strong>Accesso rapido alle procedure operative</strong> della Protezione Civile VAS</li>
+        </ul>
+    </div>
+
 </div>
 
 {% endblock %}
