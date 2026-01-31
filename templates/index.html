@@ -105,6 +105,22 @@
         background: #1f4d1f;
         transform: scale(1.05);
     }
+    .btn-contatti:hover {
+    background: #1f4d1f;
+    transform: scale(1.05);
+    }
+
+    /* 🔥 Lampeggio bottone Emergenze quando c’è allerta */
+    .btn-emergenze-alert {
+        animation: lampeggia 1s infinite;
+    }
+
+    @keyframes lampeggia {
+        0% { background-color: #ff0000; }
+        50% { background-color: #b30000; }
+        100% { background-color: #ff0000; }
+    }
+
 </style>
 
 <div class="fullscreen fade-in">
