@@ -118,7 +118,11 @@
     <div class="menu-container">
 
         <!-- EMERGENZE INGRANDITO -->
-        <a href="/emergenze" class="btn btn-danger menu-btn btn-emergenze">🚨 Emergenze</a>
+        <a href="/emergenze"
+         class="btn btn-danger menu-btn btn-emergenze 
+                {% if allerta.colore != 'verde' %}btn-emergenze-alert{% endif %}">
+        🚨 Emergenze
+        </a>
 
         <a href="/attivita" class="btn btn-primary menu-btn">📅 Attività Programmate</a>
         <a href="/verbali" class="btn btn-secondary menu-btn">📄 Verbali Riunioni</a>
