@@ -3,6 +3,9 @@ from datetime import datetime
 import csv
 import time
 
+# 👉 QUI METTI LE TUE CHIAVI
+VAPID_PUBLIC_KEY = "A6UZ3OaVPtXViYVQjEmGnN5HaA2OvyYyxhaZ_BiPNthm"
+VAPID_PRIVATE_KEY = "G9E8uNRy8IbDOsQfOUU6LpD1cN-q_ld3La8YWyIhzSM="
 
 app = Flask(__name__)
 
@@ -120,8 +123,17 @@ def api_allerta():
 
 @app.route("/emergenze")
 def emergenze():
-    return render_template("emergenze.html")
+    return render_template("emergenze.html", vapid_public_key=VAPID_PUBLIC_KEY)
 
+@app.route("/invia_allerta")
+def invia_allerta():
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("SELECT id, nome FROM gruppi")
+    gruppi = c.fetchall()
+    conn.close()
+
+    return render_template("invia_allerta.html", gruppi=gruppi)
 
 @app.route("/pagina4")
 def pagina4():
