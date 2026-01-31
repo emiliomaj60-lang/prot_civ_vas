@@ -84,9 +84,24 @@ def colore_data(data):
 # ROUTES PRINCIPALI
 # ============================
 
+def leggi_allerta():
+    try:
+        with open("static/allerta.txt", "r", encoding="utf-8") as f:
+            dati = {}
+            for riga in f:
+                if ":" in riga:
+                    k, v = riga.split(":", 1)
+                    dati[k.strip()] = v.strip()
+            return dati
+    except:
+        # Se il file non esiste → nessuna allerta
+        return {"colore": "verde", "messaggio": ""}
+
+
 @app.route("/")
 def home():
-    return render_template("index.html")
+    allerta = leggi_allerta()
+    return render_template("index.html", allerta=allerta)
 
 
 @app.route("/emergenze")
