@@ -17,7 +17,7 @@
         overflow: hidden;
         white-space: nowrap;
         position: fixed;
-        top: 0;
+        top: 60px;
         left: 0;
         z-index: 9999;
     }
@@ -90,18 +90,19 @@
 
 <body>
 
-    <!-- 🔥 BARRA ALLERTA ROSSA -->
-    <div id="barra-allerta" class="barra-allerta" style="display:none;">
-        <span id="testo-allerta"></span>
-    </div>
-
     <!-- HEADER -->
     <header class="header">
         <div class="container d-flex align-items-center py-2">
             <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" height="60" class="me-3">
             <div class="header-title">Protezione Civile VAS</div>
         </div>
+
     </header>
+    <!-- 🔥 BARRA ALLERTA ROSSA -->
+    <div id="barra-allerta" class="barra-allerta" style="display:none;">
+        <span id="testo-allerta"></span>
+    </div>
+
 
     <!-- CONTENUTO PAGINA -->
     <main class="container">
