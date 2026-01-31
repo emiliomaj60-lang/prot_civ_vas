@@ -14,7 +14,7 @@
         padding-top: 40px;
         position: relative;
         overflow: hidden;
-        z-index: 1; /* IMPORTANTE: porta tutto davanti alla filigrana */
+        z-index: 1;
     }
 
     .watermark {
@@ -71,6 +71,12 @@
         box-shadow: 0 8px 22px rgba(0,0,0,0.35);
     }
 
+    /* BOTTONE EMERGENZE +50% ALTEZZA */
+    .btn-emergenze {
+        padding: 42px !important; /* 28px + 50% */
+        font-size: 2.1rem !important;
+    }
+
     /* --- BOTTONE CONTATTI STILE FESTA ALPINI --- */
     .contatti-container {
         margin-top: 60px;
@@ -111,12 +117,14 @@
 
     <div class="menu-container">
 
-        <a href="/emergenze" class="btn btn-danger menu-btn">🚨 Emergenze</a>
+        <!-- EMERGENZE INGRANDITO -->
+        <a href="/emergenze" class="btn btn-danger menu-btn btn-emergenze">🚨 Emergenze</a>
+
         <a href="/attivita" class="btn btn-primary menu-btn">📅 Attività Programmate</a>
         <a href="/verbali" class="btn btn-secondary menu-btn">📄 Verbali Riunioni</a>
         <a href="/iscritti" class="btn btn-success menu-btn">👥 Area Iscritti</a>
-        <a href="/pagina4" class="btn btn-dark menu-btn">🔧 Pagina 4</a>
 
+        <!-- BOTTONE PAGINA 4 RIMOSSO -->
     </div>
 
     <!-- 🔽 TASTO CONTATTI -->
