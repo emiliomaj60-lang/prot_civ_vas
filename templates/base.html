@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <meta http-equiv="Cache-Control" content="no-store" />
- 
+
     <!-- 🔥 CSS barra allerta -->
     <style>
     .barra-allerta {
@@ -118,6 +118,29 @@
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/static/sw.js");
         }
+    </script>
+
+    <!-- 🔥 SCRIPT aggiornamento barra allerta -->
+    <script>
+    function aggiornaAllerta() {
+        fetch("/api/allerta")
+            .then(r => r.json())
+            .then(data => {
+
+                const barra = document.getElementById("barra-allerta");
+                const testo = document.getElementById("testo-allerta");
+
+                if (data.colore === "rosso") {
+                    testo.innerText = "🚨 " + (data.messaggio || "ALLERTA ROSSA IN CORSO") + " 🚨";
+                    barra.style.display = "block";
+                } else {
+                    barra.style.display = "none";
+                }
+            });
+    }
+
+    aggiornaAllerta();
+    setInterval(aggiornaAllerta, 10000);
     </script>
 
 </body>
