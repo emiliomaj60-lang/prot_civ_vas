@@ -113,6 +113,11 @@ def home():
     return render_template("index.html", allerta=allerta, nocache=time.time())
 
 
+@app.route("/api/allerta")
+def api_allerta():
+    return leggi_allerta()
+
+
 @app.route("/emergenze")
 def emergenze():
     return render_template("emergenze.html")
