@@ -4,6 +4,14 @@ import csv
 
 app = Flask(__name__)
 
+@app.after_request
+def add_header(response):
+    # Disabilita cache per tutte le pagine
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 # ============================
 # LETTURA ISCRITTI DA CSV
 # ============================
