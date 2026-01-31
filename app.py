@@ -91,11 +91,11 @@ def leggi_allerta():
             for riga in f:
                 if ":" in riga:
                     k, v = riga.split(":", 1)
-                    dati[k.strip()] = v.strip()
+                    dati[k.strip()] = v.strip().lower()   # 🔥 normalizza tutto
             return dati
     except:
-        # Se il file non esiste → nessuna allerta
         return {"colore": "verde", "messaggio": ""}
+
 
 
 @app.route("/")
