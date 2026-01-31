@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 from datetime import datetime
 import csv
+import time
+
 
 app = Flask(__name__)
 
@@ -105,12 +107,10 @@ def leggi_allerta():
         return {"colore": "verde", "messaggio": ""}
 
 
-
 @app.route("/")
 def home():
     allerta = leggi_allerta()
-    print("ALLERTA LETTA ORA:", allerta)  # 👈 vedi in console cosa legge
-    return render_template("index.html", allerta=allerta)
+    return render_template("index.html", allerta=allerta, nocache=time.time())
 
 
 @app.route("/emergenze")
