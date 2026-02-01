@@ -1,4 +1,4 @@
 username,password,nome,cognome,data_nascita,indirizzo,telefono,email,motosega,scadenza_motosega,corso_base,scadenza_base,altro_fatto,scadenza_altro,categoria
 mario_rossi,abcd,Mario,Rossi,12/03/1980,Via Roma 10,3331234567,mario@example.com,1,2026-05-01,1,2027-01-10,0,N/D,aib
 pier_morandi,abcd,Pier,Morandi,05/11/1975,Via Milano 22,3339876543,pier@example.com,0,N/D,1,2026-09-15,1,2027-02-01,protciv
-emilio_maj,abcd,Emilio,Maj,05/07/1960,Via clusa 21,3475164405,emilio-maj@virgilio.it,0,N/D,1,2026-09-15,1,2027-02-01,capisquadra
+emilio_maj,a,Emilio,Maj,05/07/1960,Via clusa 21,3475164405,emilio-maj@virgilio.it,0,N/D,1,2026-09-15,1,2027-02-01,capisquadra
