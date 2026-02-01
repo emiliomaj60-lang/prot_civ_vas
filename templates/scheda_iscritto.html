@@ -74,9 +74,26 @@
     <p><span class="data-label">Email:</span> 
        <span class="data-value">{{ dati.email }}</span></p>
 
-    <!-- 🔵 NUOVA VOCE: CATEGORIA -->
+    <!-- 🔵 CATEGORIA -->
     <p><span class="data-label">Categoria:</span> 
        <span class="data-value">{{ dati.categoria }}</span></p>
+
+    <!-- 🔔 STATO NOTIFICHE -->
+    <p>
+        <span class="data-label">Attiv. Notifiche:</span>
+        {% if dati.notifiche_attive %}
+            <span class="data-value" style="color:green;font-weight:800;">ATTIVE</span>
+        {% else %}
+            <span class="data-value" style="color:red;font-weight:800;">NON ATTIVE</span>
+        {% endif %}
+    </p>
+
+    <!-- 🔔 BOTTONE ATTIVA NOTIFICHE -->
+    {% if not dati.notifiche_attive %}
+    <button class="btn btn-success" onclick="attivaNotifiche()">
+        🔔 Attiva notifiche di emergenza
+    </button>
+    {% endif %}
 
     <hr>
 
@@ -112,5 +129,45 @@
     </table>
 
 </div>
+
+<!-- 🔥 SCRIPT ATTIVA NOTIFICHE -->
+<script>
+async function attivaNotifiche() {
+
+    const telefono = "{{ dati.telefono }}";
+
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") {
+        alert("Permesso notifiche negato");
+        return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+
+    const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: vapidPublicKey
+    });
+
+    const body = {
+        endpoint: subscription.endpoint,
+        p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("p256dh")))),
+        auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("auth")))),
+        telefono: telefono
+    };
+
+    fetch("/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(r => r.text())
+    .then(res => {
+        alert("Notifiche attivate correttamente");
+        location.reload();
+    })
+    .catch(err => console.error(err));
+}
+</script>
 
 {% endblock %}
