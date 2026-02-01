@@ -379,6 +379,22 @@ def send_alert_group():
         print("Errore generale:", e)
         return "ERRORE", 500
 
+@app.route("/api/allerta")
+def api_allerta():
+    try:
+        with open("/tmp/allerta.txt", "r", encoding="utf-8") as f:
+            lines = f.read().splitlines()
+
+        colore = lines[0].replace("colore: ", "").strip()
+        messaggio = lines[1].replace("messaggio: ", "").strip()
+
+        return jsonify({"colore": colore, "messaggio": messaggio})
+
+    except Exception as e:
+        print("Errore lettura allerta:", e)
+        return jsonify({"colore": "verde", "messaggio": ""})
+
+
 # ============================
 # AVVIO SERVER
 # ============================
