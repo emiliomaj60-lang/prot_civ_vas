@@ -365,7 +365,7 @@ def send_alert_group():
 
         # 🔥 AGGIORNO IL FILE ALLERTA
         try:
-            with open("tmp/allerta.txt", "w", encoding="utf-8") as f:
+            with open("/tmp/allerta.txt", "w", encoding="utf-8") as f:
                 f.write(f"colore: {livello}\n")
                 f.write(f"messaggio: {titolo} – {messaggio}")
             print("File allerta.txt aggiornato correttamente!")
