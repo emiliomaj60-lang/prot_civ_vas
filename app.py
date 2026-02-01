@@ -10,6 +10,12 @@ VAPID_PRIVATE_KEY = "G9E8uNRy8IbDOsQfOUU6LpD1cN-q_ld3La8YWyIhzSM="
 
 app = Flask(__name__)
 
+from flask import send_from_directory
+
+@app.route('/service-worker.js')
+def service_worker():
+    return send_from_directory('.', 'service-worker.js', mimetype='application/javascript')
+
 def notifiche_attive(telefono):
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
