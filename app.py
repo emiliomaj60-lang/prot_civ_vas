@@ -366,10 +366,9 @@ def send_alert_group():
         return "ERRORE", 500
 
 
-@app.route("/debug_templates")# --- prova ---
-def debug_templates():
-    import os
-    return str(os.listdir("templates"))
+@app.route("/debug_base")# --- prova ---
+def debug_base():
+    return render_template("base.html")
 
 
 # ============================
