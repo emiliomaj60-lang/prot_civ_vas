@@ -155,12 +155,21 @@ def pagina4():
 
 @app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
+    print(">>> /iscritti chiamata")
+
     if request.method == "POST":
+        print(">>> Metodo POST ricevuto")
+
         nome = request.form["nome"].strip().lower()
         cognome = request.form["cognome"].strip().lower()
         password = request.form["password"].strip()
 
+        print(">>> Nome:", nome)
+        print(">>> Cognome:", cognome)
+        print(">>> Password inserita:", password)
+
         username_input = f"{nome}_{cognome}"
+        print(">>> Username generato:", username_input)
 
         possibili_username = {
             username_input,
@@ -170,16 +179,26 @@ def iscritti():
             username_input.replace("_", ""),
         }
 
+        print(">>> Possibili username:", possibili_username)
+
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
+                print(">>> CSV aperto, colonne:", reader.fieldnames)
+
                 for r in reader:
+                    print(">>> Riga CSV letta:", r)
 
                     username_csv = r["username"].strip().lower()
+                    print(">>> Username CSV:", username_csv)
 
                     if username_csv in possibili_username:
+                        print(">>> Username trovato!")
+
+                        print(">>> Password CSV:", r["password"])
 
                         if r["password"] == password:
+                            print(">>> Password corretta")
 
                             # Conversione campi booleani
                             r["motosega"] = r["motosega"] == "1"
@@ -191,54 +210,32 @@ def iscritti():
                             r["col_base"] = colore_scadenza(r["scadenza_base"])
                             r["col_altro"] = colore_scadenza(r["scadenza_altro"])
 
-                            # 🔵 Categoria dal CSV (sicura)
-                            r["categoria"] = r.get("categoria", "").strip()
+                            print(">>> Categoria trovata:", r.get("categoria"))
+                            print(">>> Telefono trovato:", r.get("telefono"))
 
-                            # 🔵 Stato notifiche (sicuro)
-                            r["notifiche_attive"] = notifiche_attive(r["telefono"])
+                            # Stato notifiche
+                            try:
+                                stato = notifiche_attive(r.get("telefono", ""))
+                                print(">>> Stato notifiche:", stato)
+                                r["notifiche_attive"] = stato
+                            except Exception as e:
+                                print(">>> ERRORE notifiche_attive:", e)
 
+                            print(">>> Rendering scheda_iscritto.html")
                             return render_template("scheda_iscritto.html", dati=r)
 
                         else:
+                            print(">>> Password errata")
                             return render_template("iscritti.html", errore="Password errata")
 
         except Exception as e:
-            print("Errore lettura CSV:", e)
+            print(">>> ERRORE GENERALE:", e)
 
+        print(">>> Credenziali errate")
         return render_template("iscritti.html", errore="Credenziali errate")
 
+    print(">>> Metodo GET, mostro form")
     return render_template("iscritti.html")
-
-# ============================
-# ATTIVITÀ PROGRAMMATE (CSV)
-# ============================
-
-@app.route("/attivita")
-def attivita():
-    lista = []
-
-    try:
-        with open("static/attivita.csv", newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            for r in reader:
-
-                # --- Converti data da GG-MM-AAAA a AAAA-MM-GG ---
-                giorno, mese, anno = r["data"].split("-")
-                r["data_iso"] = f"{anno}-{mese}-{giorno}"   # per ordinamento e calcoli
-                r["data"] = f"{giorno}-{mese}-{anno}"       # per visualizzazione
-
-                # --- Calcolo colore usando la data ISO ---
-                r["colore"] = colore_data(r["data_iso"])
-
-                lista.append(r)
-
-        # --- ORDINAMENTO AUTOMATICO PER DATA ---
-        lista.sort(key=lambda x: x["data_iso"])
-
-    except FileNotFoundError:
-        lista = []
-
-    return render_template("attivita.html", attivita=lista)
 
 # ============================
 # DETTAGLIO ATTIVITÀ (FILE TXT)
