@@ -8,8 +8,8 @@ from pywebpush import webpush, WebPushException
 import json
 
 # 👉 CHIAVI VAPID
-VAPID_PUBLIC_KEY = "A6UZ3OaVPtXViYVQjEmGnN5HaA2OvyYyxhaZ_BiPNthm"
-VAPID_PRIVATE_KEY = "G9E8uNRy8IbDOsQfOUU6LpD1cN-q_ld3La8YWyIhzSM="
+VAPID_PUBLIC_KEY = "BOr7Yt8x3FJ9u2Q0x1V8mYpQ2d9u7F3l0a9pQ8s7d6f5g4h3i2j1k0l9m8n7o6p5"
+VAPID_PRIVATE_KEY = "7F3l0a9pQ8s7d6f5g4h3i2j1k0l9m8n7o6p5q4r3s2t1u0v9w8x7y6z5"
 
 app = Flask(__name__)
 
