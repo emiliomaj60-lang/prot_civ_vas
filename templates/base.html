@@ -11,14 +11,13 @@
         width: 100%;
         background-color: #cc0000;
         color: white;
-        padding: 8px 0;
+        padding: 12px 0;
         font-weight: bold;
-        font-size: 28px; /* opzionale: aumenta altezza carattere della barra */
-        padding: 12px 0; /* opzionale: aumenta anche lo spessore della barra */
+        font-size: 28px;
         overflow: hidden;
         white-space: nowrap;
         position: fixed;
-        top: 200px;
+        top: 120px; /* 🔥 NON COPRE PIÙ IL CONTENUTO */
         left: 0;
         z-index: 9999;
     }
@@ -55,7 +54,7 @@
             background: linear-gradient(135deg, #e8f0ff, #ffffff);
             margin: 0;
             padding: 0;
-            padding-top: 100px; /* spazio per header fisso */
+            padding-top: 180px; /* 🔥 SPAZIO PER HEADER + BARRA ALLERTA */
         }
 
         /* HEADER FISSO */
@@ -97,13 +96,12 @@
             <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" height="60" class="me-3">
             <div class="header-title">Protezione Civile VAS</div>
         </div>
-
     </header>
+
     <!-- 🔥 BARRA ALLERTA ROSSA -->
     <div id="barra-allerta" class="barra-allerta" style="display:none;">
         <span id="testo-allerta"></span>
     </div>
-
 
     <!-- CONTENUTO PAGINA -->
     <main class="container">
