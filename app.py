@@ -313,11 +313,14 @@ import json
 @app.route("/api/send_alert_group", methods=["POST"])
 def send_alert_group():
     try:
+        # --- Leggo i dati JSON inviati dalla pagina ---
         data = request.json
         gruppo = data.get("gruppo_id")
         titolo = data.get("titolo")
         messaggio = data.get("messaggio")
         livello = data.get("livello")
+
+        print("Dati ricevuti:", data)
 
         # --- Carica le subscription del gruppo ---
         conn = sqlite3.connect("database.db")
@@ -361,9 +364,14 @@ def send_alert_group():
                 print("Errore invio notifica:", e)
 
         # 🔥 AGGIORNO IL FILE ALLERTA
-        with open("static/allerta.txt", "w", encoding="utf-8") as f:
-            f.write(f"colore: {livello}\n")
-            f.write(f"messaggio: {titolo} – {messaggio}")
+        try:
+            with open("static/allerta.txt", "w", encoding="utf-8") as f:
+                f.write(f"colore: {livello}\n")
+                f.write(f"messaggio: {titolo} – {messaggio}")
+            print("File allerta.txt aggiornato correttamente!")
+
+        except Exception as file_error:
+            print("Errore scrittura file allerta.txt:", file_error)
 
         return "OK"
 
