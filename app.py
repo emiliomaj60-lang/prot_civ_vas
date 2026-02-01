@@ -10,6 +10,14 @@ VAPID_PRIVATE_KEY = "G9E8uNRy8IbDOsQfOUU6LpD1cN-q_ld3La8YWyIhzSM="
 
 app = Flask(__name__)
 
+def notifiche_attive(telefono):
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("SELECT 1 FROM subscriptions WHERE telefono = ?", (telefono,))
+    row = c.fetchone()
+    conn.close()
+    return row is not None
+
 @app.after_request
 def add_header(response):
     # Disabilita cache per tutte le pagine
