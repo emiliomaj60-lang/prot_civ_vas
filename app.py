@@ -1,21 +1,29 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import sqlite3
 from datetime import datetime
 import csv
 import time
+import os
+from pywebpush import webpush, WebPushException
+import json
 
-# 👉 QUI METTI LE TUE CHIAVI
+# 👉 CHIAVI VAPID
 VAPID_PUBLIC_KEY = "A6UZ3OaVPtXViYVQjEmGnN5HaA2OvyYyxhaZ_BiPNthm"
 VAPID_PRIVATE_KEY = "G9E8uNRy8IbDOsQfOUU6LpD1cN-q_ld3La8YWyIhzSM="
 
 app = Flask(__name__)
 
-from flask import send_from_directory
-
+# ============================
+# SERVICE WORKER
+# ============================
 @app.route('/service-worker.js')
 def service_worker():
     return send_from_directory('.', 'service-worker.js', mimetype='application/javascript')
 
+
+# ============================
+# FUNZIONI NOTIFICHE
+# ============================
 def notifiche_attive(telefono):
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
@@ -24,32 +32,29 @@ def notifiche_attive(telefono):
     conn.close()
     return row is not None
 
+
 @app.after_request
 def add_header(response):
-    # Disabilita cache per tutte le pagine
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     return response
 
+
 # ============================
 # LETTURA ISCRITTI DA CSV
 # ============================
-
 def carica_iscritto(username):
-    """Carica un iscritto dal file CSV in base allo username."""
     try:
         with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for r in reader:
                 if r["username"].strip().lower() == username.strip().lower():
 
-                    # Conversione campi booleani
                     r["motosega"] = r["motosega"] == "1"
                     r["corso_base"] = r["corso_base"] == "1"
                     r["altro_fatto"] = r["altro_fatto"] == "1"
 
-                    # Colori badge
                     r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
                     r["col_base"] = colore_scadenza(r["scadenza_base"])
                     r["col_altro"] = colore_scadenza(r["scadenza_altro"])
@@ -64,9 +69,7 @@ def carica_iscritto(username):
 # ============================
 # FUNZIONI DI UTILITÀ
 # ============================
-
 def colore_scadenza(data):
-    """Restituisce un colore Bootstrap in base alla scadenza."""
     if data == "-" or data.strip() == "":
         return "secondary"
 
@@ -79,17 +82,16 @@ def colore_scadenza(data):
     diff = (scadenza - oggi).days
 
     if diff < 0:
-        return "danger"   # scaduto
+        return "danger"
     elif diff <= 30:
-        return "danger"   # urgente
+        return "danger"
     elif diff <= 180:
-        return "warning"  # entro 6 mesi
+        return "warning"
     else:
-        return "success"  # ok
+        return "success"
 
 
 def colore_data(data):
-    """Colora le attività programmate in base alla data."""
     try:
         d = datetime.strptime(data, "%Y-%m-%d")
     except:
@@ -99,19 +101,18 @@ def colore_data(data):
     diff = (d - oggi).days
 
     if diff < 0:
-        return "danger"   # già passata
+        return "danger"
     elif diff <= 7:
-        return "danger"   # entro una settimana
+        return "danger"
     elif diff <= 30:
-        return "warning"  # entro un mese
+        return "warning"
     else:
-        return "success"  # lontana
+        return "success"
 
 
 # ============================
-# ROUTES PRINCIPALI
+# LETTURA ALLERTA
 # ============================
-
 def leggi_allerta():
     try:
         with open("/tmp/allerta.txt", "r", encoding="utf-8") as f:
@@ -119,12 +120,15 @@ def leggi_allerta():
             for riga in f:
                 if ":" in riga:
                     k, v = riga.split(":", 1)
-                    dati[k.strip()] = v.strip().lower()   # 🔥 normalizza tutto
+                    dati[k.strip()] = v.strip().lower()
             return dati
     except:
         return {"colore": "verde", "messaggio": ""}
 
 
+# ============================
+# ROUTES PRINCIPALI
+# ============================
 @app.route("/")
 def home():
     allerta = leggi_allerta()
@@ -140,6 +144,7 @@ def api_allerta():
 def emergenze():
     return render_template("emergenze.html", vapid_public_key=VAPID_PUBLIC_KEY)
 
+
 @app.route("/invia_allerta")
 def invia_allerta():
     conn = sqlite3.connect("database.db")
@@ -150,6 +155,7 @@ def invia_allerta():
 
     return render_template("invia_allerta.html", gruppi=gruppi)
 
+
 @app.route("/pagina4")
 def pagina4():
     return render_template("pagina4.html")
@@ -158,7 +164,6 @@ def pagina4():
 # ============================
 # AREA ISCRITTI (LOGIN)
 # ============================
-
 @app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
     print(">>> /iscritti chiamata")
@@ -206,12 +211,10 @@ def iscritti():
                         if r["password"] == password:
                             print(">>> Password corretta")
 
-                            # Conversione campi booleani
                             r["motosega"] = r["motosega"] == "1"
                             r["corso_base"] = r["corso_base"] == "1"
                             r["altro_fatto"] = r["altro_fatto"] == "1"
 
-                            # Colori badge
                             r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
                             r["col_base"] = colore_scadenza(r["scadenza_base"])
                             r["col_altro"] = colore_scadenza(r["scadenza_altro"])
@@ -219,7 +222,6 @@ def iscritti():
                             print(">>> Categoria trovata:", r.get("categoria"))
                             print(">>> Telefono trovato:", r.get("telefono"))
 
-                            # Stato notifiche
                             try:
                                 stato = notifiche_attive(r.get("telefono", ""))
                                 print(">>> Stato notifiche:", stato)
@@ -228,7 +230,7 @@ def iscritti():
                                 print(">>> ERRORE notifiche_attive:", e)
 
                             print(">>> Rendering scheda_iscritto.html")
-                            return render_template("scheda_iscritto.html", dati=r)
+                            return render_template("scheda_iscritto.html", dati=r, vapid_public_key=VAPID_PUBLIC_KEY)
 
                         else:
                             print(">>> Password errata")
@@ -243,10 +245,37 @@ def iscritti():
     print(">>> Metodo GET, mostro form")
     return render_template("iscritti.html")
 
-# ============================
-# DETTAGLIO ATTIVITÀ (FILE TXT)
-# ============================
 
+# ============================
+# ROUTE SALVATAGGIO SUBSCRIPTION
+# ============================
+@app.route("/subscribe", methods=["POST"])
+def subscribe():
+    data = request.json
+    endpoint = data.get("endpoint")
+    p256dh = data.get("p256dh")
+    auth = data.get("auth")
+    telefono = data.get("telefono")
+
+    print(">>> Subscription ricevuta:", data)
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    c.execute("""
+        INSERT OR REPLACE INTO subscriptions (telefono, endpoint, p256dh, auth)
+        VALUES (?, ?, ?, ?)
+    """, (telefono, endpoint, p256dh, auth))
+
+    conn.commit()
+    conn.close()
+
+    return "OK"
+
+
+# ============================
+# DETTAGLIO ATTIVITÀ
+# ============================
 @app.route("/attivita/<nome>")
 def attivita_dettaglio(nome):
     path = f"templates/attivita/{nome}.txt"
@@ -256,14 +285,12 @@ def attivita_dettaglio(nome):
 
     dati = {}
 
-    # --- Lettura file TXT ---
     with open(path, "r", encoding="utf-8") as f:
         for riga in f:
             if ":" in riga:
                 chiave, valore = riga.split(":", 1)
                 dati[chiave.strip()] = valore.strip()
 
-    # --- Conversione data se presente (GG/MM/AAAA → AAAA-MM-GG) ---
     if "data" in dati:
         try:
             giorno, mese, anno = dati["data"].replace("-", "/").split("/")
@@ -277,7 +304,6 @@ def attivita_dettaglio(nome):
 # ============================
 # CONTATTI
 # ============================
-
 @app.route("/contatti")
 def contatti():
     try:
@@ -292,9 +318,6 @@ def contatti():
 # ============================
 # VERBALI
 # ============================
-
-import os
-
 @app.route("/verbali")
 def verbali():
     path = "templates/verbali"
@@ -317,9 +340,9 @@ def verbale_dettaglio(nome):
         return "Verbale non trovato", 404
 
 
-from pywebpush import webpush, WebPushException
-import json
-
+# ============================
+# INVIO NOTIFICHE AI GRUPPI
+# ============================
 @app.route("/api/send_alert_group", methods=["POST"])
 def send_alert_group():
     try:
@@ -370,7 +393,6 @@ def send_alert_group():
             except WebPushException as e:
                 print("Errore invio notifica:", e)
 
-        # 🔥 Scrivo l’allerta nel file temporaneo
         with open("/tmp/allerta.txt", "w", encoding="utf-8") as f:
             f.write(f"colore: {livello}\n")
             f.write(f"messaggio: {titolo} – {messaggio}")
@@ -387,6 +409,5 @@ def send_alert_group():
 # ============================
 # AVVIO SERVER
 # ============================
-
 if __name__ == "__main__":
     app.run(debug=True)
