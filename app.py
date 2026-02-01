@@ -365,6 +365,13 @@ def send_alert_group():
         print("Errore generale:", e)
         return "ERRORE", 500
 
+@app.route("/debug_db") # --- prove per problemi da cancellare ---
+def debug_db():
+    import os
+    return str(os.path.exists("database.db"))
+
+
+
 # ============================
 # AVVIO SERVER
 # ============================
