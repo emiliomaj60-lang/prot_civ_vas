@@ -365,20 +365,12 @@ def send_alert_group():
         print("Errore generale:", e)
         return "ERRORE", 500
 
-@app.route("/debug_db") # --- prove per problemi da cancellare ---
-def debug_db():
-    import os
-    return str(os.path.exists("database.db"))
 
-@app.route("/debug_tables")# --- prove per problemi da cancellare ---
-def debug_tables():
-    import sqlite3
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    tables = c.fetchall()
-    conn.close()
-    return str(tables)
+@app.route("/debug_templates")# --- prova ---
+def debug_templates():
+    import os
+    return str(os.listdir("templates"))
+
 
 # ============================
 # AVVIO SERVER
