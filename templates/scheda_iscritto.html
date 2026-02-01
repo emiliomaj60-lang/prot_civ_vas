@@ -182,4 +182,11 @@ async function attivaNotifiche() {
 }
 </script>
 
+<!-- 🔥 REGISTRAZIONE SERVICE WORKER (MANCAVA!) -->
+<script>
+navigator.serviceWorker.register("/service-worker.js")
+    .then(() => console.log("Service worker registrato"))
+    .catch(err => console.error("Errore registrazione SW:", err));
+</script>
+
 {% endblock %}
