@@ -181,15 +181,20 @@ def iscritti():
 
                         if r["password"] == password:
 
+                            # Conversione campi booleani
                             r["motosega"] = r["motosega"] == "1"
                             r["corso_base"] = r["corso_base"] == "1"
                             r["altro_fatto"] = r["altro_fatto"] == "1"
 
+                            # Colori badge
                             r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
                             r["col_base"] = colore_scadenza(r["scadenza_base"])
                             r["col_altro"] = colore_scadenza(r["scadenza_altro"])
 
-                            # 🔵 AGGIUNGI QUESTA RIGA
+                            # 🔵 Categoria dal CSV (sicura)
+                            r["categoria"] = r.get("categoria", "").strip()
+
+                            # 🔵 Stato notifiche (sicuro)
                             r["notifiche_attive"] = notifiche_attive(r["telefono"])
 
                             return render_template("scheda_iscritto.html", dati=r)
