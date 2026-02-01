@@ -1,4 +1,5 @@
-colore: rosso
+colore: verde
 messaggio: Allerta meteo arancione dalle 18:00 alle 23:00
+
 
 
