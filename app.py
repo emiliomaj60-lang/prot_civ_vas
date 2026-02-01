@@ -100,7 +100,7 @@ def colore_data(data):
 
 def leggi_allerta():
     try:
-        with open("tmp/allerta.txt", "r", encoding="utf-8") as f:
+        with open("/tmp/allerta.txt", "r", encoding="utf-8") as f:
             dati = {}
             for riga in f:
                 if ":" in riga:
