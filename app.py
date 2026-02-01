@@ -160,10 +160,8 @@ def iscritti():
         cognome = request.form["cognome"].strip().lower()
         password = request.form["password"].strip()
 
-        # Username digitato dall’utente
         username_input = f"{nome}_{cognome}"
 
-        # Normalizzazioni accettate
         possibili_username = {
             username_input,
             username_input.replace("_", "."),
@@ -172,7 +170,6 @@ def iscritti():
             username_input.replace("_", ""),
         }
 
-        # Carica TUTTI gli iscritti dal CSV
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
@@ -180,24 +177,20 @@ def iscritti():
 
                     username_csv = r["username"].strip().lower()
 
-                    # Se il CSV contiene una variante accettata → match
                     if username_csv in possibili_username:
 
-                        # Password corretta?
                         if r["password"] == password:
 
-                            # Conversione campi booleani
                             r["motosega"] = r["motosega"] == "1"
                             r["corso_base"] = r["corso_base"] == "1"
                             r["altro_fatto"] = r["altro_fatto"] == "1"
 
-                            # Colori badge
                             r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
                             r["col_base"] = colore_scadenza(r["scadenza_base"])
                             r["col_altro"] = colore_scadenza(r["scadenza_altro"])
 
-                            # 🔵 Categoria già presente nel CSV → la passiamo al template
-                            # r["categoria"] è già dentro il dizionario
+                            # 🔵 AGGIUNGI QUESTA RIGA
+                            r["notifiche_attive"] = notifiche_attive(r["telefono"])
 
                             return render_template("scheda_iscritto.html", dati=r)
 
@@ -241,8 +234,6 @@ def attivita():
         lista = []
 
     return render_template("attivita.html", attivita=lista)
-
-
 
 # ============================
 # DETTAGLIO ATTIVITÀ (FILE TXT)
