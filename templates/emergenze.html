@@ -64,6 +64,11 @@
         box-shadow: 0 4px 12px rgba(0,91,187,0.4);
     }
 
+    .btn-reset {
+        background: #2e8b57;
+        box-shadow: 0 4px 12px rgba(46,139,87,0.4);
+    }
+
     .info-box {
         background: #fff8d9;
         border-left: 6px solid #ffcc00;
@@ -76,9 +81,28 @@
         font-weight: 700;
         margin-bottom: 10px;
     }
+
+    .stato-box {
+        background: #eef3ff;
+        border-left: 6px solid #005bbb;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .stato-box strong {
+        font-size: 1.2rem;
+    }
 </style>
 
 <div class="emergenza-wrapper">
+
+    <!-- 🔵 STATO ATTUALE ALLERTA -->
+    <div class="stato-box">
+        <strong>Stato attuale dell’allerta:</strong>
+        <p id="stato-attuale">Caricamento...</p>
+    </div>
 
     <div class="emergenza-card">
         <div class="emergenza-title">Gestione Emergenze</div>
@@ -93,6 +117,11 @@
 
         <a href="#" class="emergenza-btn btn-procedure">
             📘 PROCEDURE OPERATIVE
+        </a>
+
+        <!-- 🟢 RIPRISTINA STATO VERDE -->
+        <a href="#" onclick="resetAllerta()" class="emergenza-btn btn-reset">
+            ✅ RIPRISTINA STATO VERDE
         </a>
     </div>
 
@@ -110,5 +139,36 @@
     </div>
 
 </div>
+
+<!-- 🔥 SCRIPT: mostra stato attuale + reset -->
+<script>
+function aggiornaStato() {
+    fetch("/api/allerta")
+        .then(r => r.json())
+        .then(data => {
+            const stato = document.getElementById("stato-attuale");
+
+            let colore = data.colore || "verde";
+            let messaggio = data.messaggio || "";
+
+            stato.innerHTML = `
+                <strong>Colore:</strong> ${colore.toUpperCase()}<br>
+                <strong>Messaggio:</strong> ${messaggio || "Nessun messaggio"}
+            `;
+        });
+}
+
+function resetAllerta() {
+    fetch("/api/reset_allerta", { method: "POST" })
+        .then(r => r.text())
+        .then(() => {
+            alert("Allerta ripristinata allo stato verde");
+            aggiornaStato();
+        });
+}
+
+setInterval(aggiornaStato, 5000);
+aggiornaStato();
+</script>
 
 {% endblock %}
