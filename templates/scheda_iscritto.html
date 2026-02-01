@@ -7,8 +7,8 @@
     .profile-container {
         max-width: 1300px;
         margin: auto;
-        margin-top: 10px;      /* 🔼 Scheda più alta */
-        padding: 80px;         /* 🔼 Più spaziosa */
+        margin-top: 10px;
+        padding: 80px;
         background: #ffffffee;
         border-radius: 28px;
         box-shadow: 0 10px 36px rgba(0,0,0,0.28);
@@ -51,11 +51,10 @@
         padding: 10px 14px;
     }
 
-    /* 🔔 Bottone notifiche migliorato */
     .btn-notifiche {
-        font-size: 1.8rem;        /* più grande */
-        padding: 18px 32px;       /* più comodo */
-        margin-left: 40px;        /* spostato a destra */
+        font-size: 1.8rem;
+        padding: 18px 32px;
+        margin-left: 40px;
         margin-top: 10px;
         border-radius: 12px;
     }
@@ -83,11 +82,9 @@
     <p><span class="data-label">Email:</span> 
        <span class="data-value">{{ dati.email }}</span></p>
 
-    <!-- 🔵 CATEGORIA -->
     <p><span class="data-label">Categoria:</span> 
        <span class="data-value">{{ dati.categoria }}</span></p>
 
-    <!-- 🔔 STATO NOTIFICHE -->
     <p>
         <span class="data-label">Attiv. Notifiche:</span>
         {% if dati.notifiche_attive %}
@@ -97,7 +94,6 @@
         {% endif %}
     </p>
 
-    <!-- 🔔 BOTTONE ATTIVA NOTIFICHE -->
     {% if not dati.notifiche_attive %}
     <button class="btn btn-success btn-notifiche" onclick="attivaNotifiche()">
         🔔 Attiva notifiche di emergenza
@@ -139,7 +135,14 @@
 
 </div>
 
-<!-- 🔥 SCRIPT ATTIVA NOTIFICHE -->
+<!-- 🔥 VARIABILI NECESSARIE PER LE NOTIFICHE -->
+<script>
+    const vapidPublicKey = "{{ vapid_public_key }}";
+    const telefonoUtente = "{{ dati.telefono }}";
+    const categoriaUtente = "{{ dati.categoria }}";
+</script>
+
+<!-- 🔥 FUNZIONE ATTIVA NOTIFICHE -->
 <script>
 async function attivaNotifiche() {
 
