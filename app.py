@@ -188,6 +188,9 @@ def iscritti():
                             r["col_base"] = colore_scadenza(r["scadenza_base"])
                             r["col_altro"] = colore_scadenza(r["scadenza_altro"])
 
+                            # 🔵 Categoria già presente nel CSV → la passiamo al template
+                            # r["categoria"] è già dentro il dizionario
+
                             return render_template("scheda_iscritto.html", dati=r)
 
                         else:
