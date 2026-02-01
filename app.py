@@ -313,10 +313,11 @@ import json
 @app.route("/api/send_alert_group", methods=["POST"])
 def send_alert_group():
     try:
-        gruppo = request.form.get("gruppo")
-        titolo = request.form.get("titolo")
-        messaggio = request.form.get("messaggio")
-        livello = request.form.get("livello")
+        data = request.json
+        gruppo = data.get("gruppo_id")
+        titolo = data.get("titolo")
+        messaggio = data.get("messaggio")
+        livello = data.get("livello")
 
         # --- Carica le subscription del gruppo ---
         conn = sqlite3.connect("database.db")
@@ -337,7 +338,7 @@ def send_alert_group():
             "level": livello
         }
 
-        # --- Invia la notifica a ogni subscription ---
+        # --- Invia la notifica ---
         for endpoint, p256dh, auth in subs:
             subscription_info = {
                 "endpoint": endpoint,
@@ -359,7 +360,7 @@ def send_alert_group():
             except WebPushException as e:
                 print("Errore invio notifica:", e)
 
-        # 🔥 AGGIORNO IL FILE ALLERTA PER LA BARRA E IL MENU
+        # 🔥 AGGIORNO IL FILE ALLERTA
         with open("static/allerta.txt", "w", encoding="utf-8") as f:
             f.write(f"colore: {livello}\n")
             f.write(f"messaggio: {titolo} – {messaggio}")
@@ -369,11 +370,6 @@ def send_alert_group():
     except Exception as e:
         print("Errore generale:", e)
         return "ERRORE", 500
-
-@app.route("/debug_base")# --- prova ---
-def debug_base():
-    return render_template("base.html")
-
 
 # ============================
 # AVVIO SERVER
