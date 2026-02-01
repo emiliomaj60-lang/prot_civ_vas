@@ -100,7 +100,7 @@ def colore_data(data):
 
 def leggi_allerta():
     try:
-        with open("static/allerta.txt", "r", encoding="utf-8") as f:
+        with open("tmp/allerta.txt", "r", encoding="utf-8") as f:
             dati = {}
             for riga in f:
                 if ":" in riga:
@@ -365,7 +365,7 @@ def send_alert_group():
 
         # 🔥 AGGIORNO IL FILE ALLERTA
         try:
-            with open("static/allerta.txt", "w", encoding="utf-8") as f:
+            with open("tmp/allerta.txt", "w", encoding="utf-8") as f:
                 f.write(f"colore: {livello}\n")
                 f.write(f"messaggio: {titolo} – {messaggio}")
             print("File allerta.txt aggiornato correttamente!")
