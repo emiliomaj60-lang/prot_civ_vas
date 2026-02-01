@@ -18,14 +18,23 @@
 
     .allerta-card {
         background: white;
-        padding: 50px; /* 🔥 più spazio */
+        padding: 50px;
         border-radius: 25px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.18);
         margin-bottom: 40px;
+        border: 8px solid #ccc; /* verrà cambiato via JS */
+        transition: border-color 0.3s ease;
+    }
+
+    .allerta-icon {
+        font-size: 5rem;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #b30000;
     }
 
     .allerta-title {
-        font-size: 2.6rem; /* 🔥 più grande */
+        font-size: 2.6rem;
         font-weight: 900;
         color: #b30000;
         margin-bottom: 35px;
@@ -35,26 +44,26 @@
     .form-label {
         font-weight: 800;
         margin-top: 25px;
-        font-size: 1.4rem; /* 🔥 più grande */
+        font-size: 1.4rem;
     }
 
     select.form-select,
     input.form-control,
     textarea.form-control {
-        font-size: 1.4rem; /* 🔥 più grande */
-        padding: 18px;     /* 🔥 più alto */
+        font-size: 1.4rem;
+        padding: 18px;
         border-radius: 14px;
         margin-top: 8px;
     }
 
     textarea.form-control {
-        height: 200px; /* 🔥 raddoppiato */
+        height: 200px;
     }
 
     .btn-invia {
         width: 100%;
-        padding: 28px; /* 🔥 più alto */
-        font-size: 1.8rem; /* 🔥 più grande */
+        padding: 28px;
+        font-size: 1.8rem;
         font-weight: 800;
         border-radius: 20px;
         background: #d40000;
@@ -71,14 +80,18 @@
 
     .status-box {
         margin-top: 30px;
-        font-size: 1.3rem; /* 🔥 più grande */
+        font-size: 1.3rem;
         color: #444;
         text-align: center;
     }
 </style>
 
 <div class="allerta-wrapper">
-    <div class="allerta-card">
+    <div id="allertaCard" class="allerta-card">
+
+        <!-- 🔥 ICONA GRANDE -->
+        <div class="allerta-icon">🚨</div>
+
         <div class="allerta-title">Invia Allerta</div>
 
         <!-- Selezione gruppo -->
@@ -114,6 +127,27 @@
 </div>
 
 <script>
+/* 🔥 CAMBIO COLORE BORDO IN BASE AL LIVELLO */
+const livelloSelect = document.getElementById("livello");
+const card = document.getElementById("allertaCard");
+
+function aggiornaBordo() {
+    const livello = livelloSelect.value;
+
+    const colori = {
+        verde: "#2ecc71",
+        gialla: "#f1c40f",
+        arancione: "#e67e22",
+        rossa: "#c0392b"
+    };
+
+    card.style.borderColor = colori[livello];
+}
+
+livelloSelect.addEventListener("change", aggiornaBordo);
+aggiornaBordo(); // iniziale
+
+/* 🔥 INVIO ALLERTA */
 document.getElementById("btnInvia").onclick = async () => {
     const gruppo_id = document.getElementById("gruppo").value;
     const livello = document.getElementById("livello").value;
