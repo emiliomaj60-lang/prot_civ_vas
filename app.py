@@ -370,7 +370,15 @@ def debug_db():
     import os
     return str(os.path.exists("database.db"))
 
-
+@app.route("/debug_tables")# --- prove per problemi da cancellare ---
+def debug_tables():
+    import sqlite3
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    tables = c.fetchall()
+    conn.close()
+    return str(tables)
 
 # ============================
 # AVVIO SERVER
