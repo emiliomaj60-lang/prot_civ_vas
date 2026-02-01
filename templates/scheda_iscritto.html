@@ -7,8 +7,8 @@
     .profile-container {
         max-width: 1300px;
         margin: auto;
-        margin-top: 70px;
-        padding: 60px;
+        margin-top: 30px;      /* 🔼 Scheda più alta */
+        padding: 80px;         /* 🔼 Più spaziosa */
         background: #ffffffee;
         border-radius: 28px;
         box-shadow: 0 10px 36px rgba(0,0,0,0.28);
@@ -50,6 +50,15 @@
         font-size: 1.1rem;
         padding: 10px 14px;
     }
+
+    /* 🔔 Bottone notifiche migliorato */
+    .btn-notifiche {
+        font-size: 1.8rem;        /* più grande */
+        padding: 18px 32px;       /* più comodo */
+        margin-left: 40px;        /* spostato a destra */
+        margin-top: 10px;
+        border-radius: 12px;
+    }
 </style>
 
 <div class="profile-container">
@@ -90,7 +99,7 @@
 
     <!-- 🔔 BOTTONE ATTIVA NOTIFICHE -->
     {% if not dati.notifiche_attive %}
-    <button class="btn btn-success" onclick="attivaNotifiche()">
+    <button class="btn btn-success btn-notifiche" onclick="attivaNotifiche()">
         🔔 Attiva notifiche di emergenza
     </button>
     {% endif %}
