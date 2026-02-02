@@ -107,7 +107,8 @@
     <div class="emergenza-card">
         <div class="emergenza-title">Gestione Emergenze</div>
 
-        <a href="/invia_allerta" class="emergenza-btn btn-allerta">
+        <!-- 🚨 INVIA ALLERTA (POST) -->
+        <a href="#" onclick="inviaAllerta()" class="emergenza-btn btn-allerta">
             🚨 INVIA ALLERTA
         </a>
 
@@ -132,7 +133,7 @@
             Le funzioni includono:
         </p>
         <ul>
-            <li><strong>Invio allerta immediata</strong> tramite Telegram, SMS o Notifica Web</li>
+            <li><strong>Invio allerta immediata</strong> tramite Notifica Web</li>
             <li><strong>Aggiornamento del livello di allerta</strong> (verde, gialla, arancione, rossa)</li>
             <li><strong>Accesso rapido alle procedure operative</strong> della Protezione Civile VAS</li>
         </ul>
@@ -169,6 +170,26 @@ function resetAllerta() {
 
 setInterval(aggiornaStato, 5000);
 aggiornaStato();
+</script>
+
+<!-- 🔥 INVIO ALLERTA PUSH -->
+<script>
+function inviaAllerta() {
+    const messaggio = prompt("Inserisci il messaggio di allerta:", "🚨 ALLERTA METEO ARANCIONE");
+
+    if (!messaggio) return;
+
+    fetch("/invia_allerta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messaggio: messaggio })
+    })
+    .then(r => r.text())
+    .then(res => {
+        alert("Notifiche inviate: " + res);
+    })
+    .catch(err => console.error(err));
+}
 </script>
 
 {% endblock %}
