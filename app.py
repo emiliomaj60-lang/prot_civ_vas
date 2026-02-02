@@ -135,6 +135,11 @@ def home():
     return render_template("index.html", allerta=allerta, nocache=time.time())
 
 
+@app.route("/attivita")
+def attivita():
+    return render_template("attivita.html")
+
+
 @app.route("/debug/subscriptions") # solo di prova
 def debug_subscriptions():
     import sqlite3
