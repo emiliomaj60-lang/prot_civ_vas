@@ -135,6 +135,24 @@ def home():
     return render_template("index.html", allerta=allerta, nocache=time.time())
 
 
+@app.route("/debug/subscriptions") # solo di prova
+def debug_subscriptions():
+    import sqlite3
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM subscriptions")
+    rows = cur.fetchall()
+    conn.close()
+
+    html = "<h1>Subscriptions</h1><table border='1'>"
+    html += "<tr>" + "".join(f"<th>{col}</th>" for col in rows[0].keys()) + "</tr>" if rows else "<tr><th>Vuoto</th></tr>"
+    for r in rows:
+        html += "<tr>" + "".join(f"<td>{r[k]}</td>" for k in r.keys()) + "</tr>"
+    html += "</table>"
+    return html
+
+
 @app.route("/api/allerta")
 def api_allerta():
     return leggi_allerta()
