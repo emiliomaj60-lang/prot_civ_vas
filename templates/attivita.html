@@ -59,20 +59,13 @@
         <thead>
             <tr>
                 <th>Attività</th>
-                <th>Data</th>
             </tr>
         </thead>
 
         <tbody>
-            {% for a in attivita %}
-            <tr 
-                onclick="window.location='/attivita/{{ a.id }}'" 
-                style="cursor:pointer;"
-            >
-                <td>{{ a.attivita }}</td>
-
-                <!-- Mostra la data nel formato GG-MM-AAAA -->
-                <td>{{ a.data }}</td>
+            {% for f in files %}
+            <tr onclick="window.location='/attivita/{{ f }}'" style="cursor:pointer;">
+                <td>{{ f | replace('_', ' ') | capitalize }}</td>
             </tr>
             {% endfor %}
         </tbody>
