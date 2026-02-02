@@ -139,18 +139,15 @@ import os
 
 @app.route("/attivita")
 def attivita():
-    folder = os.path.join(app.root_path, "templates", "attivita")
-    files = [f for f in os.listdir(folder) if f.endswith(".html")]
-
-    # Rimuove .html per estetica
-    files_clean = [f.replace(".html", "") for f in files]
-
+    folder = os.path.abspath("templates/attivita")
+    files = [f for f in os.listdir(folder) if f.endswith(".txt")]
+    files_clean = [f.replace(".txt", "") for f in files]
     return render_template("attivita.html", files=files_clean)
-
 
 @app.route("/attivita/<nomefile>")
 def mostra_attivita(nomefile):
-    return render_template(f"attivita/{nomefile}.html")
+    base_path = os.path.abspath("templates/attivita")
+    txt_path = os.path.join(base_path, f"{nomefile}.txt")
 
 
 @app.route("/debug/subscriptions") # solo di prova
