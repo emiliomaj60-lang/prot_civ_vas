@@ -183,7 +183,8 @@ async function attivaNotifiche() {
         endpoint: subscription.endpoint,
         p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("p256dh")))),
         auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("auth")))),
-        telefono: telefono
+        telefono: telefono,
+        gruppo: categoriaUtente   // 👈 AGGIUNTO E CORRETTO
     };
 
     fetch("/subscribe", {
