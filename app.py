@@ -256,6 +256,7 @@ def subscribe():
     p256dh = data.get("p256dh")
     auth = data.get("auth")
     telefono = data.get("telefono")
+    gruppo = data.get("gruppo")   # 👈 AGGIUNTO
 
     print(">>> Subscription ricevuta:", data)
 
@@ -263,15 +264,14 @@ def subscribe():
     c = conn.cursor()
 
     c.execute("""
-        INSERT OR REPLACE INTO subscriptions (telefono, endpoint, p256dh, auth)
-        VALUES (?, ?, ?, ?)
-    """, (telefono, endpoint, p256dh, auth))
+        INSERT OR REPLACE INTO subscriptions (telefono, endpoint, p256dh, auth, gruppo)
+        VALUES (?, ?, ?, ?, ?)
+    """, (telefono, endpoint, p256dh, auth, gruppo))
 
     conn.commit()
     conn.close()
 
     return "OK"
-
 
 # ============================
 # DETTAGLIO ATTIVITÀ
