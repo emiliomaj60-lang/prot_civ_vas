@@ -153,6 +153,30 @@ def debug_subscriptions():
     return html
 
 
+@app.route("/scheda_personale")
+def scheda_personale():
+    username = session.get("username")
+    if not username:
+        return redirect("/login")
+
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM iscritti WHERE username = ?", (username,))
+    row = c.fetchone()
+    conn.close()
+
+    if not row:
+        return "Utente non trovato"
+
+    dati = dict(row)
+
+    # Convertiamo 0/1 in booleano per il template
+    dati["notifiche_attive"] = (row["notifiche_attive"] == 1)
+
+    return render_template("scheda_personale.html", **dati)
+
 @app.route("/api/allerta")
 def api_allerta():
     return leggi_allerta()
@@ -281,16 +305,24 @@ def subscribe():
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
+    # Salva o aggiorna la subscription
     c.execute("""
         INSERT OR REPLACE INTO subscriptions (telefono, endpoint, p256dh, auth, gruppo)
         VALUES (?, ?, ?, ?, ?)
     """, (telefono, endpoint, p256dh, auth, gruppo))
 
+    # 🔥 AGGIUNTA FONDAMENTALE:
+    # Imposta lo stato notifiche come ATTIVE
+    c.execute("""
+        UPDATE iscritti
+        SET notifiche_attive = 1
+        WHERE telefono = ?
+    """, (telefono,))
+
     conn.commit()
     conn.close()
 
     return "OK"
-
 # ============================
 # DETTAGLIO ATTIVITÀ
 # ============================
