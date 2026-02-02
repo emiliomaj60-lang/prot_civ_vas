@@ -64,25 +64,25 @@
 
     <div class="profile-title">Scheda Personale</div>
 
-    <p><span class="data-label">Nome:</span> 
+    <p><span class="data-label">Nome:</span>
        <span class="data-value">{{ dati.nome }}</span></p>
 
-    <p><span class="data-label">Cognome:</span> 
+    <p><span class="data-label">Cognome:</span>
        <span class="data-value">{{ dati.cognome }}</span></p>
 
-    <p><span class="data-label">Data di nascita:</span> 
+    <p><span class="data-label">Data di nascita:</span>
        <span class="data-value">{{ dati.data_nascita }}</span></p>
 
-    <p><span class="data-label">Indirizzo:</span> 
+    <p><span class="data-label">Indirizzo:</span>
        <span class="data-value">{{ dati.indirizzo }}</span></p>
 
-    <p><span class="data-label">Telefono:</span> 
+    <p><span class="data-label">Telefono:</span>
        <span class="data-value">{{ dati.telefono }}</span></p>
 
-    <p><span class="data-label">Email:</span> 
+    <p><span class="data-label">Email:</span>
        <span class="data-value">{{ dati.email }}</span></p>
 
-    <p><span class="data-label">Categoria:</span> 
+    <p><span class="data-label">Categoria:</span>
        <span class="data-value">{{ dati.categoria }}</span></p>
 
     <p>
@@ -97,6 +97,10 @@
     {% if not dati.notifiche_attive %}
     <button class="btn btn-success btn-notifiche" onclick="attivaNotifiche()">
         🔔 Attiva notifiche di emergenza
+    </button>
+    {% else %}
+    <button class="btn btn-danger btn-notifiche" onclick="disattivaNotifiche()">
+        🔕 Disattiva notifiche
     </button>
     {% endif %}
 
@@ -130,6 +134,24 @@
                 <td><span class="badge bg-{{ dati.col_altro }}">{{ "Sì" if dati.altro_fatto else "No" }}</span></td>
                 <td><span class="badge bg-{{ dati.col_altro }}">{{ dati.scadenza_altro }}</span></td>
             </tr>
+
+            <tr>
+                <td>Corso 4</td>
+                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_4 else "No" }}</span></td>
+                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_4 }}</span></td>
+            </tr>
+
+            <tr>
+                <td>Corso 5</td>
+                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_5 else "No" }}</span></td>
+                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_5 }}</span></td>
+            </tr>
+
+            <tr>
+                <td>Corso 6</td>
+                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_6 else "No" }}</span></td>
+                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_6 }}</span></td>
+            </tr>
         </tbody>
     </table>
 
@@ -142,7 +164,7 @@
     const categoriaUtente = "{{ dati.categoria }}";
 </script>
 
-<!-- 🔥 FUNZIONE DI CONVERSIONE VAPID (OBBLIGATORIA) -->
+<!-- 🔥 FUNZIONE DI CONVERSIONE VAPID -->
 <script>
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -160,11 +182,9 @@ function urlBase64ToUint8Array(base64String) {
 }
 </script>
 
-<!-- 🔥 FUNZIONE ATTIVA NOTIFICHE -->
+<!-- 🔔 ATTIVA NOTIFICHE -->
 <script>
 async function attivaNotifiche() {
-
-    const telefono = "{{ dati.telefono }}";
 
     const perm = await Notification.requestPermission();
     if (perm !== "granted") {
@@ -183,8 +203,8 @@ async function attivaNotifiche() {
         endpoint: subscription.endpoint,
         p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("p256dh")))),
         auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("auth")))),
-        telefono: telefono,
-        gruppo: categoriaUtente   // 👈 AGGIUNTO E CORRETTO
+        telefono: telefonoUtente,
+        gruppo: categoriaUtente
     };
 
     fetch("/subscribe", {
@@ -192,12 +212,25 @@ async function attivaNotifiche() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
     })
-    .then(r => r.text())
-    .then(res => {
+    .then(() => {
         alert("Notifiche attivate correttamente");
         location.reload();
-    })
-    .catch(err => console.error(err));
+    });
+}
+</script>
+
+<!-- 🔕 DISATTIVA NOTIFICHE -->
+<script>
+async function disattivaNotifiche() {
+
+    await fetch("/unsubscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ telefono: telefonoUtente })
+    });
+
+    alert("Notifiche disattivate");
+    location.reload();
 }
 </script>
 
