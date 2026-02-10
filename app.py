@@ -181,13 +181,15 @@ def mostra_attivita_raw(nomefile):
     base_path = os.path.join(current_app.root_path, "templates", "attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
 
-    print("=== DEBUG RAW ===")
-    print("root_path:", current_app.root_path)
-    print("base_path:", base_path)
-    print("txt_path:", txt_path)
-    print("=================")
-
-    print("RAW CERCA:", txt_path)  # debug
+    # MOSTRA IL PERCORSO DIRETTAMENTE NELLA PAGINA
+    debug_info = f"""
+    <div style='padding:20px; background:#ffeeee; border:2px solid red; margin-bottom:20px;'>
+        <b>DEBUG:</b><br>
+        root_path: {current_app.root_path}<br>
+        base_path: {base_path}<br>
+        txt_path: {txt_path}<br>
+    </div>
+    """
 
     if os.path.exists(txt_path):
         with open(txt_path, "r", encoding="utf-8") as f:
