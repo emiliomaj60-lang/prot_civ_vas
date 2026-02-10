@@ -40,6 +40,7 @@
 
     tbody tr:hover {
         background-color: #f0f6ff;
+        cursor: pointer;
     }
 
     .info-footer {
@@ -59,22 +60,17 @@
         <thead>
             <tr>
                 <th>Attività</th>
+                <th>Data</th>
             </tr>
         </thead>
 
         <tbody>
         {% for a in files %}
         <tr onclick="window.location='/attivita/{{ a.nome }}'">
-            <td>
-            📄 {{ a.nome }}  
-                <span style="color: #666; font-size: 0.9rem;">
-                    — {{ a.data }}
-                </span>
-            </td>
+            <td>📄 {{ a.nome }}</td>
+            <td>{{ a.data }}</td>
         </tr>
         {% endfor %}
-
-
         </tbody>
 
     </table>
