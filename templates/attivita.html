@@ -66,7 +66,7 @@
 
         <tbody>
         {% for a in files %}
-        <tr onclick="window.location='/attivita/{{ a.nome }}'">
+        <tr onclick="window.location='/attivita/{{ a.nome_url }}'">
             <td>📄 {{ a.nome }}</td>
             <td>{{ a.data }}</td>
         </tr>
