@@ -360,6 +360,7 @@ def subscribe():
 
 @app.route("/attivita/<nome>")
 def attivita_dettaglio(nome):
+    # Percorso del file TXT
     path = f"templates/attivita/{nome}"
 
     if not os.path.exists(path):
@@ -372,7 +373,7 @@ def attivita_dettaglio(nome):
         for riga in f:
             riga = riga.rstrip("\n")
 
-            # Se la riga contiene "chiave: valore"
+            # Riga con "chiave: valore"
             if ":" in riga:
                 chiave, valore = riga.split(":", 1)
                 chiave = chiave.strip()
@@ -381,7 +382,7 @@ def attivita_dettaglio(nome):
                 dati[chiave] = valore
                 chiave_corrente = chiave
 
-            # Se NON contiene ":" → è una riga aggiuntiva della descrizione
+            # Riga aggiuntiva della descrizione
             else:
                 if chiave_corrente == "descrizione":
                     dati["descrizione"] += "\n" + riga
@@ -394,8 +395,8 @@ def attivita_dettaglio(nome):
         except:
             dati["data_iso"] = ""
 
+    # ⚠️ TEMPLATE NELLA CARTELLA PRINCIPALE
     return render_template("attivita_dettaglio.html", dati=dati)
-
 
 # ============================
 # CONTATTI
