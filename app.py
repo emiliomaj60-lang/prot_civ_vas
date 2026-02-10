@@ -365,18 +365,18 @@ def attivita_dettaglio(nome):
     # Percorso del file TXT
     #path = f"templates/attivita/{nome}"
 
-    if not os.path.exists(path):
-        return "Attività non trovata", 404
+    #if not os.path.exists(path):
+       # return "Attività non trovata", 404
 
-    dati = {}
-    chiave_corrente = None
+    #dati = {}
+    #chiave_corrente = None
 
-    with open(path, "r", encoding="utf-8") as f:
-        for riga in f:
-            riga = riga.rstrip("\n")
+    #with open(path, "r", encoding="utf-8") as f:
+        #for riga in f:
+            #riga = riga.rstrip("\n")
 
             # Riga con "chiave: valore"
-            if ":" in riga:
+            #if ":" in riga:
                 chiave, valore = riga.split(":", 1)
                 chiave = chiave.strip()
                 valore = valore.strip()
