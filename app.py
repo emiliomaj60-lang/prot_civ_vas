@@ -136,19 +136,46 @@ def home():
 
 import os
 
+# ============================
+# ELENCO ATTIVITÀ (con data)
+# ============================
 @app.route("/attivita")
-def attivita():
+def lista_attivita():
     folder = os.path.abspath("templates/attivita")
     files = [f for f in os.listdir(folder) if f.endswith(".txt")]
 
-    # nomi senza .txt per estetica e per l'URL
-    files_clean = [f.replace(".txt", "") for f in files]
+    lista_attivita = []
 
-    return render_template("attivita.html", files=files_clean)
+    for f in files:
+        path = os.path.join(folder, f)
+        data_attivita = "N/D"
+
+        # Leggiamo solo la riga "data:"
+        with open(path, "r", encoding="utf-8") as file:
+            for riga in file:
+                if riga.lower().startswith("data:"):
+                    data_attivita = riga.split(":", 1)[1].strip()
+                    break
+
+        lista_attivita.append({
+            "nome": f.replace(".txt", ""),
+            "data": data_attivita
+        })
+
+    # Ordiniamo per data (se possibile)
+    try:
+        lista_attivita.sort(key=lambda x: datetime.strptime(x["data"], "%d/%m/%Y"))
+    except:
+        pass
+
+    return render_template("attivita.html", files=lista_attivita)
 
 
+# ============================
+# VISUALIZZAZIONE RAW (opzionale)
+# ============================
 @app.route("/attivita/raw/<nomefile>")
-def mostra_attivita(nomefile):
+def mostra_attivita_raw(nomefile):
     base_path = os.path.abspath("templates/attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
 
@@ -164,23 +191,6 @@ def mostra_attivita(nomefile):
         """
 
     return "File non trovato"
-
-@app.route("/debug/subscriptions") # solo di prova
-def debug_subscriptions():
-    import sqlite3
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM subscriptions")
-    rows = cur.fetchall()
-    conn.close()
-
-    html = "<h1>Subscriptions</h1><table border='1'>"
-    html += "<tr>" + "".join(f"<th>{col}</th>" for col in rows[0].keys()) + "</tr>" if rows else "<tr><th>Vuoto</th></tr>"
-    for r in rows:
-        html += "<tr>" + "".join(f"<td>{r[k]}</td>" for k in r.keys()) + "</tr>"
-    html += "</table>"
-    return html
 
 
 @app.route("/scheda_personale")
@@ -353,6 +363,11 @@ def subscribe():
     conn.close()
 
     return "OK"
+
+# ============================
+# ROUTE ATTIVITA
+# ============================
+
 @app.route("/attivita")
 def attivita():
     folder = os.path.abspath("templates/attivita")
