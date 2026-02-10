@@ -138,6 +138,19 @@ def home():
 
 import os
 
+
+@app.route("/debug/lista_file")
+def debug_lista_file():
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
+    try:
+        files = os.listdir(base_path)
+    except Exception as e:
+        return f"Errore: {e}<br>Path cercato: {base_path}"
+
+    return "<br>".join(files) + f"<br><br>Path: {base_path}"
+
+
+
 # ============================
 # ELENCO ATTIVITÀ (con data)
 # ============================
