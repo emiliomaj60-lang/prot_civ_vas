@@ -147,7 +147,7 @@ def attivita():
     return render_template("attivita.html", files=files_clean)
 
 
-@app.route("/attivita/<nomefile>")
+@app.route("/attivita/raw/<nomefile>")
 def mostra_attivita(nomefile):
     base_path = os.path.abspath("templates/attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
@@ -164,7 +164,6 @@ def mostra_attivita(nomefile):
         """
 
     return "File non trovato"
-
 
 @app.route("/debug/subscriptions") # solo di prova
 def debug_subscriptions():
