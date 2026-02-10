@@ -134,20 +134,36 @@ def home():
     allerta = leggi_allerta()
     return render_template("index.html", allerta=allerta, nocache=time.time())
 
-
 import os
 
 @app.route("/attivita")
 def attivita():
     folder = os.path.abspath("templates/attivita")
     files = [f for f in os.listdir(folder) if f.endswith(".txt")]
+
+    # nomi senza .txt per estetica e per l'URL
     files_clean = [f.replace(".txt", "") for f in files]
+
     return render_template("attivita.html", files=files_clean)
+
 
 @app.route("/attivita/<nomefile>")
 def mostra_attivita(nomefile):
     base_path = os.path.abspath("templates/attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
+
+    if os.path.exists(txt_path):
+        with open(txt_path, "r", encoding="utf-8") as f:
+            contenuto = f.read()
+
+        return f"""
+        <div style='max-width:900px; margin:auto; padding:40px; font-size:1.6rem; white-space:pre-wrap;'>
+            <h2 style='margin-bottom:30px;'>📄 {nomefile}</h2>
+            <pre style='font-size:1.6rem; white-space:pre-wrap;'>{contenuto}</pre>
+        </div>
+        """
+
+    return "File non trovato"
 
 
 @app.route("/debug/subscriptions") # solo di prova
@@ -344,7 +360,7 @@ def subscribe():
 
 @app.route("/attivita/<nome>")
 def attivita_dettaglio(nome):
-    path = f"templates/attivita/{nome}.txt"
+    path = f"templates/attivita/{nome}"
 
     if not os.path.exists(path):
         return "Attività non trovata", 404
