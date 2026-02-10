@@ -179,6 +179,8 @@ def mostra_attivita_raw(nomefile):
     base_path = os.path.join(os.path.dirname(__file__), "templates", "attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
 
+    print("RAW CERCA:", txt_path)  # utile per debug
+
     if os.path.exists(txt_path):
         with open(txt_path, "r", encoding="utf-8") as f:
             contenuto = f.read()
@@ -190,8 +192,7 @@ def mostra_attivita_raw(nomefile):
         </div>
         """
 
-    return "File non trovato"
-
+    return f"File non trovato: {txt_path}"
 
 @app.route("/scheda_personale")
 def scheda_personale():
