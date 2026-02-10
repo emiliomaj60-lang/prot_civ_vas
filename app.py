@@ -176,7 +176,7 @@ def lista_attivita():
 # ============================
 @app.route("/attivita/raw/<nomefile>")
 def mostra_attivita_raw(nomefile):
-    base_path = os.path.abspath("templates/attivita")
+    base_path = os.path.join(os.path.dirname(__file__), "templates", "attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
 
     if os.path.exists(txt_path):
