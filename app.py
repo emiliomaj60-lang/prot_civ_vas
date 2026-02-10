@@ -362,43 +362,7 @@ def subscribe():
 def attivita_dettaglio(nome):
     return f"ROUTE OK – nome = {nome}"
 
-    # Percorso del file TXT
-    #path = f"templates/attivita/{nome}"
-
-    #if not os.path.exists(path):
-       # return "Attività non trovata", 404
-
-    #dati = {}
-    #chiave_corrente = None
-
-    #with open(path, "r", encoding="utf-8") as f:
-        #for riga in f:
-            #riga = riga.rstrip("\n")
-
-            # Riga con "chiave: valore"
-            #if ":" in riga:
-                chiave, valore = riga.split(":", 1)
-                chiave = chiave.strip()
-                valore = valore.strip()
-
-                dati[chiave] = valore
-                chiave_corrente = chiave
-
-            # Riga aggiuntiva della descrizione
-            else:
-                if chiave_corrente == "descrizione":
-                    dati["descrizione"] += "\n" + riga
-
-    # Conversione data
-    if "data" in dati:
-        try:
-            giorno, mese, anno = dati["data"].replace("-", "/").split("/")
-            dati["data_iso"] = f"{anno}-{mese}-{giorno}"
-        except:
-            dati["data_iso"] = ""
-
-    # ⚠️ TEMPLATE NELLA CARTELLA PRINCIPALE
-    return render_template("attivita_dettaglio.html", dati=dati)
+    
 
 # ============================
 # CONTATTI
