@@ -178,10 +178,10 @@ def lista_attivita():
 # ============================
 @app.route("/attivita/raw/<nomefile>")
 def mostra_attivita_raw(nomefile):
-    base_path = os.path.join(os.path.dirname(__file__), "templates", "attivita")
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
 
-    print("RAW CERCA:", txt_path)  # utile per debug
+    print("RAW CERCA:", txt_path)  # debug
 
     if os.path.exists(txt_path):
         with open(txt_path, "r", encoding="utf-8") as f:
@@ -194,7 +194,7 @@ def mostra_attivita_raw(nomefile):
         </div>
         """
 
-    return f"File non trovato: {txt_path}"
+    return f"File non trovato: {txt_path}", 404
 
 @app.route("/scheda_personale")
 def scheda_personale():
