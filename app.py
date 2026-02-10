@@ -359,9 +359,30 @@ def subscribe():
 
 @app.route("/attivita/<nome>")
 def attivita_dettaglio(nome):
-    return f"ROUTE OK – nome = {nome}"
+    base_path = os.path.abspath("templates/attivita")
+    txt_path = os.path.join(base_path, f"{nome}.txt")
 
-    
+    if not os.path.exists(txt_path):
+        return "Attività non trovata", 404
+
+    dati = {}
+    chiave_corrente = None
+
+    with open(txt_path, "r", encoding="utf-8") as f:
+        for riga in f:
+            riga = riga.rstrip("\n")
+
+            if ":" in riga:
+                chiave, valore = riga.split(":", 1)
+                chiave = chiave.strip()
+                valore = valore.strip()
+                dati[chiave] = valore
+                chiave_corrente = chiave
+            else:
+                if chiave_corrente == "descrizione":
+                    dati["descrizione"] += "\n" + riga
+
+    return render_template("attivita_dettaglio.html", dati=dati)  
 
 # ============================
 # CONTATTI
