@@ -190,6 +190,41 @@ def lista_attivita():
     return render_template("attivita.html", files=lista_attivita)
 
 
+@app.route("/attivita/<nome>")
+def attivita_dettaglio(nome):
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
+
+    # Cerca il file ignorando maiuscole/minuscole
+    file_trovato = None
+    for f in os.listdir(base_path):
+        if f.lower() == f"{nome.lower()}.txt":
+            file_trovato = f
+            break
+
+    if not file_trovato:
+        return f"File non trovato: {nome}", 404
+
+    txt_path = os.path.join(base_path, file_trovato)
+
+    # Parsing del file
+    dati = {}
+    chiave_corrente = None
+
+    with open(txt_path, "r", encoding="utf-8") as f:
+        for riga in f:
+            riga = riga.rstrip("\n")
+
+            if ":" in riga:
+                chiave, valore = riga.split(":", 1)
+                chiave = chiave.strip()
+                valore = valore.strip()
+                dati[chiave] = valore
+                chiave_corrente = chiave
+            else:
+                if chiave_corrente == "descrizione":
+                    dati["descrizione"] += "\n" + riga
+
+    return render_template("attivita_dettaglio.html", dati=dati)
 
 # ============================
 # VISUALIZZAZIONE RAW (opzionale)
