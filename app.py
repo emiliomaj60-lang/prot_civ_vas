@@ -7,6 +7,8 @@ import os
 from pywebpush import webpush, WebPushException
 import json
 
+from flask import Flask, render_template, request, send_from_directory, current_app
+
 # 👉 CHIAVI VAPID
 VAPID_PUBLIC_KEY = "BFIUzXfa4CrKCYonvgUng451FbUZyrDpY2nX0E6c-FWmpHwU09Q4J5ZxPqmv_vKNzsNuv2exGkdWczSCVqMOWlo"
 VAPID_PRIVATE_KEY = "RRXpnXlIg8TYuvBttWTZ8ILeQ6usrFlbUXunQIhtDwI"
