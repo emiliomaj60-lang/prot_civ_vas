@@ -360,6 +360,8 @@ def subscribe():
 
 @app.route("/attivita/<nome>")
 def attivita_dettaglio(nome):
+    return f"ROUTE OK – nome = {nome}"
+
     # Percorso del file TXT
     path = f"templates/attivita/{nome}"
 
