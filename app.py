@@ -363,7 +363,7 @@ def attivita_dettaglio(nome):
     return f"ROUTE OK – nome = {nome}"
 
     # Percorso del file TXT
-    path = f"templates/attivita/{nome}"
+    #path = f"templates/attivita/{nome}"
 
     if not os.path.exists(path):
         return "Attività non trovata", 404
