@@ -1,7 +1,7 @@
 attivita: Montaggio tende – Area Emergenza
 data: 12/05/2026
-luogo: Area Protezione Civile – Novate Milanese
-gps: https://maps.google.com/?q=45.5300,9.1600
+luogo: Area Protezione Civile – Vilminore di Scalve
+gps: https://maps.google.com/?q=45.995673, 10.093910
 ora: 07:30
 responsabile: Rossi Marco
 attrezzi: Martelli, picchetti, corde, guanti da lavoro, radio

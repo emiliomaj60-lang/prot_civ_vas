@@ -1,7 +1,7 @@
 attivita: Pulizia Fiume – Schilpario
 data: 02/04/2026
 luogo: Pista di Fondo – Schilpario
-gps: https://maps.google.com/?q=45.5321,9.1823
+gps: https://maps.google.com/?q=46.008901, 10.167484
 ora: 08:30
 responsabile: Morandi Pier
 attrezzi: Guanti da lavoro, stivali, rastrelli, sacchi rifiuti, radio

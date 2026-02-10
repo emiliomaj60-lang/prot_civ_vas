@@ -1,7 +1,7 @@
 attivita: Esercitazione AIB
 data: 02/04/2026
-luogo: Area boschiva – Novate Milanese
-gps: https://maps.google.com/?q=45.5500,9.1500
+luogo: Area boschiva – Schilpario
+gps: https://maps.google.com/?q=46.008712, 10.166315
 ora: 09:00
 responsabile: Morandi Pier
 attrezzi: Guanti da lavoro, casco, radio, motosega, soffiatori
