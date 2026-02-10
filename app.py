@@ -366,13 +366,27 @@ def attivita_dettaglio(nome):
         return "Attività non trovata", 404
 
     dati = {}
+    chiave_corrente = None
 
     with open(path, "r", encoding="utf-8") as f:
         for riga in f:
+            riga = riga.rstrip("\n")
+
+            # Se la riga contiene "chiave: valore"
             if ":" in riga:
                 chiave, valore = riga.split(":", 1)
-                dati[chiave.strip()] = valore.strip()
+                chiave = chiave.strip()
+                valore = valore.strip()
 
+                dati[chiave] = valore
+                chiave_corrente = chiave
+
+            # Se NON contiene ":" → è una riga aggiuntiva della descrizione
+            else:
+                if chiave_corrente == "descrizione":
+                    dati["descrizione"] += "\n" + riga
+
+    # Conversione data
     if "data" in dati:
         try:
             giorno, mese, anno = dati["data"].replace("-", "/").split("/")
