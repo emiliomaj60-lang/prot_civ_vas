@@ -172,18 +172,23 @@ def lista_attivita():
                     data_attivita = riga.split(":", 1)[1].strip()
                     break
 
+        nome_originale = f.replace(".txt", "")
+        nome_url = nome_originale.lower()  # <-- URL SEMPRE MINUSCOLO
+
         lista_attivita.append({
-            "nome": f.replace(".txt", ""),
+            "nome": nome_originale,
+            "nome_url": nome_url,
             "data": data_attivita
         })
 
-    # Ordiniamo per data (se possibile)
+    # Ordiniamo per data (opzionale)
     try:
         lista_attivita.sort(key=lambda x: datetime.strptime(x["data"], "%d/%m/%Y"))
     except:
         pass
 
     return render_template("attivita.html", files=lista_attivita)
+
 
 
 # ============================
