@@ -1,4 +1,6 @@
-username,password,nome,cognome,data_nascita,indirizzo,telefono,email,motosega,scadenza_motosega,corso_base,scadenza_base,altro_fatto,scadenza_altro,categoria
-mario_rossi,abcd,Mario,Rossi,12/03/1980,Via Roma 10,3331234567,mario@example.com,1,2026-05-01,1,2027-01-10,0,N/D,aib
-pier_morandi,abcd,Pier,Morandi,05/11/1975,Via Milano 22,3339876543,pier@example.com,0,N/D,1,2026-09-15,1,2027-02-01,protciv
-emilio_maj,a,Emilio,Maj,05/07/1960,Via clusa 21,3475164405,emilio-maj@virgilio.it,0,N/D,1,2026-09-15,1,2027-02-01,capisquadra
+username,nome,cognome,telefono,email,indirizzo,data_nascita,categoria,motosega,corso_base,altro_fatto,scadenza_motosega,scadenza_base,scadenza_altro,notifiche_attive,corso_4,corso_5,corso_6,scadenza_corso_4,scadenza_corso_5,scadenza_corso_6,password
+mario_rossi,Mario,Rossi,3331234567,mario@example.com,Via Roma 10,12/03/1980,aib,1,1,0,2026-05-01,2027-01-10,N/D,0,0,0,0,N/D,N/D,N/D,a
+pier_morandi,Pier,Morandi,3339876543,pier@example.com,Via Milano 22,05/11/1975,protciv,0,1,1,N/D,2026-09-15,2027-02-01,0,0,0,0,N/D,N/D,N/D,a
+emilio_maj,Emilio,Maj,3475164405,emilio-maj@virgilio.it,Via clusa 21,05/07/1960,capisquadra,0,1,1,N/D,2026-09-15,2027-02-01,0,0,0,0,N/D,N/D,N/D,a
+veronica_spada,Veronuca,Spada,123164405,rrrrr-ttj@virgilio.it,Via clusa 21,05/07/1960,capisquadra,0,1,1,N/D,2026-09-15,2027-02-01,0,0,0,0,N/D,N/D,N/D,a
+cristian_capitanio,Cristian,Capitanio,123164405,aaaaa-uuj@virgilio.it,Via clusa 21,05/07/1960,capisquadra,0,1,1,N/D,2026-09-15,2027-02-01,0,0,0,0,N/D,N/D,N/D,a
