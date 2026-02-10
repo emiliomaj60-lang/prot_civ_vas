@@ -181,6 +181,12 @@ def mostra_attivita_raw(nomefile):
     base_path = os.path.join(current_app.root_path, "templates", "attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
 
+    print("=== DEBUG RAW ===")
+    print("root_path:", current_app.root_path)
+    print("base_path:", base_path)
+    print("txt_path:", txt_path)
+    print("=================")
+
     print("RAW CERCA:", txt_path)  # debug
 
     if os.path.exists(txt_path):
