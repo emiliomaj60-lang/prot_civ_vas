@@ -63,11 +63,18 @@
         </thead>
 
         <tbody>
-            {% for f in files %}
-            <tr onclick="window.location='/attivita/{{ f }}'" style="cursor:pointer;">
-                <td>{{ f | replace('_', ' ') | capitalize }}</td>
-            </tr>
-            {% endfor %}
+        {% for a in files %}
+        <tr onclick="window.location='/attivita/{{ a.nome }}'">
+            <td>
+            📄 {{ a.nome }}  
+                <span style="color: #666; font-size: 0.9rem;">
+                    — {{ a.data }}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+
+
         </tbody>
 
     </table>
