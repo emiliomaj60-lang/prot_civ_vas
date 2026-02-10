@@ -353,36 +353,36 @@ def subscribe():
     conn.close()
 
     return "OK"
-# ============================
-# DETTAGLIO ATTIVITÀ
-# ============================
+@app.route("/attivita")
+def attivita():
+    folder = os.path.abspath("templates/attivita")
+    files = [f for f in os.listdir(folder) if f.endswith(".txt")]
 
-@app.route("/attivita/<nome>")
-def attivita_dettaglio(nome):
-    base_path = os.path.abspath("templates/attivita")
-    txt_path = os.path.join(base_path, f"{nome}.txt")
+    lista_attivita = []
 
-    if not os.path.exists(txt_path):
-        return "Attività non trovata", 404
+    for f in files:
+        path = os.path.join(folder, f)
+        data_attivita = "N/D"
 
-    dati = {}
-    chiave_corrente = None
+        # Leggiamo solo la riga "data:"
+        with open(path, "r", encoding="utf-8") as file:
+            for riga in file:
+                if riga.lower().startswith("data:"):
+                    data_attivita = riga.split(":", 1)[1].strip()
+                    break
 
-    with open(txt_path, "r", encoding="utf-8") as f:
-        for riga in f:
-            riga = riga.rstrip("\n")
+        lista_attivita.append({
+            "nome": f.replace(".txt", ""),
+            "data": data_attivita
+        })
 
-            if ":" in riga:
-                chiave, valore = riga.split(":", 1)
-                chiave = chiave.strip()
-                valore = valore.strip()
-                dati[chiave] = valore
-                chiave_corrente = chiave
-            else:
-                if chiave_corrente == "descrizione":
-                    dati["descrizione"] += "\n" + riga
+    # Ordiniamo per data (opzionale)
+    try:
+        lista_attivita.sort(key=lambda x: datetime.strptime(x["data"], "%d/%m/%Y"))
+    except:
+        pass
 
-    return render_template("attivita_dettaglio.html", dati=dati)  
+    return render_template("attivita.html", files=lista_attivita)
 
 # ============================
 # CONTATTI
