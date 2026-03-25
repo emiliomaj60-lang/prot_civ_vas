@@ -7,8 +7,8 @@
     .profile-container {
         max-width: 1300px;
         margin: auto;
-        margin-top: 10px;
-        padding: 80px;
+        margin-top: 0px; /* ALZATO */
+        padding: 40px;
         background: #ffffffee;
         border-radius: 28px;
         box-shadow: 0 10px 36px rgba(0,0,0,0.28);
@@ -18,19 +18,19 @@
         font-size: 3.4rem;
         font-weight: 900;
         text-align: center;
-        margin-bottom: 50px;
+        margin-bottom: 30px;
         color: #002b5c;
     }
 
     .data-label {
         font-weight: 800;
         color: #002b5c;
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .data-value {
-        font-size: 2.2rem;
-        margin-bottom: 30px;
+        font-size: 2rem;
+        margin-bottom: 20px;
     }
 
     .table-corsi th {
@@ -59,6 +59,16 @@
         border-radius: 12px;
     }
 
+    /* BOTTONI MOBILE-FRIENDLY */
+    .big-btn {
+        width: 100%;
+        font-size: 1.8rem;
+        padding: 22px;
+        margin-bottom: 20px;
+        border-radius: 14px;
+        font-weight: 700;
+    }
+
     /* BOX A COMPARSA */
     .toggle-box {
         padding: 25px;
@@ -79,26 +89,14 @@
 
     <div class="profile-title">Scheda Personale</div>
 
-    <p><span class="data-label">Nome:</span>
-       <span class="data-value">{{ dati.nome }}</span></p>
-
-    <p><span class="data-label">Cognome:</span>
-       <span class="data-value">{{ dati.cognome }}</span></p>
-
-    <p><span class="data-label">Data di nascita:</span>
-       <span class="data-value">{{ dati.data_nascita }}</span></p>
-
-    <p><span class="data-label">Indirizzo:</span>
-       <span class="data-value">{{ dati.indirizzo }}</span></p>
-
-    <p><span class="data-label">Telefono:</span>
-       <span class="data-value">{{ dati.telefono }}</span></p>
-
-    <p><span class="data-label">Email:</span>
-       <span class="data-value">{{ dati.email }}</span></p>
-
-    <p><span class="data-label">Categoria:</span>
-       <span class="data-value">{{ dati.categoria }}</span></p>
+    <!-- DATI ANAGRAFICI -->
+    <p><span class="data-label">Nome:</span> <span class="data-value">{{ dati.nome }}</span></p>
+    <p><span class="data-label">Cognome:</span> <span class="data-value">{{ dati.cognome }}</span></p>
+    <p><span class="data-label">Data di nascita:</span> <span class="data-value">{{ dati.data_nascita }}</span></p>
+    <p><span class="data-label">Indirizzo:</span> <span class="data-value">{{ dati.indirizzo }}</span></p>
+    <p><span class="data-label">Telefono:</span> <span class="data-value">{{ dati.telefono }}</span></p>
+    <p><span class="data-label">Email:</span> <span class="data-value">{{ dati.email }}</span></p>
+    <p><span class="data-label">Categoria:</span> <span class="data-value">{{ dati.categoria }}</span></p>
 
     <p>
         <span class="data-label">Attiv. Notifiche:</span>
@@ -110,27 +108,18 @@
     </p>
 
     {% if not dati.notifiche_attive %}
-    <button class="btn btn-success btn-notifiche" onclick="attivaNotifiche()">
-        🔔 Attiva notifiche di emergenza
-    </button>
+    <button class="btn btn-success btn-notifiche" onclick="attivaNotifiche()">🔔 Attiva notifiche di emergenza</button>
     {% else %}
-    <button class="btn btn-danger btn-notifiche" onclick="disattivaNotifiche()">
-        🔕 Disattiva notifiche
-    </button>
+    <button class="btn btn-danger btn-notifiche" onclick="disattivaNotifiche()">🔕 Disattiva notifiche</button>
     {% endif %}
 
     <hr>
 
     <!-- BOTTONI -->
-    <div style="text-align:center; margin-bottom:40px;">
-        <button class="btn btn-primary btn-lg" onclick="toggleBox('boxCorsi')">
-            📘 Mostra / Nascondi Corsi
-        </button>
-
-        <button class="btn btn-warning btn-lg" onclick="toggleBox('boxDPI')" style="margin-left:20px;">
-            🧤 Mostra / Nascondi Dotazioni DPI
-        </button>
-    </div>
+    <button class="btn btn-primary big-btn" onclick="toggleBox('boxCorsi')">📘 Corsi svolti</button>
+    <button class="btn btn-warning big-btn" onclick="toggleBox('boxDPI')">🧤 Dotazioni DPI</button>
+    <button class="btn btn-info big-btn" onclick="toggleBox('boxModificaDati')">✏️ Modifica dati personali</button>
+    <button class="btn btn-danger big-btn" onclick="toggleBox('boxModificaPassword')">🔐 Modifica password</button>
 
     <!-- BOX CORSI -->
     <div id="boxCorsi" class="toggle-box" style="display:none;">
@@ -138,62 +127,17 @@
 
         <table class="table table-bordered table-corsi">
             <thead>
-                <tr>
-                    <th>Corso</th>
-                    <th>Completato</th>
-                    <th>Scadenza</th>
-                </tr>
+                <tr><th>Corso</th><th>Completato</th><th>Scadenza</th></tr>
             </thead>
             <tbody>
-
-                <tr>
-                    <td>AIB</td>
-                    <td><span class="badge bg-{{ dati.col_aib }}">{{ "Sì" if dati.corso_aib else "No" }}</span></td>
-                    <td>{{ dati.scadenza_aib }}</td>
-                </tr>
-
-                <tr>
-                    <td>Motosega</td>
-                    <td><span class="badge bg-{{ dati.col_motosega }}">{{ "Sì" if dati.corso_motosega else "No" }}</span></td>
-                    <td>{{ dati.scadenza_motosega }}</td>
-                </tr>
-
-                <tr>
-                    <td>Ricerca Scomparsi</td>
-                    <td><span class="badge bg-{{ dati.col_ricerca }}">{{ "Sì" if dati.corso_ricerca_sco else "No" }}</span></td>
-                    <td>{{ dati.scadenza_ricerca }}</td>
-                </tr>
-
-                <tr>
-                    <td>Corso 1</td>
-                    <td>{{ "Sì" if dati.corso_1 else "No" }}</td>
-                    <td>{{ dati.scadenza_corso_1 }}</td>
-                </tr>
-
-                <tr>
-                    <td>Corso 2</td>
-                    <td>{{ "Sì" if dati.corso_2 else "No" }}</td>
-                    <td>{{ dati.scadenza_corso_2 }}</td>
-                </tr>
-
-                <tr>
-                    <td>Corso 3</td>
-                    <td>{{ "Sì" if dati.corso_3 else "No" }}</td>
-                    <td>{{ dati.scadenza_corso_3 }}</td>
-                </tr>
-
-                <tr>
-                    <td>Corso 4</td>
-                    <td>{{ "Sì" if dati.corso_4 else "No" }}</td>
-                    <td>{{ dati.scadenza_corso_4 }}</td>
-                </tr>
-
-                <tr>
-                    <td>Corso 5</td>
-                    <td>{{ "Sì" if dati.corso_5 else "No" }}</td>
-                    <td>{{ dati.scadenza_corso_5 }}</td>
-                </tr>
-
+                <tr><td>AIB</td><td>{{ "Sì" if dati.corso_aib else "No" }}</td><td>{{ dati.scadenza_aib }}</td></tr>
+                <tr><td>Motosega</td><td>{{ "Sì" if dati.corso_motosega else "No" }}</td><td>{{ dati.scadenza_motosega }}</td></tr>
+                <tr><td>Ricerca Scomparsi</td><td>{{ "Sì" if dati.corso_ricerca_sco else "No" }}</td><td>{{ dati.scadenza_ricerca }}</td></tr>
+                <tr><td>Corso 1</td><td>{{ "Sì" if dati.corso_1 else "No" }}</td><td>{{ dati.scadenza_corso_1 }}</td></tr>
+                <tr><td>Corso 2</td><td>{{ "Sì" if dati.corso_2 else "No" }}</td><td>{{ dati.scadenza_corso_2 }}</td></tr>
+                <tr><td>Corso 3</td><td>{{ "Sì" if dati.corso_3 else "No" }}</td><td>{{ dati.scadenza_corso_3 }}</td></tr>
+                <tr><td>Corso 4</td><td>{{ "Sì" if dati.corso_4 else "No" }}</td><td>{{ dati.scadenza_corso_4 }}</td></tr>
+                <tr><td>Corso 5</td><td>{{ "Sì" if dati.corso_5 else "No" }}</td><td>{{ dati.scadenza_corso_5 }}</td></tr>
             </tbody>
         </table>
     </div>
@@ -204,7 +148,6 @@
 
         <table class="table table-bordered">
             <tbody>
-
                 <tr><th>Giacca</th><td>{{ dati.giacca_d_u }}</td></tr>
                 <tr><th>Pantaloni</th><td>{{ dati.pantaloni_d_u }}</td></tr>
                 <tr><th>Casco</th><td>{{ dati.casco }}</td></tr>
@@ -212,21 +155,54 @@
                 <tr><th>Maglietta</th><td>{{ dati.maglietta }}</td></tr>
                 <tr><th>Cerata</th><td>{{ dati.cerata }}</td></tr>
                 <tr><th>Piumino</th><td>{{ dati.piumino }}</td></tr>
-
                 <tr><th>Pantaloni MS</th><td>{{ dati.pantaloni_ms }}</td></tr>
                 <tr><th>Scarponi MS</th><td>{{ dati.n_scarponi_ms }}</td></tr>
                 <tr><th>Guanti MS</th><td>{{ dati.guanti_ms }}</td></tr>
                 <tr><th>Casco MS</th><td>{{ dati.casco_ms }}</td></tr>
-
                 <tr><th>Tuta AIB</th><td>{{ dati.tuta_aib }}</td></tr>
                 <tr><th>Scarponi AIB</th><td>{{ dati.n_scarponi_aib }}</td></tr>
                 <tr><th>Guanti AIB</th><td>{{ dati.guanti_aib }}</td></tr>
                 <tr><th>Casco AIB</th><td>{{ dati.casco_aib }}</td></tr>
-
                 <tr><th>Note AIB</th><td>{{ dati.note_aib }}</td></tr>
-
             </tbody>
         </table>
+    </div>
+
+    <!-- BOX MODIFICA DATI -->
+    <div id="boxModificaDati" class="toggle-box" style="display:none;">
+        <h3>Modifica dati personali</h3>
+
+        <form method="POST" action="/aggiorna_dati">
+            <input type="hidden" name="username" value="{{ dati.username }}">
+
+            <label>Data di nascita</label>
+            <input class="form-control" type="text" name="data_nascita" value="{{ dati.data_nascita }}">
+
+            <label>Indirizzo</label>
+            <input class="form-control" type="text" name="indirizzo" value="{{ dati.indirizzo }}">
+
+            <label>Telefono</label>
+            <input class="form-control" type="text" name="telefono" value="{{ dati.telefono }}">
+
+            <label>Email</label>
+            <input class="form-control" type="text" name="email" value="{{ dati.email }}">
+
+            <button class="btn btn-success big-btn" type="submit">💾 Salva modifiche</button>
+        </form>
+    </div>
+
+    <!-- BOX MODIFICA PASSWORD -->
+    <div id="boxModificaPassword" class="toggle-box" style="display:none;">
+        <h3>Modifica password</h3>
+
+        <form method="POST" action="/aggiorna_password">
+            <input type="hidden" name="username" value="{{ dati.username }}">
+
+            <label>Nuova password</label>
+            <input class="form-control" type="password" name="nuova_password">
+
+            <button class="btn btn-danger big-btn" type="submit">🔐 Aggiorna password</button>
+        </form>
     </div>
 
 </div>
@@ -238,83 +214,6 @@ function toggleBox(id) {
         ? "block" 
         : "none";
 }
-</script>
-
-<script>
-    const vapidPublicKey = "{{ vapid_public_key }}";
-    const telefonoUtente = "{{ dati.telefono }}";
-    const categoriaUtente = "{{ dati.categoria }}";
-</script>
-
-<script>
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-}
-</script>
-
-<script>
-async function attivaNotifiche() {
-    const perm = await Notification.requestPermission();
-    if (perm !== "granted") {
-        alert("Permesso notifiche negato");
-        return;
-    }
-
-    const registration = await navigator.serviceWorker.ready;
-
-    const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
-    });
-
-    const body = {
-        endpoint: subscription.endpoint,
-        p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("p256dh")))),
-        auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("auth")))),
-        telefono: telefonoUtente,
-        gruppo: categoriaUtente
-    };
-
-    fetch("/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    })
-    .then(() => {
-        alert("Notifiche attivate correttamente");
-        location.reload();
-    });
-}
-</script>
-
-<script>
-async function disattivaNotifiche() {
-    await fetch("/unsubscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ telefono: telefonoUtente })
-    });
-
-    alert("Notifiche disattivate");
-    location.reload();
-}
-</script>
-
-<script>
-navigator.serviceWorker.register("/service-worker.js")
-    .then(() => console.log("Service worker registrato"))
-    .catch(err => console.error("Errore registrazione SW:", err));
 </script>
 
 {% endblock %}
