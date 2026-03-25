@@ -58,6 +58,21 @@
         margin-top: 10px;
         border-radius: 12px;
     }
+
+    /* BOX A COMPARSA */
+    .toggle-box {
+        padding: 25px;
+        border-radius: 18px;
+        background: #ffffffdd;
+        box-shadow: 0 6px 22px rgba(0,0,0,0.18);
+        margin-bottom: 40px;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 </style>
 
 <div class="profile-container">
@@ -106,70 +121,124 @@
 
     <hr>
 
-    <h3 class="mt-4 mb-3">Corsi svolti</h3>
+    <!-- BOTTONI -->
+    <div style="text-align:center; margin-bottom:40px;">
+        <button class="btn btn-primary btn-lg" onclick="toggleBox('boxCorsi')">
+            📘 Mostra / Nascondi Corsi
+        </button>
 
-    <table class="table table-bordered table-corsi">
-        <thead>
-            <tr>
-                <th>Corso</th>
-                <th>Completato</th>
-                <th>Scadenza</th>
-            </tr>
-        </thead>
-        <tbody>
+        <button class="btn btn-warning btn-lg" onclick="toggleBox('boxDPI')" style="margin-left:20px;">
+            🧤 Mostra / Nascondi Dotazioni DPI
+        </button>
+    </div>
 
-            <tr>
-                <td>AIB</td>
-                <td><span class="badge bg-{{ dati.col_aib }}">{{ "Sì" if dati.corso_aib else "No" }}</span></td>
-                <td><span class="badge bg-{{ dati.col_aib }}">{{ dati.scadenza_aib }}</span></td>
-            </tr>
+    <!-- BOX CORSI -->
+    <div id="boxCorsi" class="toggle-box" style="display:none;">
+        <h3 class="mt-4 mb-3">Corsi svolti</h3>
 
-            <tr>
-                <td>Motosega</td>
-                <td><span class="badge bg-{{ dati.col_motosega }}">{{ "Sì" if dati.corso_motosega else "No" }}</span></td>
-                <td><span class="badge bg-{{ dati.col_motosega }}">{{ dati.scadenza_motosega }}</span></td>
-            </tr>
+        <table class="table table-bordered table-corsi">
+            <thead>
+                <tr>
+                    <th>Corso</th>
+                    <th>Completato</th>
+                    <th>Scadenza</th>
+                </tr>
+            </thead>
+            <tbody>
 
-            <tr>
-                <td>Ricerca Scomparsi</td>
-                <td><span class="badge bg-{{ dati.col_ricerca }}">{{ "Sì" if dati.corso_ricerca_sco else "No" }}</span></td>
-                <td><span class="badge bg-{{ dati.col_ricerca }}">{{ dati.scadenza_ricerca }}</span></td>
-            </tr>
+                <tr>
+                    <td>AIB</td>
+                    <td><span class="badge bg-{{ dati.col_aib }}">{{ "Sì" if dati.corso_aib else "No" }}</span></td>
+                    <td>{{ dati.scadenza_aib }}</td>
+                </tr>
 
-            <tr>
-                <td>Corso 1</td>
-                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_1 else "No" }}</span></td>
-                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_1 }}</span></td>
-            </tr>
+                <tr>
+                    <td>Motosega</td>
+                    <td><span class="badge bg-{{ dati.col_motosega }}">{{ "Sì" if dati.corso_motosega else "No" }}</span></td>
+                    <td>{{ dati.scadenza_motosega }}</td>
+                </tr>
 
-            <tr>
-                <td>Corso 2</td>
-                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_2 else "No" }}</span></td>
-                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_2 }}</span></td>
-            </tr>
+                <tr>
+                    <td>Ricerca Scomparsi</td>
+                    <td><span class="badge bg-{{ dati.col_ricerca }}">{{ "Sì" if dati.corso_ricerca_sco else "No" }}</span></td>
+                    <td>{{ dati.scadenza_ricerca }}</td>
+                </tr>
 
-            <tr>
-                <td>Corso 3</td>
-                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_3 else "No" }}</span></td>
-                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_3 }}</span></td>
-            </tr>
+                <tr>
+                    <td>Corso 1</td>
+                    <td>{{ "Sì" if dati.corso_1 else "No" }}</td>
+                    <td>{{ dati.scadenza_corso_1 }}</td>
+                </tr>
 
-            <tr>
-                <td>Corso 4</td>
-                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_4 else "No" }}</span></td>
-                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_4 }}</span></td>
-            </tr>
+                <tr>
+                    <td>Corso 2</td>
+                    <td>{{ "Sì" if dati.corso_2 else "No" }}</td>
+                    <td>{{ dati.scadenza_corso_2 }}</td>
+                </tr>
 
-            <tr>
-                <td>Corso 5</td>
-                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_5 else "No" }}</span></td>
-                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_5 }}</span></td>
-            </tr>
+                <tr>
+                    <td>Corso 3</td>
+                    <td>{{ "Sì" if dati.corso_3 else "No" }}</td>
+                    <td>{{ dati.scadenza_corso_3 }}</td>
+                </tr>
 
-        </tbody>
-    </table>
+                <tr>
+                    <td>Corso 4</td>
+                    <td>{{ "Sì" if dati.corso_4 else "No" }}</td>
+                    <td>{{ dati.scadenza_corso_4 }}</td>
+                </tr>
+
+                <tr>
+                    <td>Corso 5</td>
+                    <td>{{ "Sì" if dati.corso_5 else "No" }}</td>
+                    <td>{{ dati.scadenza_corso_5 }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- BOX DPI -->
+    <div id="boxDPI" class="toggle-box" style="display:none;">
+        <h3 class="mt-4 mb-3">Dotazioni DPI</h3>
+
+        <table class="table table-bordered">
+            <tbody>
+
+                <tr><th>Giacca</th><td>{{ dati.giacca_d_u }}</td></tr>
+                <tr><th>Pantaloni</th><td>{{ dati.pantaloni_d_u }}</td></tr>
+                <tr><th>Casco</th><td>{{ dati.casco }}</td></tr>
+                <tr><th>Tuta da lavoro</th><td>{{ dati.tuta_da_lavoro }}</td></tr>
+                <tr><th>Maglietta</th><td>{{ dati.maglietta }}</td></tr>
+                <tr><th>Cerata</th><td>{{ dati.cerata }}</td></tr>
+                <tr><th>Piumino</th><td>{{ dati.piumino }}</td></tr>
+
+                <tr><th>Pantaloni MS</th><td>{{ dati.pantaloni_ms }}</td></tr>
+                <tr><th>Scarponi MS</th><td>{{ dati.n_scarponi_ms }}</td></tr>
+                <tr><th>Guanti MS</th><td>{{ dati.guanti_ms }}</td></tr>
+                <tr><th>Casco MS</th><td>{{ dati.casco_ms }}</td></tr>
+
+                <tr><th>Tuta AIB</th><td>{{ dati.tuta_aib }}</td></tr>
+                <tr><th>Scarponi AIB</th><td>{{ dati.n_scarponi_aib }}</td></tr>
+                <tr><th>Guanti AIB</th><td>{{ dati.guanti_aib }}</td></tr>
+                <tr><th>Casco AIB</th><td>{{ dati.casco_aib }}</td></tr>
+
+                <tr><th>Note AIB</th><td>{{ dati.note_aib }}</td></tr>
+
+            </tbody>
+        </table>
+    </div>
 
 </div>
+
+<script>
+function toggleBox(id) {
+    const box = document.getElementById(id);
+    box.style.display = (box.style.display === "none" || box.style.display === "") 
+        ? "block" 
+        : "none";
+}
+</script>
 
 <script>
     const vapidPublicKey = "{{ vapid_public_key }}";
