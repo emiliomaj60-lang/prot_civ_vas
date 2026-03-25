@@ -307,9 +307,6 @@ def pagina4():
     return render_template("pagina4.html")
 
 
-# ============================
-# AREA ISCRITTI (LOGIN)
-# ============================
 @app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
     print(">>> /iscritti chiamata")
@@ -339,7 +336,8 @@ def iscritti():
         print(">>> Possibili username:", possibili_username)
 
         try:
-            with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
+            # Assicurati che questo sia il file giusto (con le colonne nuove)
+            with open("static/dotazioni_virgole.csv", newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 print(">>> CSV aperto, colonne:", reader.fieldnames)
 
@@ -352,18 +350,35 @@ def iscritti():
                     if username_csv in possibili_username:
                         print(">>> Username trovato!")
 
-                        print(">>> Password CSV:", r["password"])
-
-                        if r["password"] == password:
+                        print(">>> Password CSV:", r.get("password"))
+                        if r.get("password", "") == password:
                             print(">>> Password corretta")
 
-                            r["motosega"] = r["motosega"] == "1"
-                            r["corso_base"] = r["corso_base"] == "1"
-                            r["altro_fatto"] = r["altro_fatto"] == "1"
+                            # --- CORSI: conversione da stringa a booleano ---
+                            # Nel CSV potrai usare "1" / "0" oppure "S" / "" ecc.
+                            r["corso_aib"] = r.get("corso_aib", "") == "1"
+                            r["corso_motosega"] = r.get("corso_motosega", "") == "1"
+                            r["corso_ricerca_sco"] = r.get("corso_ricerca_sco", "") == "1"
+                            r["corso_1"] = r.get("corso_1", "") == "1"
+                            r["corso_2"] = r.get("corso_2", "") == "1"
+                            r["corso_3"] = r.get("corso_3", "") == "1"
+                            r["corso_4"] = r.get("corso_4", "") == "1"
+                            r["corso_5"] = r.get("corso_5", "") == "1"
 
-                            r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
-                            r["col_base"] = colore_scadenza(r["scadenza_base"])
-                            r["col_altro"] = colore_scadenza(r["scadenza_altro"])
+                            # --- COLORI BADGE (qui non hai scadenze nel CSV, quindi uso logica semplice) ---
+                            r["col_aib"] = "success" if r["corso_aib"] else "secondary"
+                            r["col_motosega"] = "success" if r["corso_motosega"] else "secondary"
+                            r["col_ricerca"] = "success" if r["corso_ricerca_sco"] else "secondary"
+
+                            # Se vuoi, puoi aggiungere scadenze in futuro; per ora le lascio vuote
+                            r["scadenza_aib"] = r.get("scadenza_aib", "")
+                            r["scadenza_motosega"] = r.get("scadenza_motosega", "")
+                            r["scadenza_ricerca"] = r.get("scadenza_ricerca", "")
+                            r["scadenza_corso_1"] = r.get("scadenza_corso_1", "")
+                            r["scadenza_corso_2"] = r.get("scadenza_corso_2", "")
+                            r["scadenza_corso_3"] = r.get("scadenza_corso_3", "")
+                            r["scadenza_corso_4"] = r.get("scadenza_corso_4", "")
+                            r["scadenza_corso_5"] = r.get("scadenza_corso_5", "")
 
                             print(">>> Categoria trovata:", r.get("categoria"))
                             print(">>> Telefono trovato:", r.get("telefono"))
@@ -374,9 +389,14 @@ def iscritti():
                                 r["notifiche_attive"] = stato
                             except Exception as e:
                                 print(">>> ERRORE notifiche_attive:", e)
+                                r["notifiche_attive"] = False
 
                             print(">>> Rendering scheda_iscritto.html")
-                            return render_template("scheda_iscritto.html", dati=r, vapid_public_key=VAPID_PUBLIC_KEY)
+                            return render_template(
+                                "scheda_iscritto.html",
+                                dati=r,
+                                vapid_public_key=VAPID_PUBLIC_KEY
+                            )
 
                         else:
                             print(">>> Password errata")
@@ -390,7 +410,6 @@ def iscritti():
 
     print(">>> Metodo GET, mostro form")
     return render_template("iscritti.html")
-
 
 # ============================
 # ROUTE SALVATAGGIO SUBSCRIPTION
