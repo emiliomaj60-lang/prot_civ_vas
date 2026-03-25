@@ -207,11 +207,20 @@
 
 </div>
 
+<!-- 🔥 FUNZIONE MIGLIORATA: apre un box e chiude gli altri -->
 <script>
 function toggleBox(id) {
+    const boxes = ["boxCorsi", "boxDPI", "boxModificaDati", "boxModificaPassword"];
+
+    boxes.forEach(boxId => {
+        if (boxId !== id) {
+            document.getElementById(boxId).style.display = "none";
+        }
+    });
+
     const box = document.getElementById(id);
-    box.style.display = (box.style.display === "none" || box.style.display === "") 
-        ? "block" 
+    box.style.display = (box.style.display === "none" || box.style.display === "")
+        ? "block"
         : "none";
 }
 </script>
