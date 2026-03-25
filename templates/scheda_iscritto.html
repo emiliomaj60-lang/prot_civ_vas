@@ -117,22 +117,41 @@
             </tr>
         </thead>
         <tbody>
+
+            <tr>
+                <td>AIB</td>
+                <td><span class="badge bg-{{ dati.col_aib }}">{{ "Sì" if dati.corso_aib else "No" }}</span></td>
+                <td><span class="badge bg-{{ dati.col_aib }}">{{ dati.scadenza_aib }}</span></td>
+            </tr>
+
             <tr>
                 <td>Motosega</td>
-                <td><span class="badge bg-{{ dati.col_motosega }}">{{ "Sì" if dati.motosega else "No" }}</span></td>
+                <td><span class="badge bg-{{ dati.col_motosega }}">{{ "Sì" if dati.corso_motosega else "No" }}</span></td>
                 <td><span class="badge bg-{{ dati.col_motosega }}">{{ dati.scadenza_motosega }}</span></td>
             </tr>
 
             <tr>
-                <td>Corso Base PC</td>
-                <td><span class="badge bg-{{ dati.col_base }}">{{ "Sì" if dati.corso_base else "No" }}</span></td>
-                <td><span class="badge bg-{{ dati.col_base }}">{{ dati.scadenza_base }}</span></td>
+                <td>Ricerca Scomparsi</td>
+                <td><span class="badge bg-{{ dati.col_ricerca }}">{{ "Sì" if dati.corso_ricerca_sco else "No" }}</span></td>
+                <td><span class="badge bg-{{ dati.col_ricerca }}">{{ dati.scadenza_ricerca }}</span></td>
             </tr>
 
             <tr>
-                <td>Altro</td>
-                <td><span class="badge bg-{{ dati.col_altro }}">{{ "Sì" if dati.altro_fatto else "No" }}</span></td>
-                <td><span class="badge bg-{{ dati.col_altro }}">{{ dati.scadenza_altro }}</span></td>
+                <td>Corso 1</td>
+                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_1 else "No" }}</span></td>
+                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_1 }}</span></td>
+            </tr>
+
+            <tr>
+                <td>Corso 2</td>
+                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_2 else "No" }}</span></td>
+                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_2 }}</span></td>
+            </tr>
+
+            <tr>
+                <td>Corso 3</td>
+                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_3 else "No" }}</span></td>
+                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_3 }}</span></td>
             </tr>
 
             <tr>
@@ -147,24 +166,17 @@
                 <td><span class="badge bg-secondary">{{ dati.scadenza_corso_5 }}</span></td>
             </tr>
 
-            <tr>
-                <td>Corso 6</td>
-                <td><span class="badge bg-secondary">{{ "Sì" if dati.corso_6 else "No" }}</span></td>
-                <td><span class="badge bg-secondary">{{ dati.scadenza_corso_6 }}</span></td>
-            </tr>
         </tbody>
     </table>
 
 </div>
 
-<!-- 🔥 VARIABILI NECESSARIE PER LE NOTIFICHE -->
 <script>
     const vapidPublicKey = "{{ vapid_public_key }}";
     const telefonoUtente = "{{ dati.telefono }}";
     const categoriaUtente = "{{ dati.categoria }}";
 </script>
 
-<!-- 🔥 FUNZIONE DI CONVERSIONE VAPID -->
 <script>
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -182,10 +194,8 @@ function urlBase64ToUint8Array(base64String) {
 }
 </script>
 
-<!-- 🔔 ATTIVA NOTIFICHE -->
 <script>
 async function attivaNotifiche() {
-
     const perm = await Notification.requestPermission();
     if (perm !== "granted") {
         alert("Permesso notifiche negato");
@@ -219,10 +229,8 @@ async function attivaNotifiche() {
 }
 </script>
 
-<!-- 🔕 DISATTIVA NOTIFICHE -->
 <script>
 async function disattivaNotifiche() {
-
     await fetch("/unsubscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -234,7 +242,6 @@ async function disattivaNotifiche() {
 }
 </script>
 
-<!-- 🔥 REGISTRAZIONE SERVICE WORKER -->
 <script>
 navigator.serviceWorker.register("/service-worker.js")
     .then(() => console.log("Service worker registrato"))
