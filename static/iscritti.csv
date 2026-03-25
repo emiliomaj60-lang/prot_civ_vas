@@ -1,4 +1,4 @@
-username;cognome;nome;telefono;email;indirizzo;data_nascita;categoria;giacca_d_u;pantaloni_d_u;casco;tuta_da_lavoro;maglietta;cerata;piumino;pantaloni_ms;n_scarponi_ms;guanti_ms;casco_ms;tuta_aib;n_scarponi_aib;guanti_aib;casco_aib;note_aib;corso_aib;corso_motosega;corso_ricerca_sco;corso_1;corso_2;corso_3;corso_4;corso_5; password
+username;cognome;nome;telefono;email;indirizzo;data_nascita;categoria;giacca_d_u;pantaloni_d_u;casco;tuta_da_lavoro;maglietta;cerata;piumino;pantaloni_ms;n_scarponi_ms;guanti_ms;casco_ms;tuta_aib;n_scarponi_aib;guanti_aib;casco_aib;note_aib;corso_aib;corso_motosega;corso_ricerca_sco;corso_1;corso_2;corso_3;corso_4;corso_5;password
 roberto_agoni;AGONI;ROBERTO;;;;;;XXL;XXL;mag-35;XXL;XXL;XXL;XXXL;;;;;XXL;44.0;10.0;IV/2023;TUTA ARANCIO/CASCO BLU;;;;;;;;;a
 ermes_agoni;AGONI;ERMES;;;;;;M;M;feb-27;M;M;M;M;;;;;;;;;;;;;;;;;;a
 michele_agoni;AGONI;MICHELE;;;;;;M;M;feb-27;L;M;L;M;;;;;M;42.0;10.0;IV/2023;TUTA ARANCIO/CASCO NERO;;;;;;;;;a
