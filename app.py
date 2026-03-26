@@ -306,9 +306,6 @@ def invia_allerta():
 def pagina4():
     return render_template("pagina4.html")
 
-# ============================
-# ROUTE scheda iscritti
-# ============================
 @app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
     print(">>> /iscritti chiamata")
@@ -316,9 +313,9 @@ def iscritti():
     if request.method == "POST":
         print(">>> Metodo POST ricevuto")
 
-        nome = request.form["nome"].strip().lower()
-        cognome = request.form["cognome"].strip().lower()
-        password = request.form["password"].strip()
+        nome = request.form.get("nome", "").strip().lower()
+        cognome = request.form.get("cognome", "").strip().lower()
+        password_input = request.form.get("password", "").strip()
 
         username_input = f"{nome}_{cognome}"
         possibili_username = {
@@ -331,17 +328,36 @@ def iscritti():
 
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
-                reader = csv.DictReader(f)
+                reader = csv.reader(f)
 
-                for r in reader:
-                    username_csv = r["username"].strip().lower()
+                # Leggiamo l'intestazione
+                header = next(reader)
+                num_colonne = len(header)
+
+                for row in reader:
+                    if not row:
+                        continue
+
+                    # Username = prima colonna
+                    username_csv = row[0].strip().lower()
 
                     if username_csv in possibili_username:
 
-                        # 🔥 Controllo password
-                        if r.get("password", "").strip() == password.strip():
+                        # Password = ultima colonna della riga
+                        password_csv = row[-1].strip()
 
-                            # 🔥 Conversione corsi (1 = sì)
+                        if password_csv == password_input:
+
+                            # Ricostruzione dizionario robusta
+                            r = {}
+
+                            for i, col in enumerate(header):
+                                if i < len(row):
+                                    r[col] = row[i].strip()
+                                else:
+                                    r[col] = ""  # colonna mancante → vuota
+
+                            # Conversione corsi
                             def flag(x): return x == "1"
 
                             r["corso_aib"] = flag(r.get("corso_aib", ""))
@@ -353,28 +369,26 @@ def iscritti():
                             r["corso_4"] = flag(r.get("corso_4", ""))
                             r["corso_5"] = flag(r.get("corso_5", ""))
 
-                            # 🔥 Colori badge
+                            # Badge colori
                             r["col_aib"] = "success" if r["corso_aib"] else "secondary"
                             r["col_motosega"] = "success" if r["corso_motosega"] else "secondary"
                             r["col_ricerca"] = "success" if r["corso_ricerca_sco"] else "secondary"
 
-                            # 🔥 Scadenze (non presenti nel CSV → vuote)
-                            r["scadenza_aib"] = ""
-                            r["scadenza_motosega"] = ""
-                            r["scadenza_ricerca"] = ""
-                            r["scadenza_corso_1"] = ""
-                            r["scadenza_corso_2"] = ""
-                            r["scadenza_corso_3"] = ""
-                            r["scadenza_corso_4"] = ""
-                            r["scadenza_corso_5"] = ""
+                            # Scadenze vuote
+                            for key in [
+                                "scadenza_aib", "scadenza_motosega", "scadenza_ricerca",
+                                "scadenza_corso_1", "scadenza_corso_2", "scadenza_corso_3",
+                                "scadenza_corso_4", "scadenza_corso_5"
+                            ]:
+                                r[key] = ""
 
-                            # 🔥 Notifiche
+                            # Notifiche
                             try:
                                 r["notifiche_attive"] = notifiche_attive(r.get("telefono", ""))
                             except:
                                 r["notifiche_attive"] = False
 
-                            # 🔥 NUOVI CAMPI DAL CSV
+                            # Alias campi
                             r["codice_fiscale"] = r.get("cod_fiscale", "")
                             r["cod_is"] = r.get("cod_is", "")
                             r["cod_2"] = r.get("cod_2", "")
