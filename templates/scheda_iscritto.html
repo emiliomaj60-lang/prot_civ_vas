@@ -7,7 +7,7 @@
     .profile-container {
         max-width: 1300px;
         margin: auto;
-        margin-top: 0px; /* ALZATO */
+        margin-top: 0px;
         padding: 40px;
         background: #ffffffee;
         border-radius: 28px;
@@ -59,14 +59,31 @@
         border-radius: 12px;
     }
 
-    /* BOTTONI MOBILE-FRIENDLY */
+    /* GRID BOTTONI RESPONSIVE */
+    .btn-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
     .big-btn {
-        width: 100%;
-        font-size: 1.8rem;
-        padding: 22px;
-        margin-bottom: 20px;
-        border-radius: 14px;
+        font-size: 1.4rem;
+        padding: 14px;
+        border-radius: 12px;
         font-weight: 700;
+        width: 100%;
+    }
+
+    /* Su schermi grandi tornano grandi */
+    @media (min-width: 768px) {
+        .btn-grid {
+            grid-template-columns: 1fr;
+        }
+        .big-btn {
+            font-size: 1.8rem;
+            padding: 22px;
+        }
     }
 
     /* BOX A COMPARSA */
@@ -92,6 +109,7 @@
     <!-- DATI ANAGRAFICI -->
     <p><span class="data-label">Nome:</span> <span class="data-value">{{ dati.nome }}</span></p>
     <p><span class="data-label">Cognome:</span> <span class="data-value">{{ dati.cognome }}</span></p>
+    <p><span class="data-label">Codice Fiscale:</span> <span class="data-value">{{ dati.codice_fiscale }}</span></p>
     <p><span class="data-label">Data di nascita:</span> <span class="data-value">{{ dati.data_nascita }}</span></p>
     <p><span class="data-label">Indirizzo:</span> <span class="data-value">{{ dati.indirizzo }}</span></p>
     <p><span class="data-label">Telefono:</span> <span class="data-value">{{ dati.telefono }}</span></p>
@@ -116,10 +134,12 @@
     <hr>
 
     <!-- BOTTONI -->
-    <button class="btn btn-primary big-btn" onclick="toggleBox('boxCorsi')">📘 Corsi svolti</button>
-    <button class="btn btn-warning big-btn" onclick="toggleBox('boxDPI')">🧤 Dotazioni DPI</button>
-    <button class="btn btn-info big-btn" onclick="toggleBox('boxModificaDati')">✏️ Modifica dati personali</button>
-    <button class="btn btn-danger big-btn" onclick="toggleBox('boxModificaPassword')">🔐 Modifica password</button>
+    <div class="btn-grid">
+        <button class="btn btn-primary big-btn" onclick="toggleBox('boxCorsi')">📘 Corsi svolti</button>
+        <button class="btn btn-warning big-btn" onclick="toggleBox('boxDPI')">🧤 Dotazioni DPI</button>
+        <button class="btn btn-info big-btn" onclick="toggleBox('boxModificaDati')">✏️ Modifica dati</button>
+        <button class="btn btn-danger big-btn" onclick="toggleBox('boxModificaPassword')">🔐 Password</button>
+    </div>
 
     <!-- BOX CORSI -->
     <div id="boxCorsi" class="toggle-box" style="display:none;">
@@ -207,7 +227,6 @@
 
 </div>
 
-<!-- 🔥 FUNZIONE MIGLIORATA: apre un box e chiude gli altri -->
 <script>
 function toggleBox(id) {
     const boxes = ["boxCorsi", "boxDPI", "boxModificaDati", "boxModificaPassword"];
