@@ -330,7 +330,6 @@ def iscritti():
         }
 
         try:
-            # 🔥 Manteniamo il nome originale del file
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
 
@@ -374,6 +373,12 @@ def iscritti():
                                 r["notifiche_attive"] = notifiche_attive(r.get("telefono", ""))
                             except:
                                 r["notifiche_attive"] = False
+
+                            # 🔥 NUOVI CAMPI DAL CSV
+                            r["codice_fiscale"] = r.get("cod_fiscale", "")
+                            r["cod_is"] = r.get("cod_is", "")
+                            r["cod_2"] = r.get("cod_2", "")
+                            r["sez_alpini"] = r.get("sez_alpini", "")
 
                             return render_template(
                                 "scheda_iscritto.html",
