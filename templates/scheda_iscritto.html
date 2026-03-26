@@ -59,32 +59,31 @@
         border-radius: 12px;
     }
 
-    /* GRID BOTTONI RESPONSIVE */
+    /* GRID BOTTONI – default: 1 per riga */
     .btn-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 12px;
         margin-bottom: 25px;
     }
 
-    /* Forza i bottoni a riempire la colonna */
     .btn-grid .big-btn {
-        display: block !important;
-        width: 100% !important;
-        font-size: 1.4rem;
-        padding: 14px;
+        display: block;
+        width: 100%;
+        font-size: 1.8rem;
+        padding: 22px;
         border-radius: 12px;
         font-weight: 700;
     }
 
-    /* Su schermi grandi tornano grandi */
-    @media (min-width: 768px) {
+    /* SOLO SU SCHERMI PICCOLI: 2 per riga e più piccoli */
+    @media (max-width: 576px) {
         .btn-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
         }
         .btn-grid .big-btn {
-            font-size: 1.8rem;
-            padding: 22px;
+            font-size: 1.3rem;
+            padding: 12px;
         }
     }
 
