@@ -59,32 +59,38 @@
         border-radius: 12px;
     }
 
-    /* GRID BOTTONI – default: 1 per riga */
-    .btn-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
+    /* LISTA AZIONI CON CHECKBOX */
+    .action-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
         margin-bottom: 25px;
     }
 
-    .btn-grid .big-btn {
-        display: block;
-        width: 100%;
-        font-size: 1.8rem;
-        padding: 22px;
-        border-radius: 12px;
-        font-weight: 700;
+    .action-item {
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
     }
 
-    /* SOLO SU SCHERMI PICCOLI: 2 per riga e più piccoli */
-    @media (max-width: 576px) {
-        .btn-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-        .btn-grid .big-btn {
-            font-size: 1.3rem;
-            padding: 12px;
-        }
+    .action-label {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #002b5c;
+        margin-bottom: 4px;
+    }
+
+    .action-check {
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .action-check input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
     }
 
     /* BOX A COMPARSA */
@@ -134,12 +140,39 @@
 
     <hr>
 
-    <!-- BOTTONI -->
-    <div class="btn-grid">
-        <button class="btn btn-primary big-btn" onclick="toggleBox('boxCorsi')">📘 Corsi svolti</button>
-        <button class="btn btn-warning big-btn" onclick="toggleBox('boxDPI')">🧤 Dotazioni DPI</button>
-        <button class="btn btn-info big-btn" onclick="toggleBox('boxModificaDati')">✏️ Modifica dati</button>
-        <button class="btn btn-danger big-btn" onclick="toggleBox('boxModificaPassword')">🔐 Password</button>
+    <!-- “BOTTONI” SOTTO FORMA DI VOCI + CHECKBOX -->
+    <div class="action-list">
+        <div class="action-item">
+            <div class="action-label">📘 Corsi svolti</div>
+            <label class="action-check">
+                <input type="checkbox" onclick="toggleBox('boxCorsi')">
+                Apri/chiudi
+            </label>
+        </div>
+
+        <div class="action-item">
+            <div class="action-label">🧤 Dotazioni DPI</div>
+            <label class="action-check">
+                <input type="checkbox" onclick="toggleBox('boxDPI')">
+                Apri/chiudi
+            </label>
+        </div>
+
+        <div class="action-item">
+            <div class="action-label">✏️ Modifica dati personali</div>
+            <label class="action-check">
+                <input type="checkbox" onclick="toggleBox('boxModificaDati')">
+                Apri/chiudi
+            </label>
+        </div>
+
+        <div class="action-item">
+            <div class="action-label">🔐 Modifica password</div>
+            <label class="action-check">
+                <input type="checkbox" onclick="toggleBox('boxModificaPassword')">
+                Apri/chiudi
+            </label>
+        </div>
     </div>
 
     <!-- BOX CORSI -->
@@ -208,7 +241,7 @@
             <label>Email</label>
             <input class="form-control" type="text" name="email" value="{{ dati.email }}">
 
-            <button class="btn btn-success big-btn" type="submit">💾 Salva modifiche</button>
+            <button class="btn btn-success" type="submit">💾 Salva modifiche</button>
         </form>
     </div>
 
@@ -222,7 +255,7 @@
             <label>Nuova password</label>
             <input class="form-control" type="password" name="nuova_password">
 
-            <button class="btn btn-danger big-btn" type="submit">🔐 Aggiorna password</button>
+            <button class="btn btn-danger" type="submit">🔐 Aggiorna password</button>
         </form>
     </div>
 
