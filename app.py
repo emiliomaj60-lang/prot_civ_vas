@@ -339,7 +339,7 @@ def iscritti():
                     if username_csv in possibili_username:
 
                         # 🔥 Controllo password
-                        if r.get("password", "") == password:
+                        if r.get("password", "").strip() == password.strip():
 
                             # 🔥 Conversione corsi (1 = sì)
                             def flag(x): return x == "1"
