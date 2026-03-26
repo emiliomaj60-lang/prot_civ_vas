@@ -67,12 +67,14 @@
         margin-bottom: 25px;
     }
 
-    .big-btn {
+    /* Forza i bottoni a riempire la colonna */
+    .btn-grid .big-btn {
+        display: block !important;
+        width: 100% !important;
         font-size: 1.4rem;
         padding: 14px;
         border-radius: 12px;
         font-weight: 700;
-        width: 100%;
     }
 
     /* Su schermi grandi tornano grandi */
@@ -80,7 +82,7 @@
         .btn-grid {
             grid-template-columns: 1fr;
         }
-        .big-btn {
+        .btn-grid .big-btn {
             font-size: 1.8rem;
             padding: 22px;
         }
