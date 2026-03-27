@@ -257,25 +257,20 @@ def mostra_attivita_raw(nomefile):
 
 @app.route("/scheda_personale")
 def scheda_personale():
-    # Preleva l'username dall'URL
     username = request.args.get("username")
 
-    # 🔍 DEBUG 1: cosa arriva alla route
-    print(">>> /scheda_personale – username ricevuto:", username)
-
+    # Se manca lo username → torna all’area iscritti
     if not username:
-        return "Errore: manca username", 400
+        return redirect("/iscritti")
 
-    # Legge dal CSV
     dati = carica_iscritto(username)
 
-    # 🔍 DEBUG 2: cosa restituisce carica_iscritto()
-    print(">>> /scheda_personale – dati caricati:", dati)
-
+    # Se l’utente non esiste → torna all’area iscritti
     if not dati:
-        return "Utente non trovato", 404
+        return redirect("/iscritti")
 
-    return render_template("scheda_iscritto.html", **dati)
+    # PASSAGGIO CORRETTO: dati=dati
+    return render_template("scheda_iscritto.html", dati=dati)
 
 @app.route("/api/allerta")
 def api_allerta():
