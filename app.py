@@ -293,15 +293,18 @@ def iscritti():
 
         username_input = f"{nome}_{cognome}"
 
-        print(">>> Username cercato:", username_input)
-        print(">>> Username nel CSV:", r["username"])
-
+        
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
 
                 for r in reader:
+                    print(">>> Username cercato:", username_input)
+                    print(">>> Username nel CSV:", r["username"])
+
                     if r["username"].strip().lower() == username_input:
+
+                    
 
                         if r["password"].strip() != password_input:
                             return render_template("iscritti.html", errore="Password errata")
@@ -445,7 +448,7 @@ def aggiorna_dati():
     df.to_csv(CSV_PATH, index=False)
 
     flash("Dati aggiornati con successo!", "success")
-    return redirect("/scheda_personale")
+    return redirect(f"/scheda_personale?username={username}")
 
 # ============================
 # AGGIORNA PASSWORD
