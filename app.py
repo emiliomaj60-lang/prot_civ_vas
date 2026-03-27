@@ -585,6 +585,76 @@ def send_alert_group():
         print("Errore generale:", e)
         return "ERRORE", 500
 
+# ============================
+# aggiorna_dati
+# ============================
+
+from flask import flash, redirect, request
+import pandas as pd
+
+@app.route("/aggiorna_dati", methods=["POST"])
+def aggiorna_dati():
+    username = request.form.get("username")
+    nuovo_indirizzo = request.form.get("indirizzo")
+    nuova_data = request.form.get("data_nascita")
+    nuovo_tel = request.form.get("telefono")
+    nuova_email = request.form.get("email")
+
+    df = pd.read_csv("iscritti.csv", dtype=str)
+
+    # Trova la riga dell’utente
+    idx = df.index[df["username"] == username].tolist()
+    if not idx:
+        flash("Errore: utente non trovato", "danger")
+        return redirect("/")
+
+    i = idx[0]
+
+    # Aggiorna i campi
+    df.at[i, "indirizzo"] = nuovo_indirizzo
+    df.at[i, "data_nascita"] = nuova_data
+    df.at[i, "telefono"] = nuovo_tel
+    df.at[i, "email"] = nuova_email
+
+    # Salva
+    df.to_csv("iscritti.csv", index=False)
+
+    # ⭐ NOTIFICA VISIVA ⭐
+    flash("Dati aggiornati con successo!", "success")
+
+    return redirect(f"/scheda/{username}")
+
+# ============================
+# AGGIORNA PASSWORD
+# ============================
+from flask import flash, redirect, request
+import pandas as pd
+
+@app.route("/aggiorna_password", methods=["POST"])
+def aggiorna_password():
+    username = request.form.get("username")
+    nuova_password = request.form.get("nuova_password")
+
+    df = pd.read_csv("iscritti.csv", dtype=str)
+
+    # Trova la riga dell’utente
+    idx = df.index[df["username"] == username].tolist()
+    if not idx:
+        flash("Errore: utente non trovato", "danger")
+        return redirect("/")
+
+    i = idx[0]
+
+    # Aggiorna la password
+    df.at[i, "password"] = nuova_password
+
+    # Salva il CSV
+    df.to_csv("iscritti.csv", index=False)
+
+    # ⭐ NOTIFICA VISIVA ⭐
+    flash("Password aggiornata con successo!", "success")
+
+    return redirect(f"/scheda/{username}")
 
 # ============================
 # AVVIO SERVER
