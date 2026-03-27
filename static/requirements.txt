@@ -1,0 +1,5 @@
+Flask
+gunicorn
+pywebpush
+cryptography
+pandas
