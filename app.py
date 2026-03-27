@@ -4,16 +4,14 @@ from flask import (
     request,
     send_from_directory,
     current_app,
-    session,
     flash,
     redirect
 )
 
-import sqlite3
-from datetime import datetime
 import csv
 import time
 import os
+from datetime import datetime
 from pywebpush import webpush, WebPushException
 import json
 
@@ -22,10 +20,7 @@ VAPID_PUBLIC_KEY = "BFIUzXfa4CrKCYonvgUng451FbUZyrDpY2nX0E6c-FWmpHwU09Q4J5ZxPqmv
 VAPID_PRIVATE_KEY = "RRXpnXlIg8TYuvBttWTZ8ILeQ6usrFlbUXunQIhtDwI"
 
 app = Flask(__name__)
-
-# ============================
-app.secret_key = "supersegreto123"   # CHIAVE SEGRETA
-# ============================
+app.secret_key = "supersegreto123"   # Necessaria per flash()
 
 # ============================
 # SERVICE WORKER
@@ -36,24 +31,8 @@ def service_worker():
 
 
 # ============================
-# FUNZIONI NOTIFICHE
+# LETTURA ISCRITTI DA CSV
 # ============================
-def notifiche_attive(telefono):
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT 1 FROM subscriptions WHERE telefono = ?", (telefono,))
-    row = c.fetchone()
-    conn.close()
-    return row is not None
-
-
-@app.after_request
-def add_header(response):
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    return response
-
 def carica_iscritto(username):
     try:
         with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
@@ -65,6 +44,7 @@ def carica_iscritto(username):
         print("Errore lettura CSV iscritti:", e)
 
     return None
+
 
 # ============================
 # FUNZIONI DI UTILITÀ
@@ -134,8 +114,6 @@ def home():
     allerta = leggi_allerta()
     return render_template("index.html", allerta=allerta, nocache=time.time())
 
-import os
-
 
 @app.route("/debug/lista_file")
 def debug_lista_file():
@@ -146,14 +124,11 @@ def debug_lista_file():
         return f"Errore: {e}<br>Path cercato: {base_path}"
 
     return "<br>".join(files) + f"<br><br>Path: {base_path}"
-
-
-
 # ============================
-# ELENCO ATTIVITÀ (con data)
+# ATTIVITÀ
 # ============================
 @app.route("/attivita")
-def lista_attivita():
+def attivita():
     folder = os.path.abspath("templates/attivita")
     files = [f for f in os.listdir(folder) if f.endswith(".txt")]
 
@@ -163,23 +138,17 @@ def lista_attivita():
         path = os.path.join(folder, f)
         data_attivita = "N/D"
 
-        # Leggiamo solo la riga "data:"
         with open(path, "r", encoding="utf-8") as file:
             for riga in file:
                 if riga.lower().startswith("data:"):
                     data_attivita = riga.split(":", 1)[1].strip()
                     break
 
-        nome_originale = f.replace(".txt", "")
-        nome_url = nome_originale.lower()  # <-- URL SEMPRE MINUSCOLO
-
         lista_attivita.append({
-            "nome": nome_originale,
-            "nome_url": nome_url,
+            "nome": f.replace(".txt", ""),
             "data": data_attivita
         })
 
-    # Ordiniamo per data (opzionale)
     try:
         lista_attivita.sort(key=lambda x: datetime.strptime(x["data"], "%d/%m/%Y"))
     except:
@@ -188,102 +157,63 @@ def lista_attivita():
     return render_template("attivita.html", files=lista_attivita)
 
 
-@app.route("/attivita/<nome>")
-def attivita_dettaglio(nome):
-    base_path = os.path.join(current_app.root_path, "templates", "attivita")
+# ============================
+# CONTATTI
+# ============================
+@app.route("/contatti")
+def contatti():
+    try:
+        with open("static/contatti.txt", "r", encoding="utf-8") as f:
+            testo = f.read()
+    except:
+        testo = "Nessun contatto disponibile."
 
-    # Cerca il file ignorando maiuscole/minuscole
-    file_trovato = None
-    for f in os.listdir(base_path):
-        if f.lower() == f"{nome.lower()}.txt":
-            file_trovato = f
-            break
+    return render_template("contatti.html", testo=testo)
 
-    if not file_trovato:
-        return f"File non trovato: {nome}", 404
-
-    txt_path = os.path.join(base_path, file_trovato)
-
-    # Parsing del file
-    dati = {}
-    chiave_corrente = None
-
-    with open(txt_path, "r", encoding="utf-8") as f:
-        for riga in f:
-            riga = riga.rstrip("\n")
-
-            if ":" in riga:
-                chiave, valore = riga.split(":", 1)
-                chiave = chiave.strip()
-                valore = valore.strip()
-                dati[chiave] = valore
-                chiave_corrente = chiave
-            else:
-                if chiave_corrente == "descrizione":
-                    dati["descrizione"] += "\n" + riga
-
-    return render_template("attivita_dettaglio.html", dati=dati)
 
 # ============================
-# VISUALIZZAZIONE RAW (opzionale)
+# VERBALI
 # ============================
-@app.route("/attivita/raw/<nomefile>")
-def mostra_attivita_raw(nomefile):
-    base_path = os.path.join(current_app.root_path, "templates", "attivita")
-    txt_path = os.path.join(base_path, f"{nomefile}.txt")
+@app.route("/verbali")
+def verbali():
+    path = "templates/verbali"
+    files = []
 
-    # MOSTRA IL PERCORSO DIRETTAMENTE NELLA PAGINA
-    debug_info = f"""
-    <div style='padding:20px; background:#ffeeee; border:2px solid red; margin-bottom:20px;'>
-        <b>DEBUG:</b><br>
-        root_path: {current_app.root_path}<br>
-        base_path: {base_path}<br>
-        txt_path: {txt_path}<br>
-    </div>
-    """
+    for f in os.listdir(path):
+        if f.endswith(".html"):
+            files.append(f.replace(".html", ""))
 
-    if os.path.exists(txt_path):
-        with open(txt_path, "r", encoding="utf-8") as f:
-            contenuto = f.read()
+    files.sort()
+    return render_template("verbali.html", verbali=files)
 
-        return f"""
-        <div style='max-width:900px; margin:auto; padding:40px; font-size:1.6rem; white-space:pre-wrap;'>
-            <h2 style='margin-bottom:30px;'>📄 {nomefile}</h2>
-            <pre style='font-size:1.6rem; white-space:pre-wrap;'>{contenuto}</pre>
-        </div>
-        """
 
-    return f"File non trovato: {txt_path}", 404
+@app.route("/verbali/<nome>")
+def verbale_dettaglio(nome):
+    try:
+        return render_template(f"verbali/{nome}.html")
+    except:
+        return "Verbale non trovato", 404
 
+
+# ============================
+# SCHEDA PERSONALE (SOLO CSV)
+# ============================
 @app.route("/scheda_personale")
 def scheda_personale():
-    # Preleva l'username dall'URL, es: /scheda_personale?username=mario
     username = request.args.get("username")
     if not username:
         return "Errore: manca username", 400
 
-    # Legge dal CSV, non dal database
     dati = carica_iscritto(username)
     if not dati:
         return "Utente non trovato", 404
 
     return render_template("scheda_personale.html", **dati)
 
-@app.route("/api/allerta")
-def api_allerta():
-    return leggi_allerta()
 
-
-@app.route("/emergenze")
-def emergenze():
-    return render_template("emergenze.html", vapid_public_key=VAPID_PUBLIC_KEY)
-
-
-
-@app.route("/pagina4")
-def pagina4():
-    return render_template("pagina4.html")
-
+# ============================
+# LOGIN CSV (ex /iscritti)
+# ============================
 @app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
     if request.method == "POST":
@@ -317,86 +247,8 @@ def iscritti():
 
 
 # ============================
-# ROUTE ATTIVITA
+# AGGIORNA DATI (CSV)
 # ============================
-
-@app.route("/attivita")
-def attivita():
-    folder = os.path.abspath("templates/attivita")
-    files = [f for f in os.listdir(folder) if f.endswith(".txt")]
-
-    lista_attivita = []
-
-    for f in files:
-        path = os.path.join(folder, f)
-        data_attivita = "N/D"
-
-        # Leggiamo solo la riga "data:"
-        with open(path, "r", encoding="utf-8") as file:
-            for riga in file:
-                if riga.lower().startswith("data:"):
-                    data_attivita = riga.split(":", 1)[1].strip()
-                    break
-
-        lista_attivita.append({
-            "nome": f.replace(".txt", ""),
-            "data": data_attivita
-        })
-
-    # Ordiniamo per data (opzionale)
-    try:
-        lista_attivita.sort(key=lambda x: datetime.strptime(x["data"], "%d/%m/%Y"))
-    except:
-        pass
-
-    return render_template("attivita.html", files=lista_attivita)
-
-# ============================
-# CONTATTI
-# ============================
-@app.route("/contatti")
-def contatti():
-    try:
-        with open("static/contatti.txt", "r", encoding="utf-8") as f:
-            testo = f.read()
-    except:
-        testo = "Nessun contatto disponibile."
-
-    return render_template("contatti.html", testo=testo)
-
-
-# ============================
-# VERBALI
-# ============================
-@app.route("/verbali")
-def verbali():
-    path = "templates/verbali"
-    files = []
-
-    for f in os.listdir(path):
-        if f.endswith(".html"):
-            files.append(f.replace(".html", ""))
-
-    files.sort()
-
-    return render_template("verbali.html", verbali=files)
-
-
-@app.route("/verbali/<nome>")
-def verbale_dettaglio(nome):
-    try:
-        return render_template(f"verbali/{nome}.html")
-    except:
-        return "Verbale non trovato", 404
-
-
-# ============================
-# aggiorna_dati
-# ============================
-
-from flask import flash, redirect, request
-import pandas as pd
-
 @app.route("/aggiorna_dati", methods=["POST"])
 def aggiorna_dati():
     username = request.form.get("username")
@@ -423,14 +275,12 @@ def aggiorna_dati():
     df.to_csv(CSV_PATH, index=False)
 
     flash("Dati aggiornati con successo!", "success")
-    return redirect("/scheda_personale")
+    return redirect(f"/scheda_personale?username={username}")
+
 
 # ============================
-# AGGIORNA PASSWORD
+# AGGIORNA PASSWORD (CSV)
 # ============================
-from flask import flash, redirect, request
-import pandas as pd
-
 @app.route("/aggiorna_password", methods=["POST"])
 def aggiorna_password():
     username = request.form.get("username")
@@ -460,6 +310,7 @@ def aggiorna_password():
 
     flash("Password aggiornata con successo!", "success")
     return redirect(f"/scheda_personale?username={username}")
+
 
 # ============================
 # AVVIO SERVER
