@@ -638,6 +638,8 @@ def aggiorna_password():
     CSV_PATH = "static/iscritti.csv"
     df = pd.read_csv(CSV_PATH, dtype=str)
 
+    print("Percorso assoluto:", os.path.abspath(CSV_PATH))
+
     idx = df.index[df["username"] == username].tolist()
     if not idx:
         flash("Errore: utente non trovato", "danger")
