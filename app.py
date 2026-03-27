@@ -269,6 +269,32 @@ def mostra_attivita_raw(nomefile):
 
     return f"File non trovato: {txt_path}", 404
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("SELECT password FROM iscritti WHERE username = ?", (username,))
+        row = c.fetchone()
+        conn.close()
+
+        if not row:
+            flash("Utente non trovato", "danger")
+            return redirect("/login")
+
+        if row[0] != password:
+            flash("Password errata", "danger")
+            return redirect("/login")
+
+        session["username"] = username
+        flash("Accesso effettuato!", "success")
+        return redirect("/scheda_personale")
+
+    return render_template("login.html")
+
 @app.route("/scheda_personale")
 def scheda_personale():
     username = session.get("username")
