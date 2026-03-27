@@ -666,20 +666,33 @@ import pandas as pd
 
 @app.route("/aggiorna_password", methods=["POST"])
 def aggiorna_password():
-    username = session.get("username")   # <-- QUI LA CORREZIONE
-    if not username:
-        return redirect("/login")
-
+    username = request.form.get("username")
     nuova_password = request.form.get("nuova_password")
 
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("UPDATE iscritti SET password = ? WHERE username = ?", (nuova_password, username))
-    conn.commit()
-    conn.close()
+    if not username or not nuova_password:
+        return "Dati mancanti", 400
+
+    righe = []
+    trovato = False
+
+    with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            if r["username"] == username:
+                r["password"] = nuova_password
+                trovato = True
+            righe.append(r)
+
+    if not trovato:
+        return "Utente non trovato", 404
+
+    with open("static/iscritti.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=righe[0].keys())
+        writer.writeheader()
+        writer.writerows(righe)
 
     flash("Password aggiornata con successo!", "success")
-    return redirect("/scheda_personale")
+    return redirect(f"/scheda_personale?username={username}")
 
 # ============================
 # AVVIO SERVER
