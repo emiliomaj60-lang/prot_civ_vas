@@ -22,6 +22,7 @@
         color: #002b5c;
     }
 
+    /* CARD ANAGRAFICA */
     .card-anagrafica {
         background: #f8f9fa;
         border-radius: 18px;
@@ -32,53 +33,79 @@
 
     .table-anagrafica th {
         width: 260px;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         color: #002b5c;
-        font-weight: 800;
+        font-weight: 900;
         background: #e9ecef;
     }
 
     .table-anagrafica td {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    .icon {
-        font-size: 1.8rem;
-        margin-right: 8px;
+        font-size: 1.6rem;
+        font-weight: 700;
     }
 
     .btn-notifiche {
         font-size: 1.8rem;
         padding: 18px 32px;
-        margin-left: 40px;
         margin-top: 10px;
         border-radius: 12px;
     }
 
+    /* BOTTONI */
     .btn-azione {
         width: 100%;
-        font-size: 1.3rem;
-        padding: 10px 6px;
-        border-radius: 10px;
-        font-weight: 700;
+        font-size: 1.6rem;
+        padding: 16px 10px;
+        border-radius: 12px;
+        font-weight: 800;
         white-space: normal;
     }
 
     @media (min-width: 768px) {
         .btn-azione {
-            font-size: 1.5rem;
-            padding: 14px 8px;
+            font-size: 1.7rem;
+            padding: 18px 12px;
         }
     }
 
+    /* BOX A COMPARSA */
     .toggle-box {
-        padding: 25px;
+        padding: 30px;
         border-radius: 18px;
         background: #ffffffdd;
         box-shadow: 0 6px 22px rgba(0,0,0,0.18);
         margin-bottom: 40px;
         animation: fadeIn 0.3s ease-out;
+    }
+
+    .toggle-box h3 {
+        font-size: 2.4rem;
+        font-weight: 900;
+        color: #002b5c;
+        margin-bottom: 20px;
+    }
+
+    /* FORM */
+    label {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: #002b5c;
+        margin-top: 10px;
+    }
+
+    input.form-control {
+        font-size: 1.7rem;
+        padding: 14px;
+        font-weight: 700;
+    }
+
+    .btn-form {
+        margin-top: 30px;
+        padding: 20px;
+        font-size: 1.8rem;
+        font-weight: 800;
+        width: 100%;
+        border-radius: 14px;
     }
 
     @keyframes fadeIn {
@@ -130,7 +157,7 @@
 
     <hr>
 
-    <!-- BOTTONI -->
+    <!-- ⭐⭐⭐ BOTTONI ⭐⭐⭐ -->
     <div class="row g-2 mb-3">
         <div class="col-6 col-md-3 mb-2">
             <button class="btn btn-primary btn-azione" onclick="toggleBox('boxCorsi')">📘 Corsi svolti</button>
@@ -170,7 +197,7 @@
             <tbody>
                 <tr><th>Giacca P.C.</th><td>{{ dati.giacca_d_u }}</td></tr>
                 <tr><th>Pantaloni P.C.</th><td>{{ dati.pantaloni_d_u }}</td></tr>
-                <tr><th>Casco P.C.(data scadenza)</th><td>{{ dati.casco }}</td></tr>
+                <tr><th>Casco P.C.</th><td>{{ dati.casco }}</td></tr>
                 <tr><th>Tuta da lavoro</th><td>{{ dati.tuta_da_lavoro }}</td></tr>
                 <tr><th>Maglietta</th><td>{{ dati.maglietta }}</td></tr>
                 <tr><th>Cerata</th><td>{{ dati.cerata }}</td></tr>
@@ -207,7 +234,7 @@
             <label>Email</label>
             <input class="form-control" type="text" name="email" value="{{ dati.email }}">
 
-            <button class="btn btn-success btn-azione" type="submit">💾 Salva modifiche</button>
+            <button class="btn btn-success btn-form" type="submit">💾 Salva modifiche</button>
         </form>
     </div>
 
@@ -221,7 +248,7 @@
             <label>Nuova password</label>
             <input class="form-control" type="password" name="nuova_password">
 
-            <button class="btn btn-danger btn-azione" type="submit">🔐 Aggiorna password</button>
+            <button class="btn btn-danger btn-form" type="submit">🔐 Aggiorna password</button>
         </form>
     </div>
 
