@@ -136,6 +136,12 @@
                 } else {
                     barra.style.display = "none";
                 }
+            })
+            .catch(err => {
+                console.error("Errore barra allerta:", err);
+                // ❗ IMPORTANTISSIMO:
+                // NON ricaricare la pagina, NON fare redirect.
+                // Questo impedisce il crash su /scheda_personale.
             });
     }
 
