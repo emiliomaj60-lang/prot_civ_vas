@@ -292,7 +292,6 @@ def iscritti():
         password_input = request.form.get("password", "").strip()
 
         username_input = f"{nome}_{cognome}"
-
         
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
@@ -304,14 +303,12 @@ def iscritti():
 
                     if r["username"].strip().lower() == username_input:
 
-                    
-
                         if r["password"].strip() != password_input:
                             return render_template("iscritti.html", errore="Password errata")
 
                         # Alias necessari per il template
                         r["codice_fiscale"] = r.get("cod_fiscale", "")
-                        r["notifiche_attive"] = False  # placeholder
+                        r["notifiche_attive"] = False
 
                         # Conversione corsi in booleani
                         def flag(x): 
@@ -326,11 +323,8 @@ def iscritti():
                         r["corso_4"] = flag(r.get("corso_4", "0"))
                         r["corso_5"] = flag(r.get("corso_5", "0"))
 
-                        return render_template(
-                            "scheda_iscritto.html",
-                            dati=r,
-                            vapid_public_key=VAPID_PUBLIC_KEY
-                        )
+                        # 🔥 FIX FINALE
+                        return redirect(f"/scheda_personale?username={r['username']}")
 
         except Exception as e:
             print(">>> ERRORE:", e)
@@ -339,7 +333,6 @@ def iscritti():
         return render_template("iscritti.html", errore="Credenziali errate")
 
     return render_template("iscritti.html")
-
 
 # ============================
 # ROUTE ATTIVITA
