@@ -16,6 +16,10 @@ VAPID_PRIVATE_KEY = "RRXpnXlIg8TYuvBttWTZ8ILeQ6usrFlbUXunQIhtDwI"
 app = Flask(__name__)
 
 # ============================
+app.secret_key = "supersegreto123"   # CHIAVE SEGRETA
+# ============================
+
+# ============================
 # SERVICE WORKER
 # ============================
 @app.route('/service-worker.js')
