@@ -297,25 +297,15 @@ def login():
 
 @app.route("/scheda_personale")
 def scheda_personale():
-    username = session.get("username")
+    # Preleva l'username dall'URL, es: /scheda_personale?username=mario
+    username = request.args.get("username")
     if not username:
-        return redirect("/login")
+        return "Errore: manca username", 400
 
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-
-    c.execute("SELECT * FROM iscritti WHERE username = ?", (username,))
-    row = c.fetchone()
-    conn.close()
-
-    if not row:
-        return "Utente non trovato"
-
-    dati = dict(row)
-
-    # Convertiamo 0/1 in booleano per il template
-    dati["notifiche_attive"] = (row["notifiche_attive"] == 1)
+    # Legge dal CSV, non dal database
+    dati = carica_iscritto(username)
+    if not dati:
+        return "Utente non trovato", 404
 
     return render_template("scheda_personale.html", **dati)
 
