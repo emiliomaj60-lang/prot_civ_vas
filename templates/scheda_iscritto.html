@@ -44,6 +44,7 @@
         font-weight: 700;
     }
 
+    /* BOTTONI */
     .btn-notifiche {
         font-size: 1.8rem;
         padding: 18px 32px;
@@ -51,7 +52,6 @@
         border-radius: 12px;
     }
 
-    /* BOTTONI */
     .btn-azione {
         width: 100%;
         font-size: 1.6rem;
@@ -106,6 +106,19 @@
         font-weight: 800;
         width: 100%;
         border-radius: 14px;
+    }
+
+    /* DPI ICONS + BADGES */
+    .dpi-icon {
+        font-size: 1.9rem;
+        margin-right: 8px;
+    }
+
+    .badge-dpi {
+        font-size: 1.4rem;
+        padding: 10px 14px;
+        font-weight: 800;
+        border-radius: 10px;
     }
 
     @keyframes fadeIn {
@@ -193,24 +206,50 @@
     <!-- ⭐⭐⭐ BOX DPI ⭐⭐⭐ -->
     <div id="boxDPI" class="toggle-box" style="display:none;">
         <h3>Dotazioni DPI</h3>
+
         <table class="table table-bordered">
             <tbody>
-                <tr><th>Giacca P.C.</th><td>{{ dati.giacca_d_u }}</td></tr>
-                <tr><th>Pantaloni P.C.</th><td>{{ dati.pantaloni_d_u }}</td></tr>
-                <tr><th>Casco P.C.</th><td>{{ dati.casco }}</td></tr>
-                <tr><th>Tuta da lavoro</th><td>{{ dati.tuta_da_lavoro }}</td></tr>
-                <tr><th>Maglietta</th><td>{{ dati.maglietta }}</td></tr>
-                <tr><th>Cerata</th><td>{{ dati.cerata }}</td></tr>
-                <tr><th>Piumino</th><td>{{ dati.piumino }}</td></tr>
-                <tr><th>Pantaloni Motosega</th><td>{{ dati.pantaloni_ms }}</td></tr>
-                <tr><th>Scarponi Motosega</th><td>{{ dati.n_scarponi_ms }}</td></tr>
-                <tr><th>Guanti Motosega</th><td>{{ dati.guanti_ms }}</td></tr>
-                <tr><th>Casco Motosega</th><td>{{ dati.casco_ms }}</td></tr>
-                <tr><th>Tuta AIB</th><td>{{ dati.tuta_aib }}</td></tr>
-                <tr><th>Scarponi AIB</th><td>{{ dati.n_scarponi_aib }}</td></tr>
-                <tr><th>Guanti AIB</th><td>{{ dati.guanti_aib }}</td></tr>
-                <tr><th>Casco AIB</th><td>{{ dati.casco_aib }}</td></tr>
-                <tr><th>Note AIB</th><td>{{ dati.note_aib }}</td></tr>
+
+                {% macro dpi_row(icon, label, value) %}
+                <tr>
+                    <th><span class="dpi-icon">{{ icon }}</span>{{ label }}</th>
+                    <td>
+                        {% if value %}
+                            <span class="badge bg-success badge-dpi">{{ value }}</span>
+                        {% else %}
+                            <span class="badge bg-danger badge-dpi">Mancante</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endmacro %}
+
+                {{ dpi_row("🧥", "Giacca P.C.", dati.giacca_d_u) }}
+                {{ dpi_row("👖", "Pantaloni P.C.", dati.pantaloni_d_u) }}
+                {{ dpi_row("🪖", "Casco P.C.", dati.casco) }}
+                {{ dpi_row("🧵", "Tuta da lavoro", dati.tuta_da_lavoro) }}
+                {{ dpi_row("👕", "Maglietta", dati.maglietta) }}
+                {{ dpi_row("🌧️", "Cerata", dati.cerata) }}
+                {{ dpi_row("🧥", "Piumino", dati.piumino) }}
+                {{ dpi_row("👖", "Pantaloni Motosega", dati.pantaloni_ms) }}
+                {{ dpi_row("🥾", "Scarponi Motosega", dati.n_scarponi_ms) }}
+                {{ dpi_row("🧤", "Guanti Motosega", dati.guanti_ms) }}
+                {{ dpi_row("🪖", "Casco Motosega", dati.casco_ms) }}
+                {{ dpi_row("🧯", "Tuta AIB", dati.tuta_aib) }}
+                {{ dpi_row("🥾", "Scarponi AIB", dati.n_scarponi_aib) }}
+                {{ dpi_row("🧤", "Guanti AIB", dati.guanti_aib) }}
+                {{ dpi_row("🪖", "Casco AIB", dati.casco_aib) }}
+
+                <tr>
+                    <th><span class="dpi-icon">📝</span>Note AIB</th>
+                    <td>
+                        {% if dati.note_aib %}
+                            <span class="badge bg-info badge-dpi">{{ dati.note_aib }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary badge-dpi">Nessuna nota</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
             </tbody>
         </table>
     </div>
