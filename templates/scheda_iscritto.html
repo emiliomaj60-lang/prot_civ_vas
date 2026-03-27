@@ -3,6 +3,19 @@
 
 {% block content %}
 
+{% macro dpi_row(icon, label, value) %}
+<tr>
+    <th><span class="dpi-icon">{{ icon }}</span>{{ label }}</th>
+    <td>
+        {% if value %}
+            <span class="badge bg-success badge-dpi">{{ value }}</span>
+        {% else %}
+            <span class="badge bg-danger badge-dpi">Mancante</span>
+        {% endif %}
+    </td>
+</tr>
+{% endmacro %}
+
 <style>
     .profile-container {
         max-width: 1300px;
