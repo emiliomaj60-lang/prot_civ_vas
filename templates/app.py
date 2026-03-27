@@ -1,4 +1,14 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import (
+    Flask,
+    render_template,
+    request,
+    send_from_directory,
+    current_app,
+    session,
+    flash,
+    redirect
+)
+
 import sqlite3
 from datetime import datetime
 import csv
@@ -12,6 +22,10 @@ VAPID_PUBLIC_KEY = "BFIUzXfa4CrKCYonvgUng451FbUZyrDpY2nX0E6c-FWmpHwU09Q4J5ZxPqmv
 VAPID_PRIVATE_KEY = "RRXpnXlIg8TYuvBttWTZ8ILeQ6usrFlbUXunQIhtDwI"
 
 app = Flask(__name__)
+
+# ============================
+app.secret_key = "supersegreto123"   # CHIAVE SEGRETA
+# ============================
 
 # ============================
 # SERVICE WORKER
@@ -40,31 +54,17 @@ def add_header(response):
     response.headers["Expires"] = "0"
     return response
 
-
-# ============================
-# LETTURA ISCRITTI DA CSV
-# ============================
 def carica_iscritto(username):
     try:
         with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for r in reader:
                 if r["username"].strip().lower() == username.strip().lower():
-
-                    r["motosega"] = r["motosega"] == "1"
-                    r["corso_base"] = r["corso_base"] == "1"
-                    r["altro_fatto"] = r["altro_fatto"] == "1"
-
-                    r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
-                    r["col_base"] = colore_scadenza(r["scadenza_base"])
-                    r["col_altro"] = colore_scadenza(r["scadenza_altro"])
-
                     return r
     except Exception as e:
         print("Errore lettura CSV iscritti:", e)
 
     return None
-
 
 # ============================
 # FUNZIONI DI UTILITÀ
@@ -136,21 +136,111 @@ def home():
 
 import os
 
+
+@app.route("/debug/lista_file")
+def debug_lista_file():
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
+    try:
+        files = os.listdir(base_path)
+    except Exception as e:
+        return f"Errore: {e}<br>Path cercato: {base_path}"
+
+    return "<br>".join(files) + f"<br><br>Path: {base_path}"
+
+
+
+# ============================
+# ELENCO ATTIVITÀ (con data)
+# ============================
 @app.route("/attivita")
-def attivita():
+def lista_attivita():
     folder = os.path.abspath("templates/attivita")
     files = [f for f in os.listdir(folder) if f.endswith(".txt")]
 
-    # nomi senza .txt per estetica e per l'URL
-    files_clean = [f.replace(".txt", "") for f in files]
+    lista_attivita = []
 
-    return render_template("attivita.html", files=files_clean)
+    for f in files:
+        path = os.path.join(folder, f)
+        data_attivita = "N/D"
+
+        # Leggiamo solo la riga "data:"
+        with open(path, "r", encoding="utf-8") as file:
+            for riga in file:
+                if riga.lower().startswith("data:"):
+                    data_attivita = riga.split(":", 1)[1].strip()
+                    break
+
+        nome_originale = f.replace(".txt", "")
+        nome_url = nome_originale.lower()  # <-- URL SEMPRE MINUSCOLO
+
+        lista_attivita.append({
+            "nome": nome_originale,
+            "nome_url": nome_url,
+            "data": data_attivita
+        })
+
+    # Ordiniamo per data (opzionale)
+    try:
+        lista_attivita.sort(key=lambda x: datetime.strptime(x["data"], "%d/%m/%Y"))
+    except:
+        pass
+
+    return render_template("attivita.html", files=lista_attivita)
 
 
-@app.route("/attivita/<nomefile>")
-def mostra_attivita(nomefile):
-    base_path = os.path.abspath("templates/attivita")
+@app.route("/attivita/<nome>")
+def attivita_dettaglio(nome):
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
+
+    # Cerca il file ignorando maiuscole/minuscole
+    file_trovato = None
+    for f in os.listdir(base_path):
+        if f.lower() == f"{nome.lower()}.txt":
+            file_trovato = f
+            break
+
+    if not file_trovato:
+        return f"File non trovato: {nome}", 404
+
+    txt_path = os.path.join(base_path, file_trovato)
+
+    # Parsing del file
+    dati = {}
+    chiave_corrente = None
+
+    with open(txt_path, "r", encoding="utf-8") as f:
+        for riga in f:
+            riga = riga.rstrip("\n")
+
+            if ":" in riga:
+                chiave, valore = riga.split(":", 1)
+                chiave = chiave.strip()
+                valore = valore.strip()
+                dati[chiave] = valore
+                chiave_corrente = chiave
+            else:
+                if chiave_corrente == "descrizione":
+                    dati["descrizione"] += "\n" + riga
+
+    return render_template("attivita_dettaglio.html", dati=dati)
+
+# ============================
+# VISUALIZZAZIONE RAW (opzionale)
+# ============================
+@app.route("/attivita/raw/<nomefile>")
+def mostra_attivita_raw(nomefile):
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
     txt_path = os.path.join(base_path, f"{nomefile}.txt")
+
+    # MOSTRA IL PERCORSO DIRETTAMENTE NELLA PAGINA
+    debug_info = f"""
+    <div style='padding:20px; background:#ffeeee; border:2px solid red; margin-bottom:20px;'>
+        <b>DEBUG:</b><br>
+        root_path: {current_app.root_path}<br>
+        base_path: {base_path}<br>
+        txt_path: {txt_path}<br>
+    </div>
+    """
 
     if os.path.exists(txt_path):
         with open(txt_path, "r", encoding="utf-8") as f:
@@ -163,50 +253,26 @@ def mostra_attivita(nomefile):
         </div>
         """
 
-    return "File non trovato"
-
-
-@app.route("/debug/subscriptions") # solo di prova
-def debug_subscriptions():
-    import sqlite3
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM subscriptions")
-    rows = cur.fetchall()
-    conn.close()
-
-    html = "<h1>Subscriptions</h1><table border='1'>"
-    html += "<tr>" + "".join(f"<th>{col}</th>" for col in rows[0].keys()) + "</tr>" if rows else "<tr><th>Vuoto</th></tr>"
-    for r in rows:
-        html += "<tr>" + "".join(f"<td>{r[k]}</td>" for k in r.keys()) + "</tr>"
-    html += "</table>"
-    return html
-
+    return f"File non trovato: {txt_path}", 404
 
 @app.route("/scheda_personale")
 def scheda_personale():
-    username = session.get("username")
+    # Preleva l'username dall'URL
+    username = request.args.get("username")
+
+    # Se manca lo username → torna all'area iscritti
     if not username:
-        return redirect("/login")
+        return redirect("/iscritti")
 
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
+    # Carica i dati dal CSV
+    dati = carica_iscritto(username)
 
-    c.execute("SELECT * FROM iscritti WHERE username = ?", (username,))
-    row = c.fetchone()
-    conn.close()
+    # Se l'utente non esiste → torna all'area iscritti
+    if not dati:
+        return redirect("/iscritti")
 
-    if not row:
-        return "Utente non trovato"
-
-    dati = dict(row)
-
-    # Convertiamo 0/1 in booleano per il template
-    dati["notifiche_attive"] = (row["notifiche_attive"] == 1)
-
-    return render_template("scheda_personale.html", **dati)
+    # Tutto ok → mostra la scheda
+    return render_template("scheda_iscritto.html", dati=dati)
 
 @app.route("/api/allerta")
 def api_allerta():
@@ -218,170 +284,95 @@ def emergenze():
     return render_template("emergenze.html", vapid_public_key=VAPID_PUBLIC_KEY)
 
 
-@app.route("/invia_allerta")
-def invia_allerta():
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT id, nome FROM gruppi")
-    gruppi = c.fetchall()
-    conn.close()
-
-    return render_template("invia_allerta.html", gruppi=gruppi)
-
 
 @app.route("/pagina4")
 def pagina4():
     return render_template("pagina4.html")
 
-
-# ============================
-# AREA ISCRITTI (LOGIN)
-# ============================
 @app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
-    print(">>> /iscritti chiamata")
-
     if request.method == "POST":
-        print(">>> Metodo POST ricevuto")
-
-        nome = request.form["nome"].strip().lower()
-        cognome = request.form["cognome"].strip().lower()
-        password = request.form["password"].strip()
-
-        print(">>> Nome:", nome)
-        print(">>> Cognome:", cognome)
-        print(">>> Password inserita:", password)
+        nome = request.form.get("nome", "").strip().lower()
+        cognome = request.form.get("cognome", "").strip().lower()
+        password_input = request.form.get("password", "").strip()
 
         username_input = f"{nome}_{cognome}"
-        print(">>> Username generato:", username_input)
-
-        possibili_username = {
-            username_input,
-            username_input.replace("_", "."),
-            username_input.replace("_", " "),
-            username_input.replace("_", "-"),
-            username_input.replace("_", ""),
-        }
-
-        print(">>> Possibili username:", possibili_username)
-
+        
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
-                print(">>> CSV aperto, colonne:", reader.fieldnames)
 
                 for r in reader:
-                    print(">>> Riga CSV letta:", r)
+                    print(">>> Username cercato:", username_input)
+                    print(">>> Username nel CSV:", r["username"])
 
-                    username_csv = r["username"].strip().lower()
-                    print(">>> Username CSV:", username_csv)
+                    if r["username"].strip().lower() == username_input:
 
-                    if username_csv in possibili_username:
-                        print(">>> Username trovato!")
-
-                        print(">>> Password CSV:", r["password"])
-
-                        if r["password"] == password:
-                            print(">>> Password corretta")
-
-                            r["motosega"] = r["motosega"] == "1"
-                            r["corso_base"] = r["corso_base"] == "1"
-                            r["altro_fatto"] = r["altro_fatto"] == "1"
-
-                            r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
-                            r["col_base"] = colore_scadenza(r["scadenza_base"])
-                            r["col_altro"] = colore_scadenza(r["scadenza_altro"])
-
-                            print(">>> Categoria trovata:", r.get("categoria"))
-                            print(">>> Telefono trovato:", r.get("telefono"))
-
-                            try:
-                                stato = notifiche_attive(r.get("telefono", ""))
-                                print(">>> Stato notifiche:", stato)
-                                r["notifiche_attive"] = stato
-                            except Exception as e:
-                                print(">>> ERRORE notifiche_attive:", e)
-
-                            print(">>> Rendering scheda_iscritto.html")
-                            return render_template("scheda_iscritto.html", dati=r, vapid_public_key=VAPID_PUBLIC_KEY)
-
-                        else:
-                            print(">>> Password errata")
+                        if r["password"].strip() != password_input:
                             return render_template("iscritti.html", errore="Password errata")
 
-        except Exception as e:
-            print(">>> ERRORE GENERALE:", e)
+                        # Alias necessari per il template
+                        r["codice_fiscale"] = r.get("cod_fiscale", "")
+                        r["notifiche_attive"] = False
 
-        print(">>> Credenziali errate")
+                        # Conversione corsi in booleani
+                        def flag(x): 
+                            return x.strip() == "1"
+
+                        r["corso_aib"] = flag(r.get("corso_aib", "0"))
+                        r["corso_motosega"] = flag(r.get("corso_motosega", "0"))
+                        r["corso_ricerca_sco"] = flag(r.get("corso_ricerca_sco", "0"))
+                        r["corso_1"] = flag(r.get("corso_1", "0"))
+                        r["corso_2"] = flag(r.get("corso_2", "0"))
+                        r["corso_3"] = flag(r.get("corso_3", "0"))
+                        r["corso_4"] = flag(r.get("corso_4", "0"))
+                        r["corso_5"] = flag(r.get("corso_5", "0"))
+
+                        # 🔥 FIX FINALE
+                        return redirect(f"/scheda_personale?username={r['username']}")
+
+        except Exception as e:
+            print(">>> ERRORE:", e)
+            raise
+
         return render_template("iscritti.html", errore="Credenziali errate")
 
-    print(">>> Metodo GET, mostro form")
     return render_template("iscritti.html")
 
-
 # ============================
-# ROUTE SALVATAGGIO SUBSCRIPTION
-# ============================
-@app.route("/subscribe", methods=["POST"])
-def subscribe():
-    data = request.json
-    endpoint = data.get("endpoint")
-    p256dh = data.get("p256dh")
-    auth = data.get("auth")
-    telefono = data.get("telefono")
-    gruppo = data.get("gruppo")   # 👈 AGGIUNTO
-
-    print(">>> Subscription ricevuta:", data)
-
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-
-    # Salva o aggiorna la subscription
-    c.execute("""
-        INSERT OR REPLACE INTO subscriptions (telefono, endpoint, p256dh, auth, gruppo)
-        VALUES (?, ?, ?, ?, ?)
-    """, (telefono, endpoint, p256dh, auth, gruppo))
-
-    # 🔥 AGGIUNTA FONDAMENTALE:
-    # Imposta lo stato notifiche come ATTIVE
-    c.execute("""
-        UPDATE iscritti
-        SET notifiche_attive = 1
-        WHERE telefono = ?
-    """, (telefono,))
-
-    conn.commit()
-    conn.close()
-
-    return "OK"
-# ============================
-# DETTAGLIO ATTIVITÀ
+# ROUTE ATTIVITA
 # ============================
 
-@app.route("/attivita/<nome>")
-def attivita_dettaglio(nome):
-    path = f"templates/attivita/{nome}.txt"
+@app.route("/attivita")
+def attivita():
+    folder = os.path.abspath("templates/attivita")
+    files = [f for f in os.listdir(folder) if f.endswith(".txt")]
 
-    if not os.path.exists(path):
-        return "Attività non trovata", 404
+    lista_attivita = []
 
-    dati = {}
+    for f in files:
+        path = os.path.join(folder, f)
+        data_attivita = "N/D"
 
-    with open(path, "r", encoding="utf-8") as f:
-        for riga in f:
-            if ":" in riga:
-                chiave, valore = riga.split(":", 1)
-                dati[chiave.strip()] = valore.strip()
+        # Leggiamo solo la riga "data:"
+        with open(path, "r", encoding="utf-8") as file:
+            for riga in file:
+                if riga.lower().startswith("data:"):
+                    data_attivita = riga.split(":", 1)[1].strip()
+                    break
 
-    if "data" in dati:
-        try:
-            giorno, mese, anno = dati["data"].replace("-", "/").split("/")
-            dati["data_iso"] = f"{anno}-{mese}-{giorno}"
-        except:
-            dati["data_iso"] = ""
+        lista_attivita.append({
+            "nome": f.replace(".txt", ""),
+            "data": data_attivita
+        })
 
-    return render_template("attivita_dettaglio.html", dati=dati)
+    # Ordiniamo per data (opzionale)
+    try:
+        lista_attivita.sort(key=lambda x: datetime.strptime(x["data"], "%d/%m/%Y"))
+    except:
+        pass
 
+    return render_template("attivita.html", files=lista_attivita)
 
 # ============================
 # CONTATTI
@@ -423,70 +414,75 @@ def verbale_dettaglio(nome):
 
 
 # ============================
-# INVIO NOTIFICHE AI GRUPPI
+# aggiorna_dati
 # ============================
-@app.route("/api/send_alert_group", methods=["POST"])
-def send_alert_group():
-    try:
-        data = request.json
-        gruppo = data.get("gruppo_id")
-        titolo = data.get("titolo")
-        messaggio = data.get("messaggio")
-        livello = data.get("livello")
 
-        print("Dati ricevuti:", data)
+from flask import flash, redirect, request
+import pandas as pd
 
-        conn = sqlite3.connect("database.db")
-        c = conn.cursor()
-        c.execute("""
-            SELECT endpoint, p256dh, auth 
-            FROM subscriptions 
-            WHERE gruppo = ?
-        """, (gruppo,))
-        subs = c.fetchall()
-        conn.close()
+@app.route("/aggiorna_dati", methods=["POST"])
+def aggiorna_dati():
+    username = request.form.get("username")
+    nuovo_indirizzo = request.form.get("indirizzo")
+    nuova_data = request.form.get("data_nascita")
+    nuovo_tel = request.form.get("telefono")
+    nuova_email = request.form.get("email")
 
-        print(f"Trovate {len(subs)} subscription per il gruppo {gruppo}")
+    CSV_PATH = "static/iscritti.csv"
+    df = pd.read_csv(CSV_PATH, dtype=str)
 
-        payload = {
-            "title": titolo,
-            "body": messaggio,
-            "level": livello
-        }
+    idx = df.index[df["username"] == username].tolist()
+    if not idx:
+        flash("Errore: utente non trovato", "danger")
+        return redirect("/")
 
-        for endpoint, p256dh, auth in subs:
-            subscription_info = {
-                "endpoint": endpoint,
-                "keys": {
-                    "p256dh": p256dh,
-                    "auth": auth
-                }
-            }
+    i = idx[0]
 
-            try:
-                webpush(
-                    subscription_info,
-                    data=json.dumps(payload),
-                    vapid_private_key=VAPID_PRIVATE_KEY,
-                    vapid_claims={"sub": "mailto:admin@example.com"}
-                )
-                print("Notifica inviata a:", endpoint)
+    df.at[i, "indirizzo"] = nuovo_indirizzo
+    df.at[i, "data_nascita"] = nuova_data
+    df.at[i, "telefono"] = nuovo_tel
+    df.at[i, "email"] = nuova_email
 
-            except WebPushException as e:
-                print("Errore invio notifica:", e)
+    df.to_csv(CSV_PATH, index=False)
 
-        with open("/tmp/allerta.txt", "w", encoding="utf-8") as f:
-            f.write(f"colore: {livello}\n")
-            f.write(f"messaggio: {titolo} – {messaggio}")
+    flash("Dati aggiornati con successo!", "success")
+    return redirect(f"/scheda_personale?username={username}")
 
-        print("File allerta.txt aggiornato correttamente!")
+# ============================
+# AGGIORNA PASSWORD
+# ============================
+from flask import flash, redirect, request
+import pandas as pd
 
-        return "OK"
+@app.route("/aggiorna_password", methods=["POST"])
+def aggiorna_password():
+    username = request.form.get("username")
+    nuova_password = request.form.get("nuova_password")
 
-    except Exception as e:
-        print("Errore generale:", e)
-        return "ERRORE", 500
+    if not username or not nuova_password:
+        return "Dati mancanti", 400
 
+    righe = []
+    trovato = False
+
+    with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            if r["username"] == username:
+                r["password"] = nuova_password
+                trovato = True
+            righe.append(r)
+
+    if not trovato:
+        return "Utente non trovato", 404
+
+    with open("static/iscritti.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=righe[0].keys())
+        writer.writeheader()
+        writer.writerows(righe)
+
+    flash("Password aggiornata con successo!", "success")
+    return redirect(f"/scheda_personale?username={username}")
 
 # ============================
 # AVVIO SERVER
