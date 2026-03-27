@@ -257,13 +257,21 @@ def mostra_attivita_raw(nomefile):
 
 @app.route("/scheda_personale")
 def scheda_personale():
-    # Preleva l'username dall'URL, es: /scheda_personale?username=mario
+    # Preleva l'username dall'URL
     username = request.args.get("username")
+
+    # 🔍 DEBUG 1: cosa arriva alla route
+    print(">>> /scheda_personale – username ricevuto:", username)
+
     if not username:
         return "Errore: manca username", 400
 
-    # Legge dal CSV, non dal database
+    # Legge dal CSV
     dati = carica_iscritto(username)
+
+    # 🔍 DEBUG 2: cosa restituisce carica_iscritto()
+    print(">>> /scheda_personale – dati caricati:", dati)
+
     if not dati:
         return "Utente non trovato", 404
 
