@@ -1,6 +1,6 @@
 const CACHE_NAME = "pc-vas-cache-v1";
 
-// File da mettere in cache
+// File statici da mettere in cache
 const ASSETS = [
     "/",
     "/static/manifest.json",
@@ -35,6 +35,18 @@ self.addEventListener("activate", event => {
 
 // Gestione richieste
 self.addEventListener("fetch", event => {
+    const url = new URL(event.request.url);
+
+    // ❗ NON gestire richieste con query string (es: ?username=...)
+    if (url.search) {
+        return; // lascia passare la richiesta al server
+    }
+
+    // ❗ NON mettere in cache pagine dinamiche
+    if (url.pathname.startsWith("/scheda_personale")) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request).then(cached => {
             return (
