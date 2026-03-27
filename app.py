@@ -54,31 +54,17 @@ def add_header(response):
     response.headers["Expires"] = "0"
     return response
 
-
-# ============================
-# LETTURA ISCRITTI DA CSV
-# ============================
 def carica_iscritto(username):
     try:
         with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for r in reader:
                 if r["username"].strip().lower() == username.strip().lower():
-
-                    r["motosega"] = r["motosega"] == "1"
-                    r["corso_base"] = r["corso_base"] == "1"
-                    r["altro_fatto"] = r["altro_fatto"] == "1"
-
-                    r["col_motosega"] = colore_scadenza(r["scadenza_motosega"])
-                    r["col_base"] = colore_scadenza(r["scadenza_base"])
-                    r["col_altro"] = colore_scadenza(r["scadenza_altro"])
-
                     return r
     except Exception as e:
         print("Errore lettura CSV iscritti:", e)
 
     return None
-
 
 # ============================
 # FUNZIONI DI UTILITÀ
