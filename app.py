@@ -156,6 +156,72 @@ def attivita():
 
     return render_template("attivita.html", files=lista_attivita)
 
+@app.route("/attivita/<nome>")
+def attivita_dettaglio(nome):
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
+
+    # Cerca il file ignorando maiuscole/minuscole
+    file_trovato = None
+    for f in os.listdir(base_path):
+        if f.lower() == f"{nome.lower()}.txt":
+            file_trovato = f
+            break
+
+    if not file_trovato:
+        return f"File non trovato: {nome}", 404
+
+    txt_path = os.path.join(base_path, file_trovato)
+
+    # Parsing del file
+    dati = {}
+    chiave_corrente = None
+
+    with open(txt_path, "r", encoding="utf-8") as f:
+        for riga in f:
+            riga = riga.rstrip("\n")
+
+            if ":" in riga:
+                chiave, valore = riga.split(":", 1)
+                chiave = chiave.strip()
+                valore = valore.strip()
+                dati[chiave] = valore
+                chiave_corrente = chiave
+            else:
+                if chiave_corrente == "descrizione":
+                    dati["descrizione"] += "\n" + riga
+
+    return render_template("attivita_dettaglio.html", dati=dati)
+
+# ============================
+# VISUALIZZAZIONE RAW (opzionale)
+# ============================
+@app.route("/attivita/raw/<nomefile>")
+def mostra_attivita_raw(nomefile):
+    base_path = os.path.join(current_app.root_path, "templates", "attivita")
+    txt_path = os.path.join(base_path, f"{nomefile}.txt")
+
+    # MOSTRA IL PERCORSO DIRETTAMENTE NELLA PAGINA
+    debug_info = f"""
+    <div style='padding:20px; background:#ffeeee; border:2px solid red; margin-bottom:20px;'>
+        <b>DEBUG:</b><br>
+        root_path: {current_app.root_path}<br>
+        base_path: {base_path}<br>
+        txt_path: {txt_path}<br>
+    </div>
+    """
+
+    if os.path.exists(txt_path):
+        with open(txt_path, "r", encoding="utf-8") as f:
+            contenuto = f.read()
+
+        return f"""
+        <div style='max-width:900px; margin:auto; padding:40px; font-size:1.6rem; white-space:pre-wrap;'>
+            <h2 style='margin-bottom:30px;'>📄 {nomefile}</h2>
+            <pre style='font-size:1.6rem; white-space:pre-wrap;'>{contenuto}</pre>
+        </div>
+        """
+
+    return f"File non trovato: {txt_path}", 404
 
 # ============================
 # CONTATTI
