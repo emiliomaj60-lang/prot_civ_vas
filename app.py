@@ -604,9 +604,9 @@ def aggiorna_dati():
     nuovo_tel = request.form.get("telefono")
     nuova_email = request.form.get("email")
 
-    df = pd.read_csv("iscritti.csv", dtype=str)
+    CSV_PATH = "static/iscritti.csv"
+    df = pd.read_csv(CSV_PATH, dtype=str)
 
-    # Trova la riga dell’utente
     idx = df.index[df["username"] == username].tolist()
     if not idx:
         flash("Errore: utente non trovato", "danger")
@@ -614,18 +614,14 @@ def aggiorna_dati():
 
     i = idx[0]
 
-    # Aggiorna i campi
     df.at[i, "indirizzo"] = nuovo_indirizzo
     df.at[i, "data_nascita"] = nuova_data
     df.at[i, "telefono"] = nuovo_tel
     df.at[i, "email"] = nuova_email
 
-    # Salva
-    df.to_csv("iscritti.csv", index=False)
+    df.to_csv(CSV_PATH, index=False)
 
-    # ⭐ NOTIFICA VISIVA ⭐
     flash("Dati aggiornati con successo!", "success")
-
     return redirect(f"/scheda/{username}")
 
 # ============================
@@ -639,9 +635,9 @@ def aggiorna_password():
     username = request.form.get("username")
     nuova_password = request.form.get("nuova_password")
 
-    df = pd.read_csv("iscritti.csv", dtype=str)
+    CSV_PATH = "static/iscritti.csv"
+    df = pd.read_csv(CSV_PATH, dtype=str)
 
-    # Trova la riga dell’utente
     idx = df.index[df["username"] == username].tolist()
     if not idx:
         flash("Errore: utente non trovato", "danger")
@@ -649,15 +645,10 @@ def aggiorna_password():
 
     i = idx[0]
 
-    # Aggiorna la password
     df.at[i, "password"] = nuova_password
+    df.to_csv(CSV_PATH, index=False)
 
-    # Salva il CSV
-    df.to_csv("iscritti.csv", index=False)
-
-    # ⭐ NOTIFICA VISIVA ⭐
     flash("Password aggiornata con successo!", "success")
-
     return redirect(f"/scheda/{username}")
 
 # ============================
