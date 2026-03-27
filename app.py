@@ -299,17 +299,36 @@ def iscritti():
 
                 for r in reader:
                     if r["username"].strip().lower() == username_input:
-                        if r["password"].strip() == password_input:
-                            return render_template(
-                                "scheda_iscritto.html",
-                                dati=r,
-                                vapid_public_key=VAPID_PUBLIC_KEY
-                            )
-                        else:
+
+                        if r["password"].strip() != password_input:
                             return render_template("iscritti.html", errore="Password errata")
+
+                        # Alias necessari per il template
+                        r["codice_fiscale"] = r.get("cod_fiscale", "")
+                        r["notifiche_attive"] = False  # placeholder
+
+                        # Conversione corsi in booleani
+                        def flag(x): 
+                            return x.strip() == "1"
+
+                        r["corso_aib"] = flag(r.get("corso_aib", "0"))
+                        r["corso_motosega"] = flag(r.get("corso_motosega", "0"))
+                        r["corso_ricerca_sco"] = flag(r.get("corso_ricerca_sco", "0"))
+                        r["corso_1"] = flag(r.get("corso_1", "0"))
+                        r["corso_2"] = flag(r.get("corso_2", "0"))
+                        r["corso_3"] = flag(r.get("corso_3", "0"))
+                        r["corso_4"] = flag(r.get("corso_4", "0"))
+                        r["corso_5"] = flag(r.get("corso_5", "0"))
+
+                        return render_template(
+                            "scheda_iscritto.html",
+                            dati=r,
+                            vapid_public_key=VAPID_PUBLIC_KEY
+                        )
 
         except Exception as e:
             print(">>> ERRORE:", e)
+            raise
 
         return render_template("iscritti.html", errore="Credenziali errate")
 
