@@ -622,7 +622,7 @@ def aggiorna_dati():
     df.to_csv(CSV_PATH, index=False)
 
     flash("Dati aggiornati con successo!", "success")
-    return redirect(f"/scheda/{username}")
+    return redirect("/scheda_personale")
 
 # ============================
 # AGGIORNA PASSWORD
@@ -649,7 +649,7 @@ def aggiorna_password():
     df.to_csv(CSV_PATH, index=False)
 
     flash("Password aggiornata con successo!", "success")
-    return redirect(f"/scheda/{username}")
+    return redirect("/scheda_personale")
 
 # ============================
 # AVVIO SERVER
