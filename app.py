@@ -255,32 +255,6 @@ def mostra_attivita_raw(nomefile):
 
     return f"File non trovato: {txt_path}", 404
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        conn = sqlite3.connect("database.db")
-        c = conn.cursor()
-        c.execute("SELECT password FROM iscritti WHERE username = ?", (username,))
-        row = c.fetchone()
-        conn.close()
-
-        if not row:
-            flash("Utente non trovato", "danger")
-            return redirect("/login")
-
-        if row[0] != password:
-            flash("Password errata", "danger")
-            return redirect("/login")
-
-        session["username"] = username
-        flash("Accesso effettuato!", "success")
-        return redirect("/scheda_personale")
-
-    return render_template("login.html")
-
 @app.route("/scheda_personale")
 def scheda_personale():
     # Preleva l'username dall'URL, es: /scheda_personale?username=mario
@@ -305,16 +279,6 @@ def emergenze():
     return render_template("emergenze.html", vapid_public_key=VAPID_PUBLIC_KEY)
 
 
-@app.route("/invia_allerta")
-def invia_allerta():
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT id, nome FROM gruppi")
-    gruppi = c.fetchall()
-    conn.close()
-
-    return render_template("invia_allerta.html", gruppi=gruppi)
-
 
 @app.route("/pagina4")
 def pagina4():
@@ -322,98 +286,25 @@ def pagina4():
 
 @app.route("/iscritti", methods=["GET", "POST"])
 def iscritti():
-    print(">>> /iscritti chiamata")
-
     if request.method == "POST":
-        print(">>> Metodo POST ricevuto")
-
         nome = request.form.get("nome", "").strip().lower()
         cognome = request.form.get("cognome", "").strip().lower()
         password_input = request.form.get("password", "").strip()
 
         username_input = f"{nome}_{cognome}"
-        possibili_username = {
-            username_input,
-            username_input.replace("_", "."),
-            username_input.replace("_", " "),
-            username_input.replace("_", "-"),
-            username_input.replace("_", "")
-        }
 
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
-                reader = csv.reader(f)
+                reader = csv.DictReader(f)
 
-                # Leggiamo l'intestazione
-                header = next(reader)
-                num_colonne = len(header)
-
-                for row in reader:
-                    if not row:
-                        continue
-
-                    # Username = prima colonna
-                    username_csv = row[0].strip().lower()
-
-                    if username_csv in possibili_username:
-
-                        # Password = ultima colonna della riga
-                        password_csv = row[-1].strip()
-
-                        if password_csv == password_input:
-
-                            # Ricostruzione dizionario robusta
-                            r = {}
-
-                            for i, col in enumerate(header):
-                                if i < len(row):
-                                    r[col] = row[i].strip()
-                                else:
-                                    r[col] = ""  # colonna mancante → vuota
-
-                            # Conversione corsi
-                            def flag(x): return x == "1"
-
-                            r["corso_aib"] = flag(r.get("corso_aib", ""))
-                            r["corso_motosega"] = flag(r.get("corso_motosega", ""))
-                            r["corso_ricerca_sco"] = flag(r.get("corso_ricerca_sco", ""))
-                            r["corso_1"] = flag(r.get("corso_1", ""))
-                            r["corso_2"] = flag(r.get("corso_2", ""))
-                            r["corso_3"] = flag(r.get("corso_3", ""))
-                            r["corso_4"] = flag(r.get("corso_4", ""))
-                            r["corso_5"] = flag(r.get("corso_5", ""))
-
-                            # Badge colori
-                            r["col_aib"] = "success" if r["corso_aib"] else "secondary"
-                            r["col_motosega"] = "success" if r["corso_motosega"] else "secondary"
-                            r["col_ricerca"] = "success" if r["corso_ricerca_sco"] else "secondary"
-
-                            # Scadenze vuote
-                            for key in [
-                                "scadenza_aib", "scadenza_motosega", "scadenza_ricerca",
-                                "scadenza_corso_1", "scadenza_corso_2", "scadenza_corso_3",
-                                "scadenza_corso_4", "scadenza_corso_5"
-                            ]:
-                                r[key] = ""
-
-                            # Notifiche
-                            try:
-                                r["notifiche_attive"] = notifiche_attive(r.get("telefono", ""))
-                            except:
-                                r["notifiche_attive"] = False
-
-                            # Alias campi
-                            r["codice_fiscale"] = r.get("cod_fiscale", "")
-                            r["cod_is"] = r.get("cod_is", "")
-                            r["cod_2"] = r.get("cod_2", "")
-                            r["sez_alpini"] = r.get("sez_alpini", "")
-
+                for r in reader:
+                    if r["username"].strip().lower() == username_input:
+                        if r["password"].strip() == password_input:
                             return render_template(
                                 "scheda_iscritto.html",
                                 dati=r,
                                 vapid_public_key=VAPID_PUBLIC_KEY
                             )
-
                         else:
                             return render_template("iscritti.html", errore="Password errata")
 
@@ -424,41 +315,6 @@ def iscritti():
 
     return render_template("iscritti.html")
 
-# ============================
-# ROUTE SALVATAGGIO SUBSCRIPTION
-# ============================
-@app.route("/subscribe", methods=["POST"])
-def subscribe():
-    data = request.json
-    endpoint = data.get("endpoint")
-    p256dh = data.get("p256dh")
-    auth = data.get("auth")
-    telefono = data.get("telefono")
-    gruppo = data.get("gruppo")   # 👈 AGGIUNTO
-
-    print(">>> Subscription ricevuta:", data)
-
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-
-    # Salva o aggiorna la subscription
-    c.execute("""
-        INSERT OR REPLACE INTO subscriptions (telefono, endpoint, p256dh, auth, gruppo)
-        VALUES (?, ?, ?, ?, ?)
-    """, (telefono, endpoint, p256dh, auth, gruppo))
-
-    # 🔥 AGGIUNTA FONDAMENTALE:
-    # Imposta lo stato notifiche come ATTIVE
-    c.execute("""
-        UPDATE iscritti
-        SET notifiche_attive = 1
-        WHERE telefono = ?
-    """, (telefono,))
-
-    conn.commit()
-    conn.close()
-
-    return "OK"
 
 # ============================
 # ROUTE ATTIVITA
@@ -533,71 +389,6 @@ def verbale_dettaglio(nome):
     except:
         return "Verbale non trovato", 404
 
-
-# ============================
-# INVIO NOTIFICHE AI GRUPPI
-# ============================
-@app.route("/api/send_alert_group", methods=["POST"])
-def send_alert_group():
-    try:
-        data = request.json
-        gruppo = data.get("gruppo_id")
-        titolo = data.get("titolo")
-        messaggio = data.get("messaggio")
-        livello = data.get("livello")
-
-        print("Dati ricevuti:", data)
-
-        conn = sqlite3.connect("database.db")
-        c = conn.cursor()
-        c.execute("""
-            SELECT endpoint, p256dh, auth 
-            FROM subscriptions 
-            WHERE gruppo = ?
-        """, (gruppo,))
-        subs = c.fetchall()
-        conn.close()
-
-        print(f"Trovate {len(subs)} subscription per il gruppo {gruppo}")
-
-        payload = {
-            "title": titolo,
-            "body": messaggio,
-            "level": livello
-        }
-
-        for endpoint, p256dh, auth in subs:
-            subscription_info = {
-                "endpoint": endpoint,
-                "keys": {
-                    "p256dh": p256dh,
-                    "auth": auth
-                }
-            }
-
-            try:
-                webpush(
-                    subscription_info,
-                    data=json.dumps(payload),
-                    vapid_private_key=VAPID_PRIVATE_KEY,
-                    vapid_claims={"sub": "mailto:admin@example.com"}
-                )
-                print("Notifica inviata a:", endpoint)
-
-            except WebPushException as e:
-                print("Errore invio notifica:", e)
-
-        with open("/tmp/allerta.txt", "w", encoding="utf-8") as f:
-            f.write(f"colore: {livello}\n")
-            f.write(f"messaggio: {titolo} – {messaggio}")
-
-        print("File allerta.txt aggiornato correttamente!")
-
-        return "OK"
-
-    except Exception as e:
-        print("Errore generale:", e)
-        return "ERRORE", 500
 
 # ============================
 # aggiorna_dati
