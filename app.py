@@ -267,7 +267,7 @@ def scheda_personale():
     if not dati:
         return "Utente non trovato", 404
 
-    return render_template("scheda_personale.html", **dati)
+    return render_template("scheda_iscritto.html", **dati)
 
 @app.route("/api/allerta")
 def api_allerta():
