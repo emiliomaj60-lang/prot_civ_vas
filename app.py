@@ -293,6 +293,9 @@ def iscritti():
 
         username_input = f"{nome}_{cognome}"
 
+        print(">>> Username cercato:", username_input)
+        print(">>> Username nel CSV:", r["username"])
+
         try:
             with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
