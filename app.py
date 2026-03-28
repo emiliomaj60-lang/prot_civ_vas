@@ -27,6 +27,47 @@ app = Flask(__name__)
 app.secret_key = "supersegreto123"   # CHIAVE SEGRETA
 # ============================
 
+import base64
+import requests
+
+def aggiorna_csv_github(contenuto_csv: str):
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    OWNER = "emiliomaj60-lang"      # ← metti il tuo username GitHub
+    REPO = "prot_civ_vas"            # ← metti il nome del repo
+    FILE_PATH = "static/iscritti.csv"  # ← percorso del file nel repo
+
+    if not GITHUB_TOKEN:
+        print("⚠️ GITHUB_TOKEN non impostato, salto aggiornamento GitHub")
+        return None, {"error": "missing token"}
+
+    url = f"https://api.github.com/repos/{OWNER}/{REPO}/contents/{FILE_PATH}"
+
+    # Recupero SHA del file esistente
+    r = requests.get(url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
+    sha = r.json().get("sha") if r.status_code == 200 else None
+
+    # Codifica Base64 del contenuto
+    encoded = base64.b64encode(contenuto_csv.encode("utf-8")).decode("utf-8")
+
+    payload = {
+        "message": "Aggiornamento automatico iscritti.csv",
+        "content": encoded,
+    }
+    if sha:
+        payload["sha"] = sha
+
+    res = requests.put(
+        url,
+        headers={
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json"
+        },
+        data=json.dumps(payload)
+    )
+
+    print("GitHub update status:", res.status_code, res.text[:200])
+    return res.status_code, res.json()
+
 # ============================
 # SERVICE WORKER
 # ============================
@@ -441,7 +482,15 @@ def aggiorna_dati():
     df.at[i, "telefono"] = nuovo_tel
     df.at[i, "email"] = nuova_email
 
+    # 1) Salvo localmente nel container
     df.to_csv(CSV_PATH, index=False)
+
+    # 2) Leggo il CSV come stringa
+    with open(CSV_PATH, "r", encoding="utf-8") as f:
+        contenuto = f.read()
+
+    # 3) Aggiorno il file su GitHub
+    aggiorna_csv_github(contenuto)
 
     flash("Dati aggiornati con successo!", "success")
     return redirect(f"/scheda_personale?username={username}")
@@ -460,10 +509,12 @@ def aggiorna_password():
     if not username or not nuova_password:
         return "Dati mancanti", 400
 
+    CSV_PATH = "static/iscritti.csv"
+
     righe = []
     trovato = False
 
-    with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
+    with open(CSV_PATH, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for r in reader:
             if r["username"] == username:
@@ -474,10 +525,18 @@ def aggiorna_password():
     if not trovato:
         return "Utente non trovato", 404
 
-    with open("static/iscritti.csv", "w", newline="", encoding="utf-8") as f:
+    # 1) Riscrivo il CSV localmente
+    with open(CSV_PATH, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=righe[0].keys())
         writer.writeheader()
         writer.writerows(righe)
+
+    # 2) Rileggo il CSV come stringa
+    with open(CSV_PATH, "r", encoding="utf-8") as f:
+        contenuto = f.read()
+
+    # 3) Aggiorno il file su GitHub
+    aggiorna_csv_github(contenuto)
 
     flash("Password aggiornata con successo!", "success")
     return redirect(f"/scheda_personale?username={username}")
