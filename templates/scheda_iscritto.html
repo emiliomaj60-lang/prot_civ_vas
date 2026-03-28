@@ -297,8 +297,19 @@
         <form method="POST" action="/aggiorna_password">
             <input type="hidden" name="username" value="{{ dati.username }}">
 
+            <!-- PASSWORD ATTUALE IN CHIARO -->
+            <label>Password attuale</label>
+            <input 
+                class="form-control" 
+                type="text" 
+                value="{{ dati.password }}" 
+                readonly
+                style="background:#eef3ff; font-weight:700; margin-bottom:20px;"
+            >
+
+            <!-- NUOVA PASSWORD -->
             <label>Nuova password</label>
-            <input class="form-control" type="text" name="nuova_password">
+            <input class="form-control" type="text" name="nuova_password" required>
 
             <button class="btn btn-danger btn-form" type="submit">🔐 Aggiorna password</button>
         </form>
