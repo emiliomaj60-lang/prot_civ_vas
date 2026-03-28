@@ -361,9 +361,9 @@ def iscritti():
                         r["corso_aib"] = flag(r.get("corso_aib", "0"))
                         r["corso_motosega"] = flag(r.get("corso_motosega", "0"))
                         r["corso_ricerca_sco"] = flag(r.get("corso_ricerca_sco", "0"))
-                        r["corso_1"] = flag(r.get("corso_1", "0"))
-                        r["corso_2"] = flag(r.get("corso_2", "0"))
-                        r["corso_3"] = flag(r.get("corso_3", "0"))
+                        r["corso_pc"] = flag(r.get("corso_pc", "0"))
+                        r["visita_med_aib"] = flag(r.get("visita_med_aib", "0"))
+                        r["visita_med_capi"] = flag(r.get("visita_med_capi", "0"))
                         r["corso_4"] = flag(r.get("corso_4", "0"))
                         r["corso_5"] = flag(r.get("corso_5", "0"))
 
