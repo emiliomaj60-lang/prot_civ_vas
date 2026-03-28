@@ -140,4 +140,16 @@
     </form>
 </div>
 
+<script>
+document.getElementById("togglePassword").addEventListener("click", function () {
+    const campo = document.getElementById("password");
+    const tipo = campo.getAttribute("type") === "password" ? "text" : "password";
+    campo.setAttribute("type", tipo);
+
+    // Cambia icona
+    this.classList.toggle("bi-eye-fill");
+    this.classList.toggle("bi-eye-slash-fill");
+});
+</script>
+
 {% endblock %}
