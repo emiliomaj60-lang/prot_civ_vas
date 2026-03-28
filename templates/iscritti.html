@@ -118,7 +118,21 @@
         <div class="input-wrapper">
             <i class="bi bi-shield-lock input-icon"></i>
             <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control form-control-lg" required>
+
+            <input 
+                type="password" 
+                name="password" 
+                id="password" 
+                class="form-control form-control-lg" 
+                required
+            >
+
+            <!-- Icona mostra/nascondi -->
+            <i 
+                class="bi bi-eye-fill" 
+                id="togglePassword"
+                style="position:absolute; right:20px; top:50%; transform:translateY(-50%); font-size:2.2rem; color:#002b5c; cursor:pointer;"
+            ></i>
         </div>
 
         <button class="btn btn-primary w-100 btn-lg mt-3">Accedi</button>
