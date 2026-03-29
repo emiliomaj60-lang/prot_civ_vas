@@ -226,10 +226,10 @@
                 <tr>
                     <th>Visita medica AIB (scadenza)</th>
                     <td>
-                        {% if dati.visita_med_aib_data %}
-                            {{ dati.visita_med_aib_data.strftime("%d/%m/%Y") }}
+                        {% if dati.visita_med_aib %}
+                            {{ dati.visita_med_aib }}
 
-                            {% set stato = stato_scadenza(dati.visita_med_aib_data) %}
+                            {% set stato = stato_scadenza(dati.visita_med_aib) %}
 
                             {% if stato == "scaduta" %}
                                 <span style="color:red; font-weight:bold;">(SCADUTA)</span>
@@ -249,10 +249,10 @@
                 <tr>
                     <th>Visita medica capigruppo (scadenza)</th>
                     <td>
-                        {% if dati.visita_med_capi_data %}
-                            {{ dati.visita_med_capi_data.strftime("%d/%m/%Y") }}
+                        {% if dati.visita_med_capi %}
+                            {{ dati.visita_med_capi }}
 
-                            {% set stato = stato_scadenza(dati.visita_med_capi_data) %}
+                            {% set stato = stato_scadenza(dati.visita_med_capi) %}
 
                             {% if stato == "scaduta" %}
                                 <span style="color:red; font-weight:bold;">(SCADUTA)</span>
