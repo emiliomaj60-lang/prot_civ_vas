@@ -633,7 +633,6 @@ def prelievo_attrezzature():
             "data_richiesta",          
             "data_consegna",
             "chi_consegna_prelievo",
-            "ridato_data",
             "note"
         ]
 
@@ -644,7 +643,6 @@ def prelievo_attrezzature():
         "data_richiesta": oggi,      
         "data_consegna": "",
         "chi_consegna_prelievo": "",
-        "ridato_data": "",
         "note": ""
      }
     righe.append(nuova_riga)
