@@ -632,7 +632,8 @@ def prelievo_attrezzature():
             "prelevato_da",
             "data_richiesta",          
             "data_consegna",
-            "chi_consegna_prelievo"
+            "chi_consegna_prelievo",
+            "consegnato_data"
         ]
 
     # 2) Aggiungo la nuova riga con il nuovo campo
@@ -641,7 +642,8 @@ def prelievo_attrezzature():
         "prelevato_da": nome_completo,
         "data_richiesta": oggi,      
         "data_consegna": "",
-        "chi_consegna_prelievo": ""
+        "chi_consegna_prelievo": "",
+        "consegnato_data": ""
     }
     righe.append(nuova_riga)
 
