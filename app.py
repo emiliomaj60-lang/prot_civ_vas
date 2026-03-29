@@ -597,13 +597,19 @@ def aggiorna_password():
 
 @app.route("/prelievo_attrezzature", methods=["POST"])
 def prelievo_attrezzature():
+    username = request.form.get("username")
     materiale = request.form.get("materiale", "").strip()
 
-    # Nome completo dell'utente che sta prelevando
-    username = request.args.get("username")
-    nome_completo = ""
+    if not username or not materiale:
+        return "Dati mancanti", 400
+
+    CSV_PATH = "dati/prelievi.csv"
+
+    # Data del prelievo
+    oggi = datetime.now().strftime("%d/%m/%Y")
 
     # Recupero nome e cognome dal CSV iscritti
+    nome_completo = None
     with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for r in reader:
@@ -611,15 +617,44 @@ def prelievo_attrezzature():
                 nome_completo = f"{r['nome']} {r['cognome']}"
                 break
 
-    # Data del prelievo
-    oggi = datetime.now().strftime("%d/%m/%Y")
+    if not nome_completo:
+        return "Utente non trovato", 404
 
-    # Scrittura nel file prelievi.csv
-    with open("dati/prelievi.csv", "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow([materiale, nome_completo, oggi, ""])
+    # 1) Leggo tutte le righe esistenti (se il file esiste)
+    righe = []
+    try:
+        with open(CSV_PATH, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for r in reader:
+                righe.append(r)
+        fieldnames = reader.fieldnames
+    except FileNotFoundError:
+        # Se il file non esiste, lo creo con le colonne corrette
+        fieldnames = ["materiale", "prelevato_da", "data_prelievo", "data_consegna"]
 
-    # Torna alla scheda personale
+    # 2) Aggiungo la nuova riga
+    nuova_riga = {
+        "materiale": materiale,
+        "prelevato_da": nome_completo,
+        "data_prelievo": oggi,
+        "data_consegna": ""
+    }
+    righe.append(nuova_riga)
+
+    # 3) Riscrivo il CSV localmente
+    with open(CSV_PATH, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(righe)
+
+    # 4) Rileggo il CSV come stringa
+    with open(CSV_PATH, "r", encoding="utf-8") as f:
+        contenuto = f.read()
+
+    # 5) Aggiorno il file su GitHub
+    aggiorna_csv_github(contenuto, path="dati/prelievi.csv")
+
+    flash("Prelievo registrato con successo!", "success")
     return redirect(f"/scheda_personale?username={username}")
 
 # ============================
