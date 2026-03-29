@@ -216,17 +216,66 @@
         <h3>Corsi svolti</h3>
         <table class="table table-bordered">
             <tbody>
+
                 <tr><th>Corso AIB</th><td>{{ "Sì" if dati.corso_aib else "No" }}</td></tr>
                 <tr><th>Corso Motosega</th><td>{{ "Sì" if dati.corso_motosega else "No" }}</td></tr>
                 <tr><th>Corso Ricerca Scomparsi</th><td>{{ "Sì" if dati.corso_ricerca_sco else "No" }}</td></tr>
-                <tr><th>Corso protezione civile</th><td>{{ "Sì" if dati.corso_pc else "No" }}</td></tr>
-                <tr><th>Visita medica AIB (scadenza)</th><td>{{ "Sì" if dati.visita_med_aib else "No" }}</td></tr>
-                <tr><th>Visita medica capigruppo (scadenza)</th><td>{{ "Sì" if dati.visita_med_capi else "No" }}</td></tr>
+                <tr><th>Corso Protezione Civile</th><td>{{ "Sì" if dati.corso_pc else "No" }}</td></tr>
+
+                <!-- ⭐ VISITA MEDICA AIB ⭐ -->
+                <tr>
+                    <th>Visita medica AIB (scadenza)</th>
+                    <td>
+                        {% if dati.visita_med_aib_data %}
+                            {{ dati.visita_med_aib_data.strftime("%d/%m/%Y") }}
+
+                            {% set stato = stato_scadenza(dati.visita_med_aib_data) %}
+
+                            {% if stato == "scaduta" %}
+                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
+                            {% elif stato == "in_scadenza" %}
+                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
+                            {% elif stato == "ok" %}
+                                <span style="color:green;">(OK)</span>
+                            {% endif %}
+
+                        {% else %}
+                            <span style="color:red;">Non registrata</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <!-- ⭐ VISITA MEDICA CAPI ⭐ -->
+                <tr>
+                    <th>Visita medica capigruppo (scadenza)</th>
+                    <td>
+                        {% if dati.visita_med_capi_data %}
+                            {{ dati.visita_med_capi_data.strftime("%d/%m/%Y") }}
+
+                            {% set stato = stato_scadenza(dati.visita_med_capi_data) %}
+
+                            {% if stato == "scaduta" %}
+                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
+                            {% elif stato == "in_scadenza" %}
+                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
+                            {% elif stato == "ok" %}
+                                <span style="color:green;">(OK)</span>
+                            {% endif %}
+
+                        {% else %}
+                            <span style="color:red;">Non registrata</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
                 <tr><th>Corso 4</th><td>{{ "Sì" if dati.corso_4 else "No" }}</td></tr>
                 <tr><th>Corso 5</th><td>{{ "Sì" if dati.corso_5 else "No" }}</td></tr>
+
             </tbody>
         </table>
     </div>
+
+
 
     <!-- ⭐⭐⭐ BOX DPI ⭐⭐⭐ -->
     <div id="boxDPI" class="toggle-box" style="display:none;">
