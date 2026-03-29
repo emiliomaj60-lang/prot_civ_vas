@@ -4,18 +4,90 @@
     <meta charset="UTF-8">
     <title>Operazione completata</title>
     <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d6efd, #198754);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .box-conferma {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            animation: fadeInUp 0.9s ease-out;
+        }
+
+        .box-conferma h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .icona {
+            font-size: 70px;
+            margin-bottom: 20px;
+            animation: pop 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .btn-home {
+            margin-top: 25px;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+
+        .timer {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+
+    <script>
+        let seconds = 4;
+        function countdown() {
+            document.getElementById("timer").innerText = seconds;
+            seconds--;
+            if (seconds < 0) {
+                window.location.href = "/";  // Torna alla pagina principale
+            } else {
+                setTimeout(countdown, 1000);
+            }
+        }
+        window.onload = countdown;
+    </script>
 </head>
+
 <body>
 
-<div class="container mt-5">
-    <div class="alert alert-success text-center">
-        <h3>{{ messaggio }}</h3>
-    </div>
+<div class="box-conferma">
+    <div class="icona">✅</div>
+    <h2>{{ messaggio }}</h2>
 
-    <div class="text-center mt-4">
-        <a href="/scheda_personale?username={{ username }}" class="btn btn-primary btn-lg">
-            Torna alla tua scheda
-        </a>
+    <a href="/" class="btn btn-light btn-home">Torna alla pagina principale</a>
+
+    <div class="timer">
+        Ritorno automatico tra <span id="timer">4</span> secondi...
     </div>
 </div>
 
