@@ -110,6 +110,33 @@ def carica_iscritto(username):
 # ============================
 # FUNZIONI DI UTILITÀ
 # ============================
+
+from datetime import datetime, date, timedelta
+
+def parse_date(value):
+    if not value or value.strip() == "":
+        return None
+    try:
+        return datetime.strptime(value.strip(), "%d/%m/%Y").date()
+    except:
+        return None
+
+def stato_scadenza(data_str):
+    data = parse_date(data_str)
+    if not data:
+        return "mancante"
+
+    oggi = date.today()
+
+    if data < oggi:
+        return "scaduta"
+    if data <= oggi + timedelta(days=30):
+        return "in_scadenza"
+    return "ok"
+
+# ⭐ Rende la funzione disponibile nei template Jinja
+app.jinja_env.globals['stato_scadenza'] = stato_scadenza
+
 def colore_scadenza(data):
     if data == "-" or data.strip() == "":
         return "secondary"
