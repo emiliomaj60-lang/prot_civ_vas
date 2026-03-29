@@ -342,15 +342,13 @@ def iscritti():
                 reader = csv.DictReader(f)
 
                 for r in reader:
-                    print(">>> Username cercato:", username_input)
-                    print(">>> Username nel CSV:", r["username"])
-
                     if r["username"].strip().lower() == username_input:
 
+                        # Controllo password
                         if r["password"].strip() != password_input:
                             return render_template("iscritti.html", errore="Password errata")
 
-                        # Alias necessari per il template
+                        # Alias per template
                         r["codice_fiscale"] = r.get("cod_fiscale", "")
                         r["notifiche_attive"] = False
 
@@ -362,12 +360,21 @@ def iscritti():
                         r["corso_motosega"] = flag(r.get("corso_motosega", "0"))
                         r["corso_ricerca_sco"] = flag(r.get("corso_ricerca_sco", "0"))
                         r["corso_pc"] = flag(r.get("corso_pc", "0"))
-                        r["visita_med_aib"] = flag(r.get("visita_med_aib", "0"))
-                        r["visita_med_capi"] = flag(r.get("visita_med_capi", "0"))
                         r["corso_4"] = flag(r.get("corso_4", "0"))
                         r["corso_5"] = flag(r.get("corso_5", "0"))
 
-                        # 🔥 FIX FINALE
+                        # ---------------------------------------------------------
+                        # NUOVA GESTIONE DATE (SOLO STRINGHE)
+                        # ---------------------------------------------------------
+                        # Le date vengono lette così come sono nel CSV
+                        # Formato atteso: gg/mm/aaaa
+                        r["visita_med_aib"] = r.get("visita_med_aib", "").strip()
+                        r["visita_med_capi"] = r.get("visita_med_capi", "").strip()
+
+                        # Nessuna conversione → il template userà direttamente la stringa
+                        # e calcolerà lo stato tramite stato_scadenza()
+
+                        # Redirect alla scheda personale
                         return redirect(f"/scheda_personale?username={r['username']}")
 
         except Exception as e:
@@ -377,7 +384,6 @@ def iscritti():
         return render_template("iscritti.html", errore="Credenziali errate")
 
     return render_template("iscritti.html")
-
 # ============================
 # ROUTE ATTIVITA
 # ============================
