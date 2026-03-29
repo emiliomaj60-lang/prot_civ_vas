@@ -248,11 +248,11 @@
                             {% set stato = stato_scadenza(dati.visita_med_aib) %}
 
                             {% if stato == "scaduta" %}
-                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
+                                <span style="color:red; font-weight:bold;">  (SCADUTA)</span>
                             {% elif stato == "in_scadenza" %}
-                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
+                                <span style="color:orange; font-weight:bold;">  (In scadenza)</span>
                             {% elif stato == "ok" %}
-                                <span style="color:green;">(OK)</span>
+                                <span style="color:green;">   (OK)</span>
                             {% endif %}
 
                         {% else %}
@@ -271,11 +271,11 @@
                             {% set stato = stato_scadenza(dati.visita_med_capi) %}
 
                             {% if stato == "scaduta" %}
-                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
+                                <span style="color:red; font-weight:bold;">  (SCADUTA)</span>
                             {% elif stato == "in_scadenza" %}
-                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
+                                <span style="color:orange; font-weight:bold;">  (In scadenza)</span>
                             {% elif stato == "ok" %}
-                                <span style="color:green;">(OK)</span>
+                                <span style="color:green;">   (OK)</span>
                             {% endif %}
 
                         {% else %}
