@@ -606,8 +606,6 @@ def prelievo_attrezzature():
         return "Dati mancanti", 400
 
     CSV_PATH = "dati/prelievi.csv"
-
-    # Data del prelievo
     oggi = datetime.now().strftime("%d/%m/%Y")
 
     # Recupero nome e cognome dal CSV iscritti
@@ -631,15 +629,21 @@ def prelievo_attrezzature():
                 righe.append(r)
         fieldnames = reader.fieldnames
     except FileNotFoundError:
-        # Se il file non esiste, lo creo con le colonne corrette
-        fieldnames = ["materiale", "prelevato_da", "data_prelievo", "data_consegna"]
+        fieldnames = [
+            "materiale",
+            "prelevato_da",
+            "data_richiesta",          
+            "data_consegna",
+            "chi_consegna_prelievo"
+        ]
 
-    # 2) Aggiungo la nuova riga
+    # 2) Aggiungo la nuova riga con il nuovo campo
     nuova_riga = {
         "materiale": materiale,
         "prelevato_da": nome_completo,
-        "data_prelievo": oggi,
-        "data_consegna": ""
+        "data_richiesta": oggi,      
+        "data_consegna": "",
+        "chi_consegna_prelievo": ""
     }
     righe.append(nuova_riga)
 
