@@ -1,4 +1,4 @@
-materiale,prelevato_da,data_richiesta,data_consegna,chi_consegna_prelievo
-Motosega elettrica,EMILIO MAJ,29/03/2026,,
-Prova,EMILIO MAJ,29/03/2026,,
-Motosega,EMILIO MAJ,29/03/2026,,
+materiale,prelevato_da,data_richiesta,data_consegna,chi_consegna_prelievo,consegnato_data
+Motosega elettrica,EMILIO MAJ,29/03/2026,,,
+Prova,EMILIO MAJ,29/03/2026,,,
+Motosega,EMILIO MAJ,29/03/2026,,,
