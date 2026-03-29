@@ -137,6 +137,20 @@ def stato_scadenza(data_str):
 # ⭐ Rende la funzione disponibile nei template Jinja
 app.jinja_env.globals['stato_scadenza'] = stato_scadenza
 
+# ⭐ NUOVA FUNZIONE PER LE DATE DEI CORSI (solo verifica presenza)
+def data_corso(data_str):
+    if not data_str or data_str.strip() == "":
+        return "Non effettuato"
+
+    try:
+        datetime.strptime(data_str.strip(), "%d/%m/%Y")
+        return data_str.strip()
+    except:
+        return "Non effettuato"
+
+# ⭐ Rende la funzione disponibile nei template Jinja
+app.jinja_env.globals['data_corso'] = data_corso
+
 def colore_scadenza(data):
     if data == "-" or data.strip() == "":
         return "secondary"
