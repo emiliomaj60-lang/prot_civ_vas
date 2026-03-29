@@ -343,18 +343,30 @@ def mostra_attivita_raw(nomefile):
 def scheda_personale():
     username = request.args.get("username")
 
-    # Se manca lo username → torna all’area iscritti
     if not username:
         return redirect("/iscritti")
 
     dati = carica_iscritto(username)
 
-    # Se l’utente non esiste → torna all’area iscritti
     if not dati:
         return redirect("/iscritti")
 
-    # PASSAGGIO CORRETTO: dati=dati
-    return render_template("scheda_iscritto.html", dati=dati)
+    # --- LETTURA PRELIEVI UTENTE ---
+    prelievi_utente = []
+    try:
+        with open("dati/prelievi.csv", newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for r in reader:
+                if r["prelevato_da"] == f"{dati['nome']} {dati['cognome']}":
+                    prelievi_utente.append(r)
+    except FileNotFoundError:
+        prelievi_utente = []
+
+    return render_template(
+        "scheda_iscritto.html",
+        dati=dati,
+        prelievi_utente=prelievi_utente
+    )
 
 @app.route("/api/allerta")
 def api_allerta():
