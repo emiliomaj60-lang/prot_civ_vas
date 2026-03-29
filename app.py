@@ -633,7 +633,8 @@ def prelievo_attrezzature():
             "data_richiesta",          
             "data_consegna",
             "chi_consegna_prelievo",
-            "consegnato_data"
+            "ridato_data",
+            "note"
         ]
 
     # 2) Aggiungo la nuova riga con il nuovo campo
@@ -643,8 +644,9 @@ def prelievo_attrezzature():
         "data_richiesta": oggi,      
         "data_consegna": "",
         "chi_consegna_prelievo": "",
-        "consegnato_data": ""
-    }
+        "ridato_data": "",
+        "note": ""
+     }
     righe.append(nuova_riga)
 
     # 3) Riscrivo il CSV localmente
