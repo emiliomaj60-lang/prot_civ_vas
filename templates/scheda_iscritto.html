@@ -399,12 +399,14 @@
         <h3>Prelievo Attrezzature</h3>
 
         <form action="/prelievo_attrezzature" method="POST">
+            <input type="hidden" name="username" value="{{ dati.username }}">
+
             <table class="table table-bordered">
                 <tbody>
                     <tr>
                         <th>Cosa prelevi?</th>
                         <td>
-                            <input type="text" name="materiale" class="form-control" placeholder="Es. Motosega, DPI, radio..." required>
+                            <input type="text" name="materiale" class="form-control" required>
                         </td>
                     </tr>
                 </tbody>
