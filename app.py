@@ -544,9 +544,8 @@ def aggiorna_dati():
     # 3) Aggiorno il file su GitHub
     aggiorna_csv_github(contenuto)
 
-    flash("Dati aggiornati con successo!", "success")
-    return redirect(f"/scheda_personale?username={username}")
-
+    return redirect(f"/conferma?msg=Dati aggiornati con successo&username={username}")
+    
 # ============================
 # AGGIORNA PASSWORD
 # ============================
@@ -590,9 +589,8 @@ def aggiorna_password():
     # 3) Aggiorno il file su GitHub
     aggiorna_csv_github(contenuto)
 
-    flash("Password aggiornata con successo!", "success")
-    return redirect(f"/scheda_personale?username={username}")
-
+    return redirect(f"/conferma?msg=Password aggiornata con successo&username={username}")
+    
 # ============================
 # PRELIEVO ATTREZZATURE
 # ============================
@@ -660,8 +658,17 @@ def prelievo_attrezzature():
     # 5) Aggiorno il file su GitHub
     aggiorna_csv_github(contenuto, path="dati/prelievi.csv")
 
-    flash("Prelievo registrato con successo!", "success")
-    return redirect(f"/scheda_personale?username={username}")
+    return redirect(f"/conferma?msg=Prelievo registrato con successo&username={username}")
+
+# ============================
+# PAGINA CONFERMA
+# ============================
+
+@app.route("/conferma")
+def conferma():
+    messaggio = request.args.get("msg", "Operazione completata")
+    username = request.args.get("username")
+    return render_template("conferma.html", messaggio=messaggio, username=username)
 
 # ============================
 # AVVIO SERVER
