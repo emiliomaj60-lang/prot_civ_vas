@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Operazione completata</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="alert alert-success text-center">
+        <h3>{{ messaggio }}</h3>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/scheda_personale?username={{ username }}" class="btn btn-primary btn-lg">
+            Torna alla tua scheda
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
