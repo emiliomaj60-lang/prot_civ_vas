@@ -592,6 +592,37 @@ def aggiorna_password():
     return redirect(f"/scheda_personale?username={username}")
 
 # ============================
+# PRELIEVO ATTREZZATURE
+# ============================
+
+@app.route("/prelievo_attrezzature", methods=["POST"])
+def prelievo_attrezzature():
+    materiale = request.form.get("materiale", "").strip()
+
+    # Nome completo dell'utente che sta prelevando
+    username = request.args.get("username")
+    nome_completo = ""
+
+    # Recupero nome e cognome dal CSV iscritti
+    with open("static/iscritti.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            if r["username"] == username:
+                nome_completo = f"{r['nome']} {r['cognome']}"
+                break
+
+    # Data del prelievo
+    oggi = datetime.now().strftime("%d/%m/%Y")
+
+    # Scrittura nel file prelievi.csv
+    with open("dati/prelievi.csv", "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([materiale, nome_completo, oggi, ""])
+
+    # Torna alla scheda personale
+    return redirect(f"/scheda_personale?username={username}")
+
+# ============================
 # AVVIO SERVER
 # ============================
 if __name__ == "__main__":
