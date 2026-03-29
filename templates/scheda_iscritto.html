@@ -217,28 +217,19 @@
         <table class="table table-bordered">
             <tbody>
 
-                <!-- ⭐ DATE CORSI SVOLTI ⭐ -->
-                <tr>
-                    <th>Corso AIB (data corso)</th>
-                    <td>{{ data_corso(dati.corso_aib_data) }}</td>
-                </tr>
-
-                <tr>
-                    <th>Corso Motosega (data corso)</th>
-                    <td>{{ data_corso(dati.corso_motosega_data) }}</td>
-                </tr>
-
-                <tr>
-                    <th>Corso Ricerca Scomparsi (data corso)</th>
-                    <td>{{ data_corso(dati.corso_ricerca_sco_data) }}</td>
-                </tr>
-
+                <!-- 1️⃣ Corso Protezione Civile -->
                 <tr>
                     <th>Corso Protezione Civile (data corso)</th>
                     <td>{{ data_corso(dati.corso_pc_data) }}</td>
                 </tr>
 
-                <!-- ⭐ VISITA MEDICA AIB ⭐ -->
+                <!-- 2️⃣ Corso AIB -->
+                <tr>
+                    <th>Corso AIB (data corso)</th>
+                    <td>{{ data_corso(dati.corso_aib_data) }}</td>
+                </tr>
+
+                <!-- 3️⃣ Visita medica AIB -->
                 <tr>
                     <th>Visita medica AIB (scadenza)</th>
                     <td>
@@ -248,20 +239,19 @@
                             {% set stato = stato_scadenza(dati.visita_med_aib) %}
 
                             {% if stato == "scaduta" %}
-                                <span style="color:red; font-weight:bold;">  (SCADUTA)</span>
+                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
                             {% elif stato == "in_scadenza" %}
-                                <span style="color:orange; font-weight:bold;">  (In scadenza)</span>
+                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
                             {% elif stato == "ok" %}
-                                <span style="color:green;">   (OK)</span>
+                                <span style="color:green;">(OK)</span>
                             {% endif %}
-
                         {% else %}
                             <span style="color:red;">Non registrata</span>
                         {% endif %}
                     </td>
                 </tr>
 
-                <!-- ⭐ VISITA MEDICA CAPI ⭐ -->
+                <!-- 4️⃣ Visita medica capigruppo -->
                 <tr>
                     <th>Visita medica capigruppo (scadenza)</th>
                     <td>
@@ -271,20 +261,31 @@
                             {% set stato = stato_scadenza(dati.visita_med_capi) %}
 
                             {% if stato == "scaduta" %}
-                                <span style="color:red; font-weight:bold;">  (SCADUTA)</span>
+                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
                             {% elif stato == "in_scadenza" %}
-                                <span style="color:orange; font-weight:bold;">  (In scadenza)</span>
+                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
                             {% elif stato == "ok" %}
-                                <span style="color:green;">   (OK)</span>
+                                <span style="color:green;">(OK)</span>
                             {% endif %}
-
                         {% else %}
                             <span style="color:red;">Non registrata</span>
                         {% endif %}
                     </td>
                 </tr>
 
-                <!-- ⭐ ALTRI CORSI (SÌ/NO) ⭐ -->
+                <!-- 5️⃣ Corso Motosega -->
+                <tr>
+                    <th>Corso Motosega (data corso)</th>
+                    <td>{{ data_corso(dati.corso_motosega_data) }}</td>
+                </tr>
+
+                <!-- 6️⃣ Corso Ricerca Scomparsi -->
+                <tr>
+                    <th>Corso Ricerca Scomparsi (data corso)</th>
+                    <td>{{ data_corso(dati.corso_ricerca_sco_data) }}</td>
+                </tr>
+
+                <!-- Eventuali altri corsi -->
                 <tr>
                     <th>Corso 4</th>
                     <td>{{ "Sì" if dati.corso_4 else "No" }}</td>
