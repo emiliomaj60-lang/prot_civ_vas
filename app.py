@@ -29,12 +29,14 @@ app.secret_key = "supersegreto123"   # CHIAVE SEGRETA
 
 import base64
 import requests
+import json
+import os
 
-def aggiorna_csv_github(contenuto_csv: str):
+def aggiorna_csv_github(contenuto_csv: str, path: str = "static/iscritti.csv"):
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-    OWNER = "emiliomaj60-lang"      # ← metti il tuo username GitHub
-    REPO = "prot_civ_vas"            # ← metti il nome del repo
-    FILE_PATH = "static/iscritti.csv"  # ← percorso del file nel repo
+    OWNER = "emiliomaj60-lang"      # tuo username GitHub
+    REPO = "prot_civ_vas"           # nome del repo
+    FILE_PATH = path                # ora dinamico!
 
     if not GITHUB_TOKEN:
         print("⚠️ GITHUB_TOKEN non impostato, salto aggiornamento GitHub")
@@ -50,7 +52,7 @@ def aggiorna_csv_github(contenuto_csv: str):
     encoded = base64.b64encode(contenuto_csv.encode("utf-8")).decode("utf-8")
 
     payload = {
-        "message": "Aggiornamento automatico iscritti.csv",
+        "message": f"Aggiornamento automatico {FILE_PATH}",
         "content": encoded,
     }
     if sha:
@@ -620,7 +622,7 @@ def prelievo_attrezzature():
     if not nome_completo:
         return "Utente non trovato", 404
 
-    # 1) Leggo tutte le righe esistenti (se il file esiste)
+    # 1) Leggo il CSV dei prelievi (se esiste)
     righe = []
     try:
         with open(CSV_PATH, newline="", encoding="utf-8") as f:
