@@ -412,7 +412,8 @@
                 </tbody>
             </table>
 
-            <button type="submit" class="btn btn-success w-100">✔️ Registra Prelievo</button>
+            <button type="submit" class="btn btn-success btn-lg w-100">
+            ✔️ Registra Prelievo
         </form>
     </div>
 
@@ -420,7 +421,13 @@
 
 <script>
 function toggleBox(id) {
-    const boxes = ["boxCorsi", "boxDPI", "boxModificaDati", "boxModificaPassword"];
+    const boxes = [
+        "boxCorsi",
+        "boxDPI",
+        "boxModificaDati",
+        "boxModificaPassword",
+        "boxAttrezzature"   // ← aggiunto qui
+    ];
 
     boxes.forEach(boxId => {
         if (boxId !== id) {
