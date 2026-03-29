@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+{% block title %}Scheda Personale{% endblock %}
+
+{% block content %}
+
+{% macro dpi_row(icon, label, value) %}
+<tr>
+    <th><span class="dpi-icon">{{ icon }}</span>{{ label }}</th>
+    <td>
+        {% if value %}
+            <span class="badge bg-success badge-dpi">{{ value }}</span>
+        {% else %}
+            <span class="badge bg-danger badge-dpi">Mancante</span>
+        {% endif %}
+    </td>
+</tr>
+{% endmacro %}
+
+<style>
+    .profile-container {
+        max-width: 1300px;
+        margin: auto;
+        margin-top: 0px;
+        padding: 40px;
+        background: #ffffffee;
+        border-radius: 28px;
+        box-shadow: 0 10px 36px rgba(0,0,0,0.28);
+    }
+
+    .profile-title {
+        font-size: 3.4rem;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #002b5c;
+    }
+
+    /* CARD ANAGRAFICA */
+    .card-anagrafica {
+        background: #f8f9fa;
+        border-radius: 18px;
+        padding: 25px;
+        box-shadow: 0 6px 22px rgba(0,0,0,0.15);
+        margin-bottom: 30px;
+    }
+
+    .table-anagrafica th {
+        width: 260px;
+        font-size: 1.6rem;
+        color: #002b5c;
+        font-weight: 900;
+        background: #e9ecef;
+    }
+
+    .table-anagrafica td {
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    /* BOTTONI */
+    .btn-notifiche {
+        font-size: 1.8rem;
+        padding: 18px 32px;
+        margin-top: 10px;
+        border-radius: 12px;
+    }
+
+    .btn-azione {
+        width: 100%;
+        font-size: 1.6rem;
+        padding: 16px 10px;
+        border-radius: 12px;
+        font-weight: 800;
+        white-space: normal;
+    }
+
+    @media (min-width: 768px) {
+        .btn-azione {
+            font-size: 1.7rem;
+            padding: 18px 12px;
+        }
+    }
+
+    /* BOX A COMPARSA */
+    .toggle-box {
+        padding: 30px;
+        border-radius: 18px;
+        background: #ffffffdd;
+        box-shadow: 0 6px 22px rgba(0,0,0,0.18);
+        margin-bottom: 40px;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .toggle-box h3 {
+        font-size: 2.4rem;
+        font-weight: 900;
+        color: #002b5c;
+        margin-bottom: 20px;
+    }
+
+    /* FORM */
+    label {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: #002b5c;
+        margin-top: 10px;
+    }
+
+    input.form-control {
+        font-size: 1.7rem;
+        padding: 14px;
+        font-weight: 700;
+    }
+
+    .btn-form {
+        margin-top: 30px;
+        padding: 20px;
+        font-size: 1.8rem;
+        font-weight: 800;
+        width: 100%;
+        border-radius: 14px;
+    }
+
+    /* DPI ICONS + BADGES */
+    .dpi-icon {
+        font-size: 1.9rem;
+        margin-right: 8px;
+    }
+
+    .badge-dpi {
+        font-size: 1.4rem;
+        padding: 10px 14px;
+        font-weight: 800;
+        border-radius: 10px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="profile-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" 
+               style="font-size:1.6rem; font-weight:700; margin-bottom:25px;">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+ 
+    <div class="profile-title">Scheda Personale</div>
+
+    <!-- ⭐⭐⭐ CARD DATI ANAGRAFICI ⭐⭐⭐ -->
+    <div class="card-anagrafica">
+        <h3 style="font-weight:900; color:#002b5c; margin-bottom:20px;">📋 Dati Anagrafici</h3>
+
+        <table class="table table-bordered table-anagrafica">
+            <tbody>
+                <tr><th>🧑 Nome</th><td>{{ dati.nome }}</td></tr>
+                <tr><th>👤 Cognome</th><td>{{ dati.cognome }}</td></tr>
+                <tr><th>🆔 Codice Fiscale</th><td>{{ dati.cod_fiscale }}</td></tr>
+                <tr><th>🔢 Cod. Iscrizione</th><td>{{ dati.cod_is }}</td></tr>
+                <tr><th>🔢 Cod. 2</th><td>{{ dati.cod_2 }}</td></tr>
+                <tr><th>⛰️ Sezione Alpini</th><td>{{ dati.sez_alpini }}</td></tr>
+                <tr><th>🎂 Data di nascita</th><td>{{ dati.data_nascita }}</td></tr>
+                <tr><th>🏠 Indirizzo</th><td>{{ dati.indirizzo }}</td></tr>
+                <tr><th>📞 Telefono</th><td>{{ dati.telefono }}</td></tr>
+                <tr><th>📧 Email</th><td>{{ dati.email }}</td></tr>
+                <tr><th>🎖️ Categoria</th><td>{{ dati.categoria }}</td></tr>
+                <tr>
+                    <th>🔔 Notifiche</th>
+                    <td>
+                        {% if dati.notifiche_attive %}
+                            <span style="color:green; font-weight:800;">ATTIVE</span>
+                        {% else %}
+                            <span style="color:red; font-weight:800;">NON ATTIVE</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    {% if not dati.notifiche_attive %}
+    <button class="btn btn-success btn-notifiche" onclick="attivaNotifiche()">🔔 Attiva notifiche di emergenza</button>
+    {% else %}
+    <button class="btn btn-danger btn-notifiche" onclick="disattivaNotifiche()">🔕 Disattiva notifiche</button>
+    {% endif %}
+
+    <hr>
+
+    <!-- ⭐⭐⭐ BOTTONI ⭐⭐⭐ -->
+    <div class="row g-2 mb-3">
+        <div class="col-6 col-md-3 mb-2">
+            <button class="btn btn-primary btn-azione" onclick="toggleBox('boxCorsi')">📘 Corsi svolti</button>
+        </div>
+        <div class="col-6 col-md-3 mb-2">
+            <button class="btn btn-warning btn-azione" onclick="toggleBox('boxDPI')">🧤 Dotazioni DPI</button>
+        </div>
+        <div class="col-6 col-md-3 mb-2">
+            <button class="btn btn-info btn-azione" onclick="toggleBox('boxModificaDati')">✏️ Modifica dati</button>
+        </div>
+        <div class="col-6 col-md-3 mb-2">
+            <button class="btn btn-danger btn-azione" onclick="toggleBox('boxModificaPassword')">🔐 Password</button>
+        </div>
+    </div>
+
+    <!-- ⭐⭐⭐ BOX CORSI ⭐⭐⭐ -->
+    <div id="boxCorsi" class="toggle-box" style="display:none;">
+        <h3>Corsi svolti</h3>
+        <table class="table table-bordered">
+            <tbody>
+
+                <!-- ⭐ DATE CORSI SVOLTI ⭐ -->
+                <tr>
+                    <th>Corso AIB</th>
+                    <td>{{ data_corso(dati.corso_aib) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso Motosega</th>
+                    <td>{{ data_corso(dati.corso_motosega_data) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso Ricerca Scomparsi</th>
+                    <td>{{ data_corso(dati.corso_ricerca_sco_data) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso Protezione Civile</th>
+                    <td>{{ data_corso(dati.corso_pc_data) }}</td>
+                </tr>
+
+                <!-- ⭐ VISITA MEDICA AIB ⭐ -->
+                <tr>
+                    <th>Visita medica AIB (scadenza)</th>
+                    <td>
+                        {% if dati.visita_med_aib %}
+                            {{ dati.visita_med_aib }}
+
+                            {% set stato = stato_scadenza(dati.visita_med_aib) %}
+
+                            {% if stato == "scaduta" %}
+                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
+                            {% elif stato == "in_scadenza" %}
+                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
+                            {% elif stato == "ok" %}
+                                <span style="color:green;">(OK)</span>
+                            {% endif %}
+
+                        {% else %}
+                            <span style="color:red;">Non registrata</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <!-- ⭐ VISITA MEDICA CAPI ⭐ -->
+                <tr>
+                    <th>Visita medica capigruppo (scadenza)</th>
+                    <td>
+                        {% if dati.visita_med_capi %}
+                            {{ dati.visita_med_capi }}
+
+                            {% set stato = stato_scadenza(dati.visita_med_capi) %}
+
+                            {% if stato == "scaduta" %}
+                                <span style="color:red; font-weight:bold;">(SCADUTA)</span>
+                            {% elif stato == "in_scadenza" %}
+                                <span style="color:orange; font-weight:bold;">(In scadenza)</span>
+                            {% elif stato == "ok" %}
+                                <span style="color:green;">(OK)</span>
+                            {% endif %}
+
+                        {% else %}
+                            <span style="color:red;">Non registrata</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <!-- ⭐ ALTRI CORSI (SÌ/NO) ⭐ -->
+                <tr>
+                    <th>Corso 4</th>
+                    <td>{{ "Sì" if dati.corso_4 else "No" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso 5</th>
+                    <td>{{ "Sì" if dati.corso_5 else "No" }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ⭐⭐⭐ BOX DPI ⭐⭐⭐ -->
+    <div id="boxDPI" class="toggle-box" style="display:none;">
+        <h3>Dotazioni DPI</h3>
+
+        <table class="table table-bordered">
+            <tbody>
+
+
+                {{ dpi_row("🧥", "Giacca P.C.", dati.giacca_d_u) }}
+                {{ dpi_row("👖", "Pantaloni P.C.", dati.pantaloni_d_u) }}
+                {{ dpi_row("🪖", "Casco P.C.", dati.casco) }}
+                {{ dpi_row("🧵", "Tuta da lavoro", dati.tuta_da_lavoro) }}
+                {{ dpi_row("👕", "Maglietta", dati.maglietta) }}
+                {{ dpi_row("🌧️", "Cerata", dati.cerata) }}
+                {{ dpi_row("🧥", "Piumino", dati.piumino) }}
+                {{ dpi_row("👖", "Pantaloni Motosega", dati.pantaloni_ms) }}
+                {{ dpi_row("🥾", "Scarponi Motosega", dati.n_scarponi_ms) }}
+                {{ dpi_row("🧤", "Guanti Motosega", dati.guanti_ms) }}
+                {{ dpi_row("🪖", "Casco Motosega", dati.casco_ms) }}
+                {{ dpi_row("🧯", "Tuta AIB", dati.tuta_aib) }}
+                {{ dpi_row("🥾", "Scarponi AIB", dati.n_scarponi_aib) }}
+                {{ dpi_row("🧤", "Guanti AIB", dati.guanti_aib) }}
+                {{ dpi_row("🪖", "Casco AIB", dati.casco_aib) }}
+
+                <tr>
+                    <th><span class="dpi-icon">📝</span>Note AIB</th>
+                    <td>
+                        {% if dati.note_aib %}
+                            <span class="badge bg-info badge-dpi">{{ dati.note_aib }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary badge-dpi">Nessuna nota</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ⭐⭐⭐ BOX MODIFICA DATI ⭐⭐⭐ -->
+    <div id="boxModificaDati" class="toggle-box" style="display:none;">
+        <h3>Modifica dati personali</h3>
+
+        <form method="POST" action="/aggiorna_dati">
+            <input type="hidden" name="username" value="{{ dati.username }}">
+
+            <label>Data di nascita</label>
+            <input class="form-control" type="text" name="data_nascita" value="{{ dati.data_nascita }}">
+
+            <label>Indirizzo</label>
+            <input class="form-control" type="text" name="indirizzo" value="{{ dati.indirizzo }}">
+
+            <label>Telefono</label>
+            <input class="form-control" type="text" name="telefono" value="{{ dati.telefono }}">
+
+            <label>Email</label>
+            <input class="form-control" type="text" name="email" value="{{ dati.email }}">
+
+            <button class="btn btn-success btn-form" type="submit">💾 Salva modifiche</button>
+        </form>
+    </div>
+
+    <!-- ⭐⭐⭐ BOX MODIFICA PASSWORD ⭐⭐⭐ -->
+    <div id="boxModificaPassword" class="toggle-box" style="display:none;">
+        <h3>Modifica password</h3>
+
+        <form method="POST" action="/aggiorna_password">
+            <input type="hidden" name="username" value="{{ dati.username }}">
+
+            <!-- PASSWORD ATTUALE IN CHIARO -->
+            <label>Password attuale</label>
+            <input 
+                class="form-control" 
+                type="text" 
+                value="{{ dati.password }}" 
+                readonly
+                style="background:#eef3ff; font-weight:700; margin-bottom:20px;"
+            >
+
+            <!-- NUOVA PASSWORD -->
+            <label>Nuova password</label>
+            <input class="form-control" type="text" name="nuova_password" required>
+
+            <button class="btn btn-danger btn-form" type="submit">🔐 Aggiorna password</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+function toggleBox(id) {
+    const boxes = ["boxCorsi", "boxDPI", "boxModificaDati", "boxModificaPassword"];
+
+    boxes.forEach(boxId => {
+        if (boxId !== id) {
+            document.getElementById(boxId).style.display = "none";
+        }
+    });
+
+    const box = document.getElementById(id);
+    box.style.display = (box.style.display === "none" || box.style.display === "")
+        ? "block"
+        : "none";
+}
+</script>
+
+{% endblock %}
