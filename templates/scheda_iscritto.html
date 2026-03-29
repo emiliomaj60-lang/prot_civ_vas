@@ -217,10 +217,26 @@
         <table class="table table-bordered">
             <tbody>
 
-                <tr><th>Corso AIB</th><td>{{ "Sì" if dati.corso_aib else "No" }}</td></tr>
-                <tr><th>Corso Motosega</th><td>{{ "Sì" if dati.corso_motosega else "No" }}</td></tr>
-                <tr><th>Corso Ricerca Scomparsi</th><td>{{ "Sì" if dati.corso_ricerca_sco else "No" }}</td></tr>
-                <tr><th>Corso Protezione Civile</th><td>{{ "Sì" if dati.corso_pc else "No" }}</td></tr>
+                <!-- ⭐ DATE CORSI SVOLTI ⭐ -->
+                <tr>
+                    <th>Corso AIB</th>
+                    <td>{{ data_corso(dati.corso_aib_data) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso Motosega</th>
+                    <td>{{ data_corso(dati.corso_motosega_data) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso Ricerca Scomparsi</th>
+                    <td>{{ data_corso(dati.corso_ricerca_sco_data) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso Protezione Civile</th>
+                    <td>{{ data_corso(dati.corso_pc_data) }}</td>
+                </tr>
 
                 <!-- ⭐ VISITA MEDICA AIB ⭐ -->
                 <tr>
@@ -268,14 +284,20 @@
                     </td>
                 </tr>
 
-                <tr><th>Corso 4</th><td>{{ "Sì" if dati.corso_4 else "No" }}</td></tr>
-                <tr><th>Corso 5</th><td>{{ "Sì" if dati.corso_5 else "No" }}</td></tr>
+                <!-- ⭐ ALTRI CORSI (SÌ/NO) ⭐ -->
+                <tr>
+                    <th>Corso 4</th>
+                    <td>{{ "Sì" if dati.corso_4 else "No" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Corso 5</th>
+                    <td>{{ "Sì" if dati.corso_5 else "No" }}</td>
+                </tr>
 
             </tbody>
         </table>
     </div>
-
-
 
     <!-- ⭐⭐⭐ BOX DPI ⭐⭐⭐ -->
     <div id="boxDPI" class="toggle-box" style="display:none;">
