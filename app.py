@@ -405,15 +405,18 @@ def iscritti():
                         r["corso_5"] = flag(r.get("corso_5", "0"))
 
                         # ---------------------------------------------------------
-                        # NUOVA GESTIONE DATE (SOLO STRINGHE)
+                        # DATE (SOLO STRINGHE, FORMATO gg/mm/aaaa)
                         # ---------------------------------------------------------
-                        # Le date vengono lette così come sono nel CSV
-                        # Formato atteso: gg/mm/aaaa
+
+                        # Visite mediche
                         r["visita_med_aib"] = r.get("visita_med_aib", "").strip()
                         r["visita_med_capi"] = r.get("visita_med_capi", "").strip()
 
-                        # Nessuna conversione → il template userà direttamente la stringa
-                        # e calcolerà lo stato tramite stato_scadenza()
+                        # Date dei corsi svolti
+                        r["corso_aib_data"] = r.get("corso_aib_data", "").strip()
+                        r["corso_motosega_data"] = r.get("corso_motosega_data", "").strip()
+                        r["corso_ricerca_sco_data"] = r.get("corso_ricerca_sco_data", "").strip()
+                        r["corso_pc_data"] = r.get("corso_pc_data", "").strip()
 
                         # Redirect alla scheda personale
                         return redirect(f"/scheda_personale?username={r['username']}")
