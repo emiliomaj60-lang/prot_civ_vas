@@ -496,23 +496,27 @@ def contatti():
 # ============================
 @app.route("/verbali")
 def verbali():
-    path = "templates/verbali"
+    import os
+
+    path = os.path.join(app.root_path, "templates", "verbali")
     files = [f for f in os.listdir(path) if f.endswith(".html")]
 
     anni = {}
 
     for f in files:
-        # Estrae l'anno dai primi 4 caratteri del nome file
-        try:
-            anno = f[:4]
-            int(anno)  # verifica che sia un numero
-        except:
+        nome_senza_ext = f.replace(".html", "")
+
+        # Estrae l'anno dagli ultimi 4 caratteri
+        anno = nome_senza_ext[-4:]
+
+        # Se non è un numero → "Senza anno"
+        if not anno.isdigit():
             anno = "Senza anno"
 
         if anno not in anni:
             anni[anno] = []
 
-        anni[anno].append(f.replace(".html", ""))
+        anni[anno].append(nome_senza_ext)
 
     # Ordina gli anni dal più recente al più vecchio
     anni_ordinati = dict(sorted(anni.items(), reverse=True))
@@ -525,7 +529,6 @@ def verbale_dettaglio(nome):
         return render_template(f"verbali/{nome}.html")
     except:
         return "Verbale non trovato", 404
-
 
 # ============================
 # aggiorna_dati
