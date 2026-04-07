@@ -497,16 +497,27 @@ def contatti():
 @app.route("/verbali")
 def verbali():
     path = "templates/verbali"
-    files = []
+    files = [f for f in os.listdir(path) if f.endswith(".html")]
 
-    for f in os.listdir(path):
-        if f.endswith(".html"):
-            files.append(f.replace(".html", ""))
+    anni = {}
 
-    files.sort()
+    for f in files:
+        # Estrae l'anno dai primi 4 caratteri del nome file
+        try:
+            anno = f[:4]
+            int(anno)  # verifica che sia un numero
+        except:
+            anno = "Senza anno"
 
-    return render_template("verbali.html", verbali=files)
+        if anno not in anni:
+            anni[anno] = []
 
+        anni[anno].append(f.replace(".html", ""))
+
+    # Ordina gli anni dal più recente al più vecchio
+    anni_ordinati = dict(sorted(anni.items(), reverse=True))
+
+    return render_template("verbali.html", anni=anni_ordinati)
 
 @app.route("/verbali/<nome>")
 def verbale_dettaglio(nome):
