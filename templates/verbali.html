@@ -22,6 +22,14 @@
         color: #002b5c;
     }
 
+    .anno-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-top: 35px;
+        margin-bottom: 15px;
+        color: #003b7a;
+    }
+
     .verbale-item {
         font-size: 1.6rem;
         padding: 18px;
@@ -38,16 +46,16 @@
 
     <div class="verbali-title">Verbali</div>
 
-    {% if verbali %}
-        {% for v in verbali %}
+    {% for anno, lista in anni.items() %}
+        <div class="anno-title">{{ anno }}</div>
+
+        {% for v in lista %}
             <div class="verbale-item"
                  onclick="window.location='/verbali/{{ v }}'">
                 📄 {{ v.replace('_', ' ').title() }}
             </div>
         {% endfor %}
-    {% else %}
-        <p>Nessun verbale presente.</p>
-    {% endif %}
+    {% endfor %}
 
 </div>
 
