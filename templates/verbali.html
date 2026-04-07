@@ -51,8 +51,8 @@
 
         {% for v in lista %}
             <div class="verbale-item"
-                 onclick="window.location='/verbali/{{ v }}'">
-                📄 {{ v.replace('_', ' ').title() }}
+                onclick="window.location='/verbali/{{ v.nome }}'">
+                📄 {{ v.nome.replace('_', ' ').title() }}
             </div>
         {% endfor %}
     {% endfor %}
