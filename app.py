@@ -504,22 +504,41 @@ def verbali():
     anni = {}
 
     for f in files:
-        nome_senza_ext = f.replace(".html", "")
+        nome = f.replace(".html", "")
 
         # Estrae l'anno dagli ultimi 4 caratteri
-        anno = nome_senza_ext[-4:]
-
-        # Se non è un numero → "Senza anno"
+        anno = nome[-4:]
         if not anno.isdigit():
             anno = "Senza anno"
 
+        # Estrae il numero del verbale
+        # Cerca pattern tipo "_07_" oppure "_1_" ecc.
+        parti = nome.split("_")
+
+        numero = None
+        for p in parti:
+            if p.isdigit():
+                numero = int(p)
+                break
+
+        if numero is None:
+            numero = 9999  # fallback per file senza numero
+
+        # Inserisce nel dizionario
         if anno not in anni:
             anni[anno] = []
 
-        anni[anno].append(nome_senza_ext)
+        anni[anno].append({
+            "nome": nome,
+            "numero": numero
+        })
 
     # Ordina gli anni dal più recente al più vecchio
     anni_ordinati = dict(sorted(anni.items(), reverse=True))
+
+    # Ordina i verbali dentro ogni anno per numero crescente
+    for anno in anni_ordinati:
+        anni_ordinati[anno] = sorted(anni_ordinati[anno], key=lambda x: x["numero"])
 
     return render_template("verbali.html", anni=anni_ordinati)
 
